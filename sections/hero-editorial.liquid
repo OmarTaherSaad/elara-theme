@@ -1,0 +1,78 @@
+{% liquid
+    assign img = section.settings.image
+    assign title = section.settings.title | default: shop.name
+    assign subtitle = section.settings.subtitle
+    assign btn_label = section.settings.btn_label
+    assign btn_link = section.settings.btn_link | default: routes.all_products_collection_url
+    assign layout = section.settings.layout
+  %}
+  
+  <section class="elara-hero {{ layout }}">
+    <div class="elara-hero__media">
+      {% if img %}
+        <img
+          srcset="{{ img | image_url: width: 640 }} 640w,
+                  {{ img | image_url: width: 960 }} 960w,
+                  {{ img | image_url: width: 1440 }} 1440w,
+                  {{ img | image_url: width: 1920 }} 1920w"
+          sizes="(max-width: 768px) 100vw, 100vw"
+          src="{{ img | image_url: width: 1440 }}"
+          alt="{{ img.alt | escape }}"
+          loading="eager"
+          fetchpriority="high">
+      {% else %}
+        {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder' }}
+      {% endif %}
+    </div>
+  
+    <div class="elara-hero__content">
+      <h1 class="elara-hero__title">{{ title }}</h1>
+      {% if subtitle != blank %}<p class="elara-hero__subtitle">{{ subtitle }}</p>{% endif %}
+      {% if btn_label != blank %}
+        <a class="elara-btn" href="{{ btn_link }}">{{ btn_label }}</a>
+      {% endif %}
+    </div>
+  </section>
+  
+  <style>
+  .elara-hero{position:relative;isolation:isolate}
+  .elara-hero.split .elara-hero__media{max-height:72vh}
+  .elara-hero__media img{display:block;width:100%;height:auto;object-fit:cover}
+  .elara-hero__content{
+    position:absolute;inset:auto 0 8%;display:grid;place-items:center;gap:12px;
+    text-align:center;padding:0 16px;color:#fff
+  }
+  .elara-hero::after{
+    content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35),rgba(0,0,0,.25) 40%,transparent 70%);
+    z-index:0
+  }
+  .elara-hero__title{position:relative;z-index:1;font-size:clamp(28px,5vw,56px);line-height:1.05}
+  .elara-hero__subtitle{position:relative;z-index:1;font-size:clamp(14px,2.2vw,18px);opacity:.9;max-width:720px}
+  .elara-btn{position:relative;z-index:1;display:inline-block;padding:10px 18px;border-radius:999px;background:#111;color:#fff;text-decoration:none}
+  .elara-hero.split{display:grid;grid-template-columns:1fr 1fr}
+  .elara-hero.split .elara-hero__content{position:static;inset:auto;color:#111;text-align:left;padding:40px;align-content:center}
+  .elara-hero.split::after{display:none}
+  @media (max-width: 990px){
+    .elara-hero.split{grid-template-columns:1fr}
+    .elara-hero.split .elara-hero__content{text-align:center;padding:24px}
+  }
+  </style>
+  
+  {% schema %}
+  {
+    "name": "Hero · Editorial",
+    "settings": [
+      { "type": "image_picker", "id": "image", "label": "Background image" },
+      { "type": "text", "id": "title", "label": "Title", "default": "New Season Arrivals" },
+      { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "Premium styles with faster checkout and global pricing." },
+      { "type": "text", "id": "btn_label", "label": "Button label", "default": "Shop now" },
+      { "type": "url", "id": "btn_link", "label": "Button link" },
+      { "type": "select", "id": "layout", "label": "Layout", "options": [
+        { "value": "overlay", "label": "Overlay" },
+        { "value": "split", "label": "Split image / text" }
+      ], "default": "overlay" }
+    ],
+    "presets": [{ "name": "Hero · Editorial" }]
+  }
+  {% endschema %}
+  
