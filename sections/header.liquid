@@ -1,50 +1,66 @@
 {% schema %}
 {
   "name": "Header · Elara",
-  "settings": [{ "type": "checkbox", "id": "sticky", "label": "Sticky header", "default": true }],
-  "blocks": [
-    { "type": "menu", "name": "Menu", "settings": [
-      { "type": "link_list", "id": "menu", "label": "Menu" },
-      { "type": "image_picker", "id": "image", "label": "Mega image" },
-      { "type": "text", "id": "tagline", "label": "Tagline" }
-    ]}
+  "settings": [
+    { "type": "checkbox", "id": "sticky", "label": "Sticky header", "default": true },
+    { "type": "link_list", "id": "menu", "label": "Desktop menu", "default": "main-menu" }
   ],
-  "max_blocks": 6,
-  "default": { "blocks": [{ "type": "menu" }] }
+  "blocks": [],
+  "max_blocks": 6
 }
 {% endschema %}
 
 <header class="elara-header{% if section.settings.sticky %} is-sticky{% endif %}">
   <div class="elara-header__row">
+    <!-- left: logo -->
     <a href="{{ routes.root_url }}" class="elara-logo" aria-label="{{ shop.name }}">
-      <img src="{{ 'elara-logo.webp' | asset_url }}" alt="Elara" width="140" height="28" loading="eager" fetchpriority="high">
+      <img
+        src="{{ 'elara-logo.webp' | asset_url }}"
+        alt="Elara"
+        width="140"
+        height="28"
+        loading="eager"
+        fetchpriority="high">
     </a>
-    {% render 'currency-switcher' %}
+
+    <!-- center: nav -->
     <nav class="elara-nav" role="navigation">
-      {% for block in section.blocks %}
-        {% if block.settings.menu %}
-          <div class="elara-nav__item">
-            {{ block.settings.menu | linklist }}
-            {% if block.settings.image %}
-              <div class="elara-mega">
-                <img src="{{ block.settings.image | image_url: width: 1000 }}" alt="" width="1000" height="600" loading="lazy">
-                {% if block.settings.tagline %}<p class="elara-mega__tag">{{ block.settings.tagline }}</p>{% endif %}
-              </div>
-            {% endif %}
-          </div>
-        {% endif %}
-      {% endfor %}
+      {% assign menu_handle = section.settings.menu | default: 'main-menu' %}
+      {% assign mm = linklists[menu_handle] %}
+      {% if mm and mm.links.size > 0 %}
+        <ul class="elara-menu">
+          {% for link in mm.links %}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <ul class="elara-menu"><li><a href="{{ routes.all_products_collection_url }}">Shop</a></li></ul>
+      {% endif %}
     </nav>
+
+    <!-- right: currency -->
+    <div class="elara-actions">
+      {% render 'currency-switcher' %}
+    </div>
   </div>
 </header>
 
 <style>
-.elara-header{position:relative;padding:12px 16px;border-bottom:1px solid #eee;background:#fff}
+:root{--elara-header-h:64px;--elara-logo-h:28px}
+.elara-header{background:#fff;border-bottom:1px solid #eee}
 .elara-header.is-sticky{position:sticky;top:0;z-index:50}
-.elara-header__row{display:flex;align-items:center;gap:16px}
-.elara-nav__item{position:relative}
-.elara-mega{display:none;position:absolute;left:0;top:100%;background:#fff;box-shadow:0 10px 30px rgba(0,0,0,.08);padding:16px;min-width:640px}
-.elara-nav__item:hover .elara-mega{display:block}
-.elara-mega__tag{margin-top:8px;font-size:14px;color:#666}
-@media (max-width: 990px){.elara-mega{position:static;display:block;box-shadow:none;padding:8px}}
+.elara-header__row{
+  max-width:1200px;margin:0 auto;height:var(--elara-header-h);
+  display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 16px
+}
+.elara-logo img{height:var(--elara-logo-h);width:auto;display:block;object-fit:contain}
+.elara-nav{flex:1;display:flex;justify-content:center}
+.elara-menu{list-style:none;margin:0;padding:0;display:flex;gap:20px;align-items:center}
+.elara-menu a{display:inline-block;padding:8px 10px;text-decoration:none;color:#111;font-weight:500}
+.elara-actions{display:flex;align-items:center;gap:12px}
+.elara-currency select{height:36px;padding:6px 8px;font-size:14px;border:1px solid #ddd;border-radius:6px;background:#fff}
+@media (max-width:990px){
+  .elara-nav{justify-content:flex-start}
+  .elara-menu{display:none} /* placeholder until mobile menu */
+}
 </style>
