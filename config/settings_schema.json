@@ -1451,5 +1451,30 @@
         "default": "scheme-1"
       }
     ]
+  },
+  {
+    "name": "Elara Settings",
+    "settings": [
+      { "type": "font_picker", "id": "font_heading", "label": "Heading font" },
+      { "type": "font_picker", "id": "font_body", "label": "Body font" },
+      {
+        "type": "color",
+        "id": "color_primary",
+        "label": "Primary",
+        "default": "#111111"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Accent",
+        "default": "#C8A24A"
+      },
+      {
+        "type": "color",
+        "id": "color_neutral",
+        "label": "Neutral",
+        "default": "#E9DFD5"
+      }
+    ]
   }
 ]
