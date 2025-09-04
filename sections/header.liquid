@@ -1,29 +1,9 @@
-{% schema %}
-{
-  "name": "Header · Elara",
-  "settings": [
-    { "type": "checkbox", "id": "sticky", "label": "Sticky header", "default": true },
-    { "type": "link_list", "id": "menu", "label": "Desktop menu", "default": "main-menu" }
-  ],
-  "blocks": [],
-  "max_blocks": 6
-}
-{% endschema %}
-
-<header class="elara-header{% if section.settings.sticky %} is-sticky{% endif %}">
+<header id="elaraHeader" class="elara-header {% if section.settings.sticky %} is-sticky{% endif %}">
   <div class="elara-header__row">
-    <!-- left: logo -->
     <a href="{{ routes.root_url }}" class="elara-logo" aria-label="{{ shop.name }}">
-      <img
-        src="{{ 'elara-logo.webp' | asset_url }}"
-        alt="Elara"
-        width="140"
-        height="28"
-        loading="eager"
-        fetchpriority="high">
+      <img src="{{ 'elara-logo.webp' | asset_url }}" alt="Elara" width="140" height="28" loading="eager" fetchpriority="high">
     </a>
 
-    <!-- center: nav -->
     <nav class="elara-nav" role="navigation">
       {% assign menu_handle = section.settings.menu | default: 'main-menu' %}
       {% assign mm = linklists[menu_handle] %}
@@ -38,29 +18,50 @@
       {% endif %}
     </nav>
 
-    <!-- right: currency -->
     <div class="elara-actions">
       {% render 'currency-switcher' %}
     </div>
   </div>
 </header>
+<div id="elaraHeaderSpacer"></div>
+
 
 <style>
-:root{--elara-header-h:64px;--elara-logo-h:28px}
-.elara-header{background:#fff;border-bottom:1px solid #eee}
-.elara-header.is-sticky{position:sticky;top:0;z-index:50}
-.elara-header__row{
-  max-width:1200px;margin:0 auto;height:var(--elara-header-h);
-  display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 16px
-}
-.elara-logo img{height:var(--elara-logo-h);width:auto;display:block;object-fit:contain}
-.elara-nav{flex:1;display:flex;justify-content:center}
-.elara-menu{list-style:none;margin:0;padding:0;display:flex;gap:20px;align-items:center}
-.elara-menu a{display:inline-block;padding:8px 10px;text-decoration:none;color:#111;font-weight:500}
-.elara-actions{display:flex;align-items:center;gap:12px}
-.elara-currency select{height:36px;padding:6px 8px;font-size:14px;border:1px solid #ddd;border-radius:6px;background:#fff}
-@media (max-width:990px){
-  .elara-nav{justify-content:flex-start}
-  .elara-menu{display:none} /* placeholder until mobile menu */
-}
+  :root{--elara-sticky-top:64px;--elara-logo-h:28px}
+  .elara-header{position:fixed;top:0;left:0;right:0;z-index:200;background:#fff;border-bottom:1px solid #eee}
+  .elara-header__row{max-width:1200px;margin:0 auto;height:var(--elara-sticky-top);
+    display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 16px}
+  .elara-logo img{height:var(--elara-logo-h);width:auto;display:block;object-fit:contain}
+  .elara-nav{flex:1;display:flex;justify-content:center}
+  .elara-menu{list-style:none;margin:0;padding:0;display:flex;gap:20px;align-items:center}
+  .elara-menu a{display:inline-block;padding:8px 10px;text-decoration:none;color:#111;font-weight:500}
+  .elara-actions{display:flex;align-items:center;gap:12px}
+  .elara-currency select{height:36px;padding:6px 8px;font-size:14px;border:1px solid #ddd;border-radius:6px;background:#fff}
 </style>
+  
+<script>
+  (function(){
+    const header = document.getElementById('elaraHeader');
+    const spacer = document.getElementById('elaraHeaderSpacer');
+    function layout(){
+      const hh = header?.offsetHeight || 64;
+      document.documentElement.style.setProperty('--elara-sticky-top', hh+'px');
+      if (spacer) spacer.style.height = hh+'px';
+    }
+    addEventListener('load', layout, {once:true});
+    addEventListener('resize', layout);
+  })();
+</script>
+  
+
+{% schema %}
+{
+  "name": "Header · Elara",
+  "settings": [
+    { "type": "checkbox", "id": "sticky", "label": "Sticky header", "default": true },
+    { "type": "link_list", "id": "menu", "label": "Desktop menu", "default": "main-menu" }
+  ],
+  "blocks": [],
+  "max_blocks": 6
+}
+{% endschema %}
