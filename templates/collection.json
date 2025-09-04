@@ -1,5 +1,6 @@
 {
   "sections": {
+    "main": { "type": "collection-elara", "settings": {} },
     "banner": {
       "type": "main-collection-banner",
       "settings": {
@@ -25,8 +26,5 @@
       }
     }
   },
-  "order": [
-    "banner",
-    "product-grid"
-  ]
+  "order": ["main", "banner", "product-grid"]
 }

@@ -1,0 +1,4 @@
+{%- assign v = product.selected_or_first_available_variant -%}
+<button class="elara-qa" data-product="{{ product.id }}" data-variant="{{ v.id }}" {% unless v.available %}disabled{% endunless %}>
+  {% if v.available %}Quick add{% else %}Sold out{% endif %}
+</button>
