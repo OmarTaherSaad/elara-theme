@@ -1,0 +1,10 @@
+{%- form 'localization', id: 'ElaraCurrency', class: 'elara-currency' -%}
+    <select name="country_code" aria-label="{{ 'general.country' | t }}" onchange="this.form.submit()">
+      {%- for country in localization.available_countries -%}
+        <option value="{{ country.iso_code }}" {% if country.iso_code == localization.country.iso_code %}selected{% endif %}>
+          {{ country.name }} ({{ country.currency.iso_code }})
+        </option>
+      {%- endfor -%}
+    </select>
+  {%- endform -%}
+  
