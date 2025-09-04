@@ -41,14 +41,13 @@
       grid-column: 1 / -1;
       margin-bottom: 8px;
     }
-    .elara-filters {
-      position: sticky;
-      top: 72px;
-      align-self: start;
-      max-height: calc(100vh - 80px);
-      overflow: auto;
-      padding-right: 8px;
-    }
+    .elara-filters{
+      position:sticky;
+      top: calc(var(--elara-sticky-top, 64px) + 8px);
+      max-height: calc(100vh - var(--elara-sticky-top, 64px) - 24px);
+      overflow:auto;
+    }    
+      
     .elara-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
