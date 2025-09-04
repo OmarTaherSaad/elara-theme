@@ -1,0 +1,19 @@
+{
+  "ci": {
+    "collect": {
+      "url": [
+        "${STORE_URL}/?preview_theme_id=${PREVIEW_ID}",
+        "${STORE_URL}/collections/all?preview_theme_id=${PREVIEW_ID}",
+        "${STORE_URL}/products/sample-product?preview_theme_id=${PREVIEW_ID}"
+      ],
+      "numberOfRuns": 1
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": ["warn", { "minScore": 0.9 }],
+        "categories:accessibility": ["warn", { "minScore": 0.9 }]
+      }
+    },
+    "upload": { "target": "filesystem", "outputDir": ".lighthouseci" }
+  }
+}
