@@ -1,4 +1,5 @@
-<header id="elaraHeader" class="elara-header {% if section.settings.sticky %} is-sticky{% endif %}">
+<header id="elaraHeader" class="elara-header">
+
   <div class="elara-header__row">
     <a href="{{ routes.root_url }}" class="elara-logo" aria-label="{{ shop.name }}">
       <img src="{{ 'elara-logo.webp' | asset_url }}" alt="Elara" width="140" height="28" loading="eager" fetchpriority="high">
@@ -9,9 +10,7 @@
       {% assign mm = linklists[menu_handle] %}
       {% if mm and mm.links.size > 0 %}
         <ul class="elara-menu">
-          {% for link in mm.links %}
-            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
-          {% endfor %}
+          {% for link in mm.links %}<li><a href="{{ link.url }}">{{ link.title }}</a></li>{% endfor %}
         </ul>
       {% else %}
         <ul class="elara-menu"><li><a href="{{ routes.all_products_collection_url }}">Shop</a></li></ul>
@@ -25,43 +24,98 @@
 </header>
 <div id="elaraHeaderSpacer"></div>
 
-
 <style>
-  :root{--elara-sticky-top:64px;--elara-logo-h:28px}
-  .elara-header{position:fixed;top:0;left:0;right:0;z-index:200;background:#fff;border-bottom:1px solid #eee}
-  .elara-header__row{max-width:1200px;margin:0 auto;height:var(--elara-sticky-top);
-    display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 16px}
-  .elara-logo img{height:var(--elara-logo-h);width:auto;display:block;object-fit:contain}
-  .elara-nav{flex:1;display:flex;justify-content:center}
-  .elara-menu{list-style:none;margin:0;padding:0;display:flex;gap:20px;align-items:center}
-  .elara-menu a{display:inline-block;padding:8px 10px;text-decoration:none;color:#111;font-weight:500}
-  .elara-actions{display:flex;align-items:center;gap:12px}
-  .elara-currency select{height:36px;padding:6px 8px;font-size:14px;border:1px solid #ddd;border-radius:6px;background:#fff}
-</style>
+  :root{--elara-logo-h:28px}
   
+  /* Ensure announcement bar appears above header */
+  .announcement-bar-section {
+    position: relative;
+    z-index: 201;
+  }
+  .elara-header{
+    position:fixed; top:0; left:0; right:0; z-index:200;
+    background:#fff; border-bottom:1px solid #eee;
+    display:flex; flex-direction:column; overflow:visible;
+    transform: translateY(var(--header-offset, var(--announcement-bar-height, 0)));
+    transition: transform 0.2s ease-out;
+  }
+  
+  .elara-header__row{
+    order:1; position:relative; z-index:1;
+    max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 16px
+  }
+  .elara-logo img{height:var(--elara-logo-h); width:auto; display:block; object-fit:contain}
+  .elara-nav{flex:1; display:flex; justify-content:center}
+  .elara-menu{list-style:none; margin:0; padding:0; display:flex; gap:20px; align-items:center}
+  .elara-menu a{display:inline-block; padding:8px 10px; text-decoration:none; color:#111; font-weight:500}
+  .elara-actions{display:flex; align-items:center; gap:12px}
+  .elara-currency select{height:36px; padding:6px 8px; font-size:14px; border:1px solid #ddd; border-radius:6px; background:#fff}
+  @media (max-width:990px){ .elara-menu{display:none } }
+  </style>
+  
+
 <script>
-  (function(){
-    const header = document.getElementById('elaraHeader');
-    const spacer = document.getElementById('elaraHeaderSpacer');
-    function layout(){
-      const hh = header?.offsetHeight || 64;
-      document.documentElement.style.setProperty('--elara-sticky-top', hh+'px');
-      if (spacer) spacer.style.height = hh+'px';
-    }
-    addEventListener('load', layout, {once:true});
-    addEventListener('resize', layout);
-  })();
-</script>
+(function(){
+  const header = document.getElementById('elaraHeader');
+  const spacer = document.getElementById('elaraHeaderSpacer');
+  let announcementHeight = 0;
+  let isScrolled = false;
   
+  function size(){
+    // Get announcement bar height
+    const announcementBar = document.querySelector('.announcement-bar-section');
+    announcementHeight = announcementBar ? announcementBar.offsetHeight : 0;
+    
+    // Set CSS variable for announcement bar height
+    document.documentElement.style.setProperty('--announcement-bar-height', announcementHeight + 'px');
+    
+    // Initialize header offset (default to announcement bar height)
+    if (!document.documentElement.style.getPropertyValue('--header-offset')) {
+      document.documentElement.style.setProperty('--header-offset', announcementHeight + 'px');
+    }
+    
+    // compute total header height
+    const hh = header.offsetHeight + announcementHeight;
+    spacer.style.height = hh + 'px';
+  }
+  
+  function handleScroll() {
+    requestAnimationFrame(() => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const shouldStickToTop = scrollTop > 0; // Changed: stick to top as soon as any scroll happens
+      
+      if (shouldStickToTop && !isScrolled) {
+        // Scrolled - stick to top
+        document.documentElement.style.setProperty('--header-offset', '0px');
+        isScrolled = true;
+      } else if (!shouldStickToTop && isScrolled) {
+        // Back to top - respect announcement bar space
+        document.documentElement.style.setProperty('--header-offset', announcementHeight + 'px');
+        isScrolled = false;
+      }
+    });
+  }
+  
+  addEventListener('load', size, {once:true});
+  addEventListener('resize', size);
+  addEventListener('scroll', handleScroll, {passive: true});
+  
+  // Watch for announcement bar changes
+  const announcementBar = document.querySelector('.announcement-bar-section');
+  if (announcementBar) {
+    new ResizeObserver(() => {
+      size();
+      handleScroll(); // Recalculate position after resize
+    }).observe(announcementBar);
+  }
+})();
+</script>
 
 {% schema %}
 {
   "name": "Header · Elara",
   "settings": [
-    { "type": "checkbox", "id": "sticky", "label": "Sticky header", "default": true },
     { "type": "link_list", "id": "menu", "label": "Desktop menu", "default": "main-menu" }
   ],
-  "blocks": [],
-  "max_blocks": 6
 }
 {% endschema %}
