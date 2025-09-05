@@ -299,6 +299,8 @@
   </head>
 
   <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
+    {% render 'cart-drawer' %}
+
     <a class="skip-to-content-link button visually-hidden" href="#MainContent">
       {{ 'accessibility.skip_to_text' | t }}
     </a>
@@ -373,5 +375,8 @@
       <script src="{{ 'cart-drawer.js' | asset_url }}" defer="defer"></script>
     {%- endif -%}
     <script src="{{ 'elara-quick-add.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'product-elara.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'elara-cart.js' | asset_url }}" defer="defer"></script>
+
   </body>
 </html>
