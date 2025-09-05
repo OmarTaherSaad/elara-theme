@@ -1,35 +1,34 @@
-<div id="elaraCart" class="elara-cart" hidden>
-  <div class="elara-cart__panel" role="dialog" aria-label="Cart">
+<div id="elaraCart" class="elara-cart">
+  <div class="elara-cart__panel" role="dialog" aria-modal="true" aria-label="Cart">
     <button class="elara-cart__close" aria-label="Close">×</button>
     <h2>Cart</h2>
     <div class="elara-cart__items"></div>
-    <div class="elara-cart__upsell">
-      {% assign u = collections['all'].products | first %}
-      {% if u %}
-        <div class="upsell">
-          <a href="{{ u.url }}">
-            {{ u.featured_image | image_url: width: 240 | image_tag: loading: 'lazy', alt: u.title }}
-            <div class="t">{{ u.title }}</div>
-          </a>
-          <button class="elara-qa" data-product="{{ u.id }}" data-variant="{{ u.selected_or_first_available_variant.id }}">Add</button>
-        </div>
-      {% endif %}
-    </div>
     <div class="elara-cart__footer">
       <div class="elara-cart__total">Total: <span class="v">—</span></div>
       <a class="elara-cart__checkout" href="/checkout">Checkout</a>
     </div>
   </div>
 </div>
+
 <style>
-.elara-cart{position:fixed;inset:0;background:rgba(0,0,0,.5);display:grid;place-items:end}
-.elara-cart[hidden]{display:none}
-.elara-cart__panel{width:min(420px,96vw);height:100%;background:#fff;box-shadow:0 0 30px rgba(0,0,0,.15);padding:16px;overflow:auto}
-.elara-cart__close{position:absolute;top:8px;right:10px;border:0;background:transparent;font-size:24px;cursor:pointer}
-.elara-cart__items{display:grid;gap:12px;margin-top:32px}
-.elara-cart__item{display:grid;grid-template-columns:72px 1fr auto;gap:12px;align-items:center}
-.elara-cart__footer{position:sticky;bottom:0;background:#fff;padding-top:12px;border-top:1px solid #eee;display:grid;gap:8px}
-.elara-cart__checkout{display:inline-block;text-align:center;background:#111;color:#fff;padding:10px;border-radius:8px;text-decoration:none}
-.elara-cart__upsell{margin:12px 0;padding:12px;border:1px solid #eee;border-radius:8px}
-.upsell{display:grid;grid-template-columns:72px 1fr auto;gap:12px;align-items:center}
+.elara-cart{
+  position:fixed; inset:0; z-index:400;
+  background:rgba(0,0,0,.4);
+  opacity:0; pointer-events:none; transition:opacity .2s ease;
+}
+.elara-cart.is-open{ opacity:1; pointer-events:auto; }
+.elara-cart__panel{
+  position:absolute; right:0; top:var(--elara-sticky-top,64px);
+  height:calc(100% - var(--elara-sticky-top,64px));
+  width:min(420px,96vw);
+  background:#fff; box-shadow:0 0 30px rgba(0,0,0,.15);
+  padding:16px; overflow:auto;
+  transform:translateX(100%); transition:transform .25s ease;
+}
+.elara-cart.is-open .elara-cart__panel{ transform:translateX(0); }
+.elara-cart__close{position:absolute; top:8px; right:12px; border:0; background:transparent; font-size:24px; cursor:pointer}
+.elara-cart__items{display:grid; gap:12px; margin-top:32px}
+.elara-cart__item{display:grid; grid-template-columns:72px 1fr auto; gap:12px; align-items:center}
+.elara-cart__footer{position:sticky; bottom:0; background:#fff; padding-top:12px; border-top:1px solid #eee; display:grid; gap:8px}
+.elara-cart__checkout{display:inline-block; text-align:center; background:#111; color:#fff; padding:10px; border-radius:8px; text-decoration:none}
 </style>
