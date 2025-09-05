@@ -1,0 +1,8 @@
+{% assign opt_index = option_index | default: 1 %}
+{% assign name = product.options[opt_index | minus: 1] %}
+{% if name %}<div class="elara-swatches" data-opt="{{ name | escape }}">
+  {% for val in product.options_with_values[opt_index | minus: 1].values %}
+    {% assign selected = val == current_variant.options[opt_index | minus: 1] %}
+    <button type="button" class="elara-swatch{% if selected %} is-active{% endif %}" data-value="{{ val | escape }}">{{ val }}</button>
+  {% endfor %}
+</div>{% endif %}

@@ -1,0 +1,8 @@
+{% assign url = product.metafields.care.size_guide_url | default: settings.size_guide_url %}
+<button type="button" class="elara-sizeguide" {% if url %}data-url="{{ url }}"{% endif %}>Size guide</button>
+<div id="elaraSizeGuide" class="elara-drawer" hidden>
+  <div class="elara-drawer__inner">
+    <button class="elara-drawer__close" aria-label="Close">×</button>
+    {% if url %}<iframe src="{{ url }}" loading="lazy"></iframe>{% else %}<p>Add size guide URL in settings or product metafield <code>care.size_guide_url</code>.</p>{% endif %}
+  </div>
+</div>

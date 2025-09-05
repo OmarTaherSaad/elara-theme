@@ -1,0 +1,63 @@
+{% assign p = product %}
+{% assign v = p.selected_or_first_available_variant %}
+
+<section class="elara-product" data-opts="{}">
+  <script type="application/json">{{ product | json }}</script>
+
+  <div class="elara-gallery">
+    {% if p.media.size > 0 %}
+      {{ p.media.first | image_url: width: 1200 | image_tag: loading: 'eager', fetchpriority: 'high', alt: p.title }}
+    {% else %}
+      {{ 'product-1' | placeholder_svg_tag }}
+    {% endif %}
+  </div>
+
+  <aside class="elara-info">
+    <h1>{{ p.title }}</h1>
+    <div class="elara-price">{% render 'price', product: p, use_variant: true %}</div>
+
+    {% render 'swatches', product: p, current_variant: v, option_index: 1 %}
+    {% if p.options.size > 1 %}{% render 'swatches', product: p, current_variant: v, option_index: 2 %}{% endif %}
+    {% if p.options.size > 2 %}{% render 'swatches', product: p, current_variant: v, option_index: 3 %}{% endif %}
+
+    {% render 'size-guide' %}
+    {% render 'shipping-note', product: p %}
+
+    <form method="post" action="/cart/add">
+      <input type="hidden" name="id" value="{{ v.id }}">
+      <button class="elara-atc" type="submit" {% unless v.available %}disabled{% endunless %}>
+        {% if v.available %}Add to cart{% else %}Sold out{% endif %}
+      </button>
+    </form>
+
+    {% if p.description != blank %}
+      <div class="elara-desc rte">{{ p.description }}</div>
+    {% endif %}
+  </aside>
+</section>
+
+<style>
+.elara-product{display:grid;grid-template-columns:1.1fr .9fr;gap:32px;align-items:start}
+.elara-gallery img{width:100%;height:auto;border-radius:12px;object-fit:cover}
+.elara-info{position:sticky;top:calc(var(--elara-sticky-top,64px) + 12px);align-self:start}
+.elara-price{margin:6px 0 12px}
+.elara-swatch{min-width:34px;height:34px;border:1px solid #ddd;border-radius:999px;background:#fff;padding:0 10px;margin:0 8px 8px 0;cursor:pointer}
+.elara-swatch.is-active{border-color:#111;box-shadow:0 0 0 2px #111 inset;color:#111}
+.elara-atc{margin-top:12px;width:100%;height:48px;border-radius:8px;border:1px solid #111;background:#111;color:#fff}
+.elara-drawer{position:fixed;inset:0;background:rgba(0,0,0,.5);display:grid;place-items:center}
+.elara-drawer[hidden]{display:none}
+.elara-drawer__inner{width:min(860px,96vw);height:min(80vh,700px);background:#fff;border-radius:12px;overflow:hidden;position:relative}
+.elara-drawer__inner iframe{width:100%;height:100%;border:0}
+.elara-drawer__close{position:absolute;top:8px;right:12px;font-size:24px;border:0;background:transparent;cursor:pointer}
+@media (max-width: 990px){.elara-product{grid-template-columns:1fr}.elara-info{position:static}}
+</style>
+
+<script src="{{ 'product-elara.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "Product · Elara",
+  "settings": [],
+  "presets": [{ "name": "Product · Elara" }]
+}
+{% endschema %}

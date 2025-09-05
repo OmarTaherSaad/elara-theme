@@ -1,0 +1,2 @@
+{% assign note = product.metafields.shipping.note %}
+{% if note %}<p class="elara-shipnote">{{ note | escape }}</p>{% endif %}

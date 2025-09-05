@@ -19,6 +19,10 @@
 
     <div class="elara-actions">
       {% render 'currency-switcher' %}
+      <button id="elaraCartBtn" class="elara-cartbtn" aria-label="Open cart">
+        🛒 <span id="elaraCartCount">0</span>
+      </button>
+      
     </div>
   </div>
 </header>
@@ -51,6 +55,9 @@
   .elara-actions{display:flex; align-items:center; gap:12px}
   .elara-currency select{height:36px; padding:6px 8px; font-size:14px; border:1px solid #ddd; border-radius:6px; background:#fff}
   @media (max-width:990px){ .elara-menu{display:none } }
+
+  .elara-cartbtn{height:36px;padding:6px 10px;border:1px solid #ddd;border-radius:6px;background:#fff;cursor:pointer}
+  .elara-cartbtn #elaraCartCount{margin-left:6px;min-width:18px;display:inline-block;text-align:center;font-weight:600}    
   </style>
   
 
