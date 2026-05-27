@@ -153,6 +153,71 @@
                         {{ 'image' | placeholder_svg_tag: 'placeholder-svg placeholder' }}
                       {%- endif -%}
                     </div>
+                  {%- when 'brand_mark' -%}
+                    <div class="footer-block__brand-mark">
+                      {%- if block.settings.wordmark != blank -%}
+                        {{
+                          block.settings.wordmark
+                          | image_url: width: 800
+                          | image_tag:
+                            loading: 'lazy',
+                            class: 'footer-block__brand-mark-image',
+                            widths: '200, 320, 480, 640, 800',
+                            sizes: '(min-width: 990px) 320px, 60vw',
+                            alt: shop.name
+                        }}
+                      {%- elsif block.settings.wordmark_text != blank -%}
+                        <p class="footer-block__brand-mark-text">{{ block.settings.wordmark_text | escape }}</p>
+                      {%- endif -%}
+                      {%- if block.settings.tagline != blank -%}
+                        <p class="footer-block__brand-mark-tagline">{{ block.settings.tagline | escape }}</p>
+                      {%- endif -%}
+                    </div>
+                  {%- when 'concierge' -%}
+                    <div class="footer-block__concierge">
+                      {%- if block.settings.hours != blank -%}
+                        <div class="footer-block__concierge-hours rte">{{ block.settings.hours }}</div>
+                      {%- endif -%}
+                      <ul class="footer-block__concierge-contacts list-unstyled">
+                        {%- if block.settings.contact_link_email != blank -%}
+                          <li>
+                            <a class="footer-block__concierge-link" href="{{ block.settings.contact_link_email }}">
+                              <span class="footer-block__concierge-label">{{ block.settings.contact_label_email | escape }}</span>
+                              <span aria-hidden="true">&rarr;</span>
+                            </a>
+                          </li>
+                        {%- endif -%}
+                        {%- if block.settings.contact_link_phone != blank -%}
+                          <li>
+                            <a class="footer-block__concierge-link" href="{{ block.settings.contact_link_phone }}">
+                              <span class="footer-block__concierge-label">{{ block.settings.contact_label_phone | escape }}</span>
+                              <span aria-hidden="true">&rarr;</span>
+                            </a>
+                          </li>
+                        {%- endif -%}
+                      </ul>
+                    </div>
+                  {%- when 'certifications' -%}
+                    <ul class="footer-block__certifications list-unstyled">
+                      {%- for n in (1..6) -%}
+                        {%- assign key = 'logo_' | append: n -%}
+                        {%- assign logo = block.settings[key] -%}
+                        {%- if logo != blank -%}
+                          <li class="footer-block__certifications-item">
+                            {{
+                              logo
+                              | image_url: width: 240
+                              | image_tag:
+                                loading: 'lazy',
+                                class: 'footer-block__certifications-logo',
+                                widths: '120, 180, 240',
+                                sizes: '120px',
+                                alt: logo.alt
+                            }}
+                          </li>
+                        {%- endif -%}
+                      {%- endfor -%}
+                    </ul>
                 {%- endcase -%}
               </div>
             {%- endfor -%}
@@ -419,6 +484,111 @@
             }
           ],
           "default": "center"
+        }
+      ]
+    },
+    {
+      "type": "brand_mark",
+      "name": "Brand mark",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Oversized wordmark or logotype that anchors the footer."
+        },
+        {
+          "type": "image_picker",
+          "id": "wordmark",
+          "label": "Wordmark image",
+          "info": "Transparent PNG or SVG. If empty, the heading below is rendered as text."
+        },
+        {
+          "type": "text",
+          "id": "wordmark_text",
+          "label": "Wordmark text",
+          "default": "Elara"
+        },
+        {
+          "type": "text",
+          "id": "tagline",
+          "label": "Tagline",
+          "default": "Editorial commerce, considered."
+        }
+      ]
+    },
+    {
+      "type": "concierge",
+      "name": "Concierge",
+      "limit": 2,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Concierge"
+        },
+        {
+          "type": "richtext",
+          "id": "hours",
+          "label": "Hours",
+          "default": "<p>Mon–Fri · 9:00–18:00<br>Sat · 10:00–16:00</p>"
+        },
+        {
+          "type": "text",
+          "id": "contact_label_email",
+          "label": "Email label",
+          "default": "Email"
+        },
+        {
+          "type": "url",
+          "id": "contact_link_email",
+          "label": "Email link"
+        },
+        {
+          "type": "text",
+          "id": "contact_label_phone",
+          "label": "Phone label",
+          "default": "Call"
+        },
+        {
+          "type": "url",
+          "id": "contact_link_phone",
+          "label": "Phone link"
+        }
+      ]
+    },
+    {
+      "type": "certifications",
+      "name": "Certifications",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Up to 6 monochrome certification or accreditation logos."
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Certified"
+        },
+        {
+          "type": "image_picker", "id": "logo_1", "label": "Logo 1"
+        },
+        {
+          "type": "image_picker", "id": "logo_2", "label": "Logo 2"
+        },
+        {
+          "type": "image_picker", "id": "logo_3", "label": "Logo 3"
+        },
+        {
+          "type": "image_picker", "id": "logo_4", "label": "Logo 4"
+        },
+        {
+          "type": "image_picker", "id": "logo_5", "label": "Logo 5"
+        },
+        {
+          "type": "image_picker", "id": "logo_6", "label": "Logo 6"
         }
       ]
     }

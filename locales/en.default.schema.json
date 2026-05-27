@@ -240,6 +240,57 @@
         }
       }
     },
+    "elara": {
+      "name": "Editorial",
+      "settings": {
+        "header__motion": {
+          "content": "Motion"
+        },
+        "header__type_pairing": {
+          "content": "Typography pairing"
+        },
+        "header__layout": {
+          "content": "Layout density"
+        },
+        "header__accent": {
+          "content": "Accent color"
+        },
+        "motion_intensity": {
+          "label": "Motion intensity",
+          "info": "Controls the speed and travel of reveal animations and hover transitions.",
+          "options__1": { "label": "Subtle" },
+          "options__2": { "label": "Balanced" },
+          "options__3": { "label": "Rich" }
+        },
+        "image_reveal": {
+          "label": "Animated image reveal on scroll",
+          "info": "Editorial clip-path reveal for hero and feature imagery."
+        },
+        "view_transitions": {
+          "label": "Enable page transitions",
+          "info": "Uses the View Transitions API in supported browsers; falls back silently elsewhere."
+        },
+        "type_pairing": {
+          "label": "Type pairing preset",
+          "info": "Quick presets. For full control use the Typography panel.",
+          "options__1": { "label": "Playfair Display + Inter" },
+          "options__2": { "label": "Cormorant Garamond + Montserrat" },
+          "options__3": { "label": "Libre Caslon + Work Sans" },
+          "options__4": { "label": "Custom (use Typography panel)" }
+        },
+        "density": {
+          "label": "Section spacing density",
+          "info": "Scales the vertical padding of editorial sections.",
+          "options__1": { "label": "Editorial (most whitespace)" },
+          "options__2": { "label": "Balanced" },
+          "options__3": { "label": "Compact" }
+        },
+        "accent_color": {
+          "label": "Accent",
+          "info": "Used for highlights, badges, and link hover."
+        }
+      }
+    },
     "social-media": {
       "name": "Social media",
       "settings": {

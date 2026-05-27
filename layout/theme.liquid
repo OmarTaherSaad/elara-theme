@@ -220,6 +220,11 @@
         --variant-pills-shadow-horizontal-offset: {{ settings.variant_pills_shadow_horizontal_offset }}px;
         --variant-pills-shadow-vertical-offset: {{ settings.variant_pills_shadow_vertical_offset }}px;
         --variant-pills-shadow-blur-radius: {{ settings.variant_pills_shadow_blur }}px;
+
+        /* Elara editorial settings */
+        --elara-accent-user: {{ settings.elara_accent_color | default: '#b8956a' }};
+        --elara-density-multiplier: {% case settings.elara_density %}{% when 'compact' %}0.7{% when 'editorial' %}1.4{% else %}1.0{% endcase %};
+        --elara-motion-multiplier: {% case settings.elara_motion_intensity %}{% when 'subtle' %}0.6{% when 'rich' %}1.3{% else %}1.0{% endcase %};
       }
 
       *,
@@ -256,6 +261,7 @@
     {% endstyle %}
 
     {{ 'base.css' | asset_url | stylesheet_tag }}
+    {{ 'elara-tokens.css' | asset_url | stylesheet_tag }}
     <link rel="stylesheet" href="{{ 'component-cart-items.css' | asset_url }}" media="print" onload="this.media='all'">
 
     {%- if settings.cart_type == 'drawer' -%}
@@ -298,7 +304,14 @@
     </script>
   </head>
 
-  <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
+  {%- liquid
+    assign elara_hero_templates = 'index,page.lookbook,page.about,page.story,collection.editorial,product.fragrance,password'
+    assign elara_has_hero = false
+    if elara_hero_templates contains template.name
+      assign elara_has_hero = true
+    endif
+  -%}
+  <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}{% if elara_has_hero %} has-hero-template{% endif %}">
     <a class="skip-to-content-link button visually-hidden" href="#MainContent">
       {{ 'accessibility.skip_to_text' | t }}
     </a>

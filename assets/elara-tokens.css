@@ -1,0 +1,171 @@
+/* ============================================================
+   Elara Tokens
+   Semantic design-token layer for the Elara editorial-luxury theme.
+   Aliases Dawn's primitive CSS custom properties so merchant
+   color-scheme and font-picker settings continue to drive
+   everything; new Elara components style against --elara-* names.
+   ============================================================ */
+
+:root {
+  /* ---------- Color: primitives derived from Dawn ---------- */
+  --elara-bg:               rgb(var(--color-background));
+  --elara-fg:               rgb(var(--color-foreground));
+  --elara-fg-muted:         rgba(var(--color-foreground), 0.62);
+  --elara-fg-subtle:        rgba(var(--color-foreground), 0.40);
+  --elara-fg-faint:         rgba(var(--color-foreground), 0.16);
+
+  /* ---------- Color: semantic roles ---------- */
+  --elara-primary:          rgb(var(--color-button));
+  --elara-on-primary:       rgb(var(--color-button-text));
+  --elara-secondary:        rgb(var(--color-secondary-button-text));
+  --elara-accent:           var(--elara-accent-user, #b8956a);
+
+  /* ---------- Color: status ---------- */
+  --elara-success:          #2d5c3d;
+  --elara-warning:          #8a6a1a;
+  --elara-error:            #8e2a20;
+  --elara-info:             #2c4a6b;
+
+  /* ---------- Surface & border ---------- */
+  --elara-surface-1:        rgba(var(--color-foreground), 0.02);
+  --elara-surface-2:        rgba(var(--color-foreground), 0.04);
+  --elara-surface-3:        rgba(var(--color-foreground), 0.07);
+  --elara-border-hair:      rgba(var(--color-foreground), 0.08);
+  --elara-border-soft:      rgba(var(--color-foreground), 0.16);
+  --elara-border-firm:      rgba(var(--color-foreground), 0.32);
+
+  /* ---------- Elevation ---------- */
+  --elara-shadow-1: 0 1px 2px rgba(20, 17, 14, 0.04), 0 1px 1px rgba(20, 17, 14, 0.03);
+  --elara-shadow-2: 0 4px 8px rgba(20, 17, 14, 0.04), 0 2px 4px rgba(20, 17, 14, 0.04);
+  --elara-shadow-3: 0 12px 24px rgba(20, 17, 14, 0.06), 0 4px 8px rgba(20, 17, 14, 0.04);
+  --elara-shadow-4: 0 24px 48px rgba(20, 17, 14, 0.08), 0 8px 16px rgba(20, 17, 14, 0.06);
+
+  /* ---------- Typography roles ---------- */
+  --elara-font-display:     var(--font-heading-family);
+  --elara-font-body:        var(--font-body-family);
+
+  --elara-tracking-tight:   -0.02em;
+  --elara-tracking-snug:    -0.01em;
+  --elara-tracking-normal:  0;
+  --elara-tracking-wide:    0.04em;
+  --elara-tracking-eyebrow: 0.18em;
+
+  --elara-leading-display: 1.05;
+  --elara-leading-tight:   1.15;
+  --elara-leading-snug:    1.30;
+  --elara-leading-normal:  1.55;
+  --elara-leading-loose:   1.75;
+
+  /* ---------- Spacing (8pt scale, rem at 0.1rem = 1px) ---------- */
+  --elara-space-0:    0;
+  --elara-space-1:    0.4rem;   /*   4 */
+  --elara-space-2:    0.8rem;   /*   8 */
+  --elara-space-3:    1.2rem;   /*  12 */
+  --elara-space-4:    1.6rem;   /*  16 */
+  --elara-space-5:    2.4rem;   /*  24 */
+  --elara-space-6:    3.2rem;   /*  32 */
+  --elara-space-7:    4.8rem;   /*  48 */
+  --elara-space-8:    6.4rem;   /*  64 */
+  --elara-space-9:    9.6rem;   /*  96 */
+  --elara-space-10:  12.8rem;   /* 128 */
+
+  /* ---------- Radius ---------- */
+  --elara-radius-none: 0;
+  --elara-radius-xs:   2px;
+  --elara-radius-sm:   4px;
+  --elara-radius-md:   8px;
+  --elara-radius-lg:  16px;
+  --elara-radius-pill: 999px;
+
+  /* ---------- Motion durations ---------- */
+  --elara-dur-instant: 120ms;
+  --elara-dur-fast:    240ms;
+  --elara-dur-base:    400ms;
+  --elara-dur-slow:    700ms;
+  --elara-dur-slower:  900ms;
+
+  /* ---------- Easing curves ---------- */
+  --elara-ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
+  --elara-ease-out-expo:  cubic-bezier(0.19, 1, 0.22, 1);
+  --elara-ease-in-out:    cubic-bezier(0.65, 0, 0.35, 1);
+  --elara-ease-luxury:    cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  /* ---------- Defaults for derived merchant settings ---------- */
+  --elara-density-multiplier: 1;
+  --elara-motion-multiplier: 1;
+}
+
+/* ============================================================
+   Editorial keyframes
+   ============================================================ */
+
+@keyframes elaraFadeUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 2.4rem, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes elaraFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes elaraImageReveal {
+  from { clip-path: inset(0 0 100% 0); }
+  to   { clip-path: inset(0 0 0 0); }
+}
+
+@keyframes elaraMarquee {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+
+@keyframes elaraKenBurns {
+  from { transform: scale(1); }
+  to   { transform: scale(1.08); }
+}
+
+/* ============================================================
+   Override Dawn's animation variables for editorial-luxury timing
+   Dawn defines --animation-slide-in and --animation-fade-in in
+   base.css; these later declarations win via the cascade because
+   elara-tokens.css is loaded after base.css.
+   ============================================================ */
+
+:root {
+  --animation-slide-in: elaraFadeUp var(--elara-dur-slower) var(--elara-ease-out-quart) forwards;
+  --animation-fade-in:  elaraFadeIn var(--elara-dur-slow)   var(--elara-ease-out-quart) forwards;
+}
+
+/* ============================================================
+   Editorial-density spacing utilities
+   When merchant picks "editorial" density, --elara-density-multiplier
+   scales these spacing helpers up. New sections use these helpers
+   for their padding so the density setting actually does something.
+   ============================================================ */
+
+.elara-padded-section {
+  padding-top: calc(var(--elara-space-9) * var(--elara-density-multiplier));
+  padding-bottom: calc(var(--elara-space-9) * var(--elara-density-multiplier));
+}
+
+@media screen and (max-width: 749px) {
+  .elara-padded-section {
+    padding-top: calc(var(--elara-space-7) * var(--elara-density-multiplier));
+    padding-bottom: calc(var(--elara-space-7) * var(--elara-density-multiplier));
+  }
+}
+
+/* Reduced-motion safeguard for the editorial-only effects defined
+   above. Dawn's base.css already covers its own animations. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --animation-slide-in: none;
+    --animation-fade-in:  none;
+  }
+}

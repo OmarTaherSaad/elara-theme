@@ -465,6 +465,153 @@ table:not([class]) th {
   opacity: 0.7;
 }
 
+/* ============================================================
+   Elara editorial typography
+   Additive classes layered on top of Dawn's existing h1-h6 rules.
+   Sizes multiply by --font-heading-scale / --font-body-scale so the
+   merchant Typography panel still works. Mobile values stand alone;
+   desktop values activate at min-width: 750px.
+   ============================================================ */
+
+.elara-display-xl,
+.elara-display-lg,
+.elara-h1,
+.elara-h2 {
+  font-family: var(--font-heading-family);
+  font-style: var(--font-heading-style);
+  font-weight: var(--font-heading-weight);
+  color: rgb(var(--color-foreground));
+  margin: 0;
+}
+
+.elara-display-xl {
+  font-size: calc(5.6rem * var(--font-heading-scale, 1));
+  line-height: var(--elara-leading-display);
+  letter-spacing: var(--elara-tracking-tight);
+}
+
+.elara-display-lg {
+  font-size: calc(4.8rem * var(--font-heading-scale, 1));
+  line-height: var(--elara-leading-display);
+  letter-spacing: var(--elara-tracking-tight);
+}
+
+.elara-h1 {
+  font-size: calc(3.6rem * var(--font-heading-scale, 1));
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+}
+
+.elara-h2 {
+  font-size: calc(2.8rem * var(--font-heading-scale, 1));
+  line-height: var(--elara-leading-tight);
+  letter-spacing: var(--elara-tracking-snug);
+}
+
+.elara-h3 {
+  font-family: var(--font-heading-family);
+  font-weight: 500;
+  font-size: calc(2.2rem * var(--font-heading-scale, 1));
+  line-height: var(--elara-leading-snug);
+  margin: 0;
+  color: rgb(var(--color-foreground));
+}
+
+.elara-h4 {
+  font-family: var(--font-heading-family);
+  font-weight: 500;
+  font-size: calc(1.8rem * var(--font-heading-scale, 1));
+  line-height: var(--elara-leading-snug);
+  margin: 0;
+  color: rgb(var(--color-foreground));
+}
+
+.elara-h5 {
+  font-family: var(--font-body-family);
+  font-weight: 600;
+  font-size: 1.5rem;
+  line-height: 1.4;
+  margin: 0;
+  color: rgb(var(--color-foreground));
+}
+
+.elara-h6 {
+  font-family: var(--font-body-family);
+  font-weight: 600;
+  font-size: 1.3rem;
+  line-height: 1.45;
+  letter-spacing: 0.02em;
+  margin: 0;
+  color: rgb(var(--color-foreground));
+}
+
+.elara-eyebrow {
+  font-family: var(--font-body-family);
+  font-weight: 500;
+  font-size: 1.1rem;
+  line-height: 1.4;
+  letter-spacing: var(--elara-tracking-eyebrow);
+  text-transform: uppercase;
+  color: rgba(var(--color-foreground), 0.72);
+  margin: 0 0 var(--elara-space-3);
+}
+
+.elara-body-lg {
+  font-family: var(--font-body-family);
+  font-size: 1.7rem;
+  line-height: 1.65;
+  color: rgba(var(--color-foreground), 0.85);
+}
+
+.elara-body {
+  font-family: var(--font-body-family);
+  font-size: 1.5rem;
+  line-height: 1.7;
+  color: rgba(var(--color-foreground), 0.85);
+}
+
+.elara-body-sm {
+  font-family: var(--font-body-family);
+  font-size: 1.3rem;
+  line-height: 1.65;
+  color: rgba(var(--color-foreground), 0.85);
+}
+
+.elara-caption {
+  font-family: var(--font-body-family);
+  font-size: 1.1rem;
+  line-height: 1.55;
+  letter-spacing: var(--elara-tracking-wide);
+  color: rgba(var(--color-foreground), 0.72);
+}
+
+@media screen and (min-width: 750px) {
+  .elara-display-xl { font-size: calc(9.6rem * var(--font-heading-scale, 1)); }
+  .elara-display-lg { font-size: calc(7.2rem * var(--font-heading-scale, 1)); }
+  .elara-h1         { font-size: calc(5.6rem * var(--font-heading-scale, 1)); }
+  .elara-h2         { font-size: calc(4.0rem * var(--font-heading-scale, 1)); }
+  .elara-h3         { font-size: calc(2.8rem * var(--font-heading-scale, 1)); }
+  .elara-h4         { font-size: calc(2.0rem * var(--font-heading-scale, 1)); }
+  .elara-h5         { font-size: 1.6rem; }
+  .elara-h6         { font-size: 1.4rem; }
+  .elara-eyebrow    { font-size: 1.2rem; }
+  .elara-body-lg    { font-size: 1.8rem; }
+  .elara-body       { font-size: 1.6rem; }
+  .elara-body-sm    { font-size: 1.4rem; }
+  .elara-caption    { font-size: 1.2rem; }
+}
+
+/* Drop-cap utility for editorial article first paragraph. */
+.elara-dropcap::first-letter {
+  font-family: var(--font-heading-family);
+  font-weight: var(--font-heading-weight);
+  float: left;
+  font-size: 6.4rem;
+  line-height: 0.85;
+  margin: 0.6rem 0.8rem 0 0;
+  color: rgb(var(--color-foreground));
+}
+
 a:empty,
 ul:empty,
 dl:empty,
@@ -1300,13 +1447,24 @@ button.shopify-payment-button__button--unbranded {
 .button-label,
 .shopify-challenge__button,
 .customer button {
-  font-size: 1.5rem;
-  letter-spacing: 0.1rem;
+  font-family: var(--font-body-family);
+  font-weight: 500;
+  font-size: 1.2rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
   line-height: calc(1 + 0.2 / var(--font-body-scale));
 }
 
+.button,
+.shopify-challenge__button,
+.customer button {
+  padding: 0 3.2rem;
+  transition: color var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, cubic-bezier(0.165, 0.84, 0.44, 1)),
+              background-color var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, cubic-bezier(0.165, 0.84, 0.44, 1));
+}
+
 .button--tertiary {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   padding: 1rem 1.5rem;
   min-width: calc(9rem + var(--buttons-border-width) * 2);
   min-height: calc(3.5rem + var(--buttons-border-width) * 2);
@@ -1314,6 +1472,46 @@ button.shopify-payment-button__button--unbranded {
 
 .button--small {
   padding: 1.2rem 2.6rem;
+}
+
+/* Editorial link-style button — tertiary variant beyond Dawn's default trio.
+   Used inline in editorial sections where a subtle underlined call-to-action
+   is wanted instead of a filled button. */
+.button--link,
+.elara-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  min-width: 0;
+  min-height: 0;
+  font-family: var(--font-body-family);
+  font-weight: 500;
+  font-size: 1.2rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgb(var(--color-foreground));
+  text-decoration: underline;
+  text-underline-offset: 0.3rem;
+  text-decoration-thickness: 1px;
+  cursor: pointer;
+  transition: text-underline-offset var(--elara-dur-fast, 240ms) var(--elara-ease-out-quart, cubic-bezier(0.165, 0.84, 0.44, 1)),
+              text-decoration-thickness var(--elara-dur-fast, 240ms) var(--elara-ease-out-quart, cubic-bezier(0.165, 0.84, 0.44, 1)),
+              color var(--elara-dur-fast, 240ms) var(--elara-ease-out-quart, cubic-bezier(0.165, 0.84, 0.44, 1));
+}
+
+.button--link:hover,
+.elara-link:hover {
+  text-underline-offset: 0.5rem;
+  text-decoration-thickness: 2px;
+  color: var(--elara-accent, rgb(var(--color-foreground)));
+}
+
+.button--link::before,
+.button--link::after {
+  display: none;
 }
 
 /* Shopify Accelerated Checkout */
@@ -3289,7 +3487,7 @@ details-disclosure > details {
 
   .scroll-trigger:not(.scroll-trigger--offscreen).animate--slide-in {
     animation: var(--animation-slide-in);
-    animation-delay: calc(var(--animation-order) * 75ms);
+    animation-delay: calc(var(--animation-order) * 120ms);
   }
 
   .scroll-trigger.scroll-trigger--design-mode.animate--fade-in,

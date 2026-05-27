@@ -94,6 +94,137 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  {%- if section.settings.transparent_on_hero -%}
+    /* ---- Elara transparent-on-hero header ---- */
+    body.has-hero-template .section-header:not(.scrolled-past-header) sticky-header,
+    body.has-hero-template .section-header:not(.scrolled-past-header) .header-wrapper {
+      background: transparent;
+      border-bottom-color: transparent;
+    }
+
+    body.has-hero-template .section-header sticky-header,
+    body.has-hero-template .section-header .header-wrapper {
+      transition: background-color var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, ease),
+                  color var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, ease),
+                  border-color var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, ease);
+    }
+
+    body.has-hero-template:not(.scrolled-past-header) .section-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 4;
+    }
+
+    {%- if section.settings.hero_text_color == 'light' -%}
+      body.has-hero-template:not(.scrolled-past-header) .header,
+      body.has-hero-template:not(.scrolled-past-header) .header *:not(.cart-count-bubble):not(.cart-count-bubble *) {
+        color: #ffffff;
+      }
+
+      body.has-hero-template:not(.scrolled-past-header) .header svg {
+        color: #ffffff;
+      }
+
+      body.has-hero-template:not(.scrolled-past-header) .header__heading-logo {
+        filter: brightness(0) invert(1);
+      }
+    {%- else -%}
+      body.has-hero-template:not(.scrolled-past-header) .header,
+      body.has-hero-template:not(.scrolled-past-header) .header *:not(.cart-count-bubble):not(.cart-count-bubble *) {
+        color: #1a1714;
+      }
+    {%- endif -%}
+
+    /* The body's main element gets pushed under the transparent header. */
+    body.has-hero-template:not(.scrolled-past-header) .header-wrapper {
+      position: absolute;
+      top: 0;
+      width: 100%;
+    }
+
+    /* Once scrolled past, restore normal sticky behavior. */
+    body.has-hero-template.scrolled-past-header .section-header {
+      position: sticky;
+    }
+  {%- endif -%}
+
+  /* ---- Elara editorial mega-menu (2-col grid with promo card) ---- */
+  .mega-menu__content.mega-menu__content--with-promo {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    column-gap: var(--elara-space-7, 4.8rem);
+    align-items: start;
+    max-width: var(--page-width);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+
+  /* When the content is a grid (promo present), the inner page-width list
+     becomes a regular grid child — drop its max-width so it fills its column. */
+  .mega-menu__content--with-promo .mega-menu__list.page-width {
+    max-width: none;
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 0;
+    margin-right: 0;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .mega-menu__promo {
+    margin: 0;
+  }
+
+  .mega-menu__promo-image {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    margin-bottom: var(--elara-space-4, 1.6rem);
+  }
+
+  .mega-menu__promo-eyebrow {
+    font-family: var(--font-body-family);
+    font-weight: 500;
+    font-size: 1.1rem;
+    line-height: 1.4;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(var(--color-foreground), 0.7);
+    margin: 0 0 var(--elara-space-2, 0.8rem);
+  }
+
+  .mega-menu__promo-heading {
+    font-family: var(--font-heading-family);
+    font-weight: var(--font-heading-weight);
+    font-size: 2.2rem;
+    line-height: 1.2;
+    margin: 0 0 var(--elara-space-3, 1.2rem);
+    color: rgb(var(--color-foreground));
+  }
+
+  .mega-menu__promo-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-body-family);
+    font-weight: 500;
+    font-size: 1.2rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-underline-offset: 0.3rem;
+    color: rgb(var(--color-foreground));
+    transition: text-underline-offset 240ms cubic-bezier(0.165, 0.84, 0.44, 1);
+  }
+
+  .mega-menu__promo-cta:hover {
+    text-underline-offset: 0.5rem;
+  }
 {%- endstyle -%}
 
 <script src="{{ 'cart-notification.js' | asset_url }}" defer="defer"></script>
@@ -551,6 +682,27 @@
     },
     {
       "type": "header",
+      "content": "Hero overlay"
+    },
+    {
+      "type": "checkbox",
+      "id": "transparent_on_hero",
+      "default": true,
+      "label": "Overlay header on hero sections",
+      "info": "Header becomes transparent when the first section is a hero (image banner, slideshow, video, or lookbook). Snaps to solid on scroll."
+    },
+    {
+      "type": "select",
+      "id": "hero_text_color",
+      "options": [
+        { "value": "light", "label": "Light (for dark hero imagery)" },
+        { "value": "dark",  "label": "Dark (for light hero imagery)" }
+      ],
+      "default": "light",
+      "label": "Overlay text color"
+    },
+    {
+      "type": "header",
       "content": "t:sections.header.settings.header__1.content"
     },
     {
@@ -632,6 +784,50 @@
   "blocks": [
     {
       "type": "@app"
+    },
+    {
+      "type": "promo_card",
+      "name": "Mega-menu promo",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Shown in the mega-menu under the matching parent menu link. Only renders when the desktop menu type is set to Mega."
+        },
+        {
+          "type": "text",
+          "id": "parent_menu_item",
+          "label": "Parent menu item title",
+          "info": "Exact title of the top-level menu link this promo card belongs under (case-sensitive)."
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "eyebrow",
+          "label": "Eyebrow"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Explore the edit"
+        },
+        {
+          "type": "text",
+          "id": "cta_label",
+          "label": "Link label",
+          "default": "Shop now"
+        },
+        {
+          "type": "url",
+          "id": "cta_link",
+          "label": "Link"
+        }
+      ]
     }
   ]
 }

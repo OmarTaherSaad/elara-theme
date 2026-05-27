@@ -25,9 +25,18 @@
                 </span>
                 {{- 'icon-caret.svg' | inline_asset_content -}}
               </summary>
+              {%- liquid
+                assign matching_promo = null
+                for promo_block in section.blocks
+                  if promo_block.type == 'promo_card' and promo_block.settings.parent_menu_item == link.title
+                    assign matching_promo = promo_block
+                    break
+                  endif
+                endfor
+              -%}
               <div
                 id="MegaMenu-Content-{{ forloop.index }}"
-                class="mega-menu__content color-{{ section.settings.menu_color_scheme }} gradient motion-reduce global-settings-popup"
+                class="mega-menu__content color-{{ section.settings.menu_color_scheme }} gradient motion-reduce global-settings-popup{% if matching_promo %} mega-menu__content--with-promo{% endif %}"
                 tabindex="-1"
               >
                 <ul
@@ -67,6 +76,44 @@
                     </li>
                   {%- endfor -%}
                 </ul>
+
+                {%- if matching_promo -%}
+                  <aside class="mega-menu__promo" {{ matching_promo.shopify_attributes }}>
+                    {%- if matching_promo.settings.image != blank -%}
+                      {%- assign promo_img = matching_promo.settings.image -%}
+                      <a
+                        href="{{ matching_promo.settings.cta_link | default: '#' }}"
+                        class="mega-menu__promo-image-link"
+                        tabindex="-1"
+                        aria-hidden="true"
+                      >
+                        {{
+                          promo_img
+                          | image_url: width: 600
+                          | image_tag:
+                            loading: 'lazy',
+                            class: 'mega-menu__promo-image',
+                            width: promo_img.width,
+                            height: promo_img.height,
+                            sizes: '(min-width: 990px) 320px, 100vw',
+                            widths: '320, 480, 640, 960'
+                        }}
+                      </a>
+                    {%- endif -%}
+                    {%- if matching_promo.settings.eyebrow != blank -%}
+                      <p class="mega-menu__promo-eyebrow">{{ matching_promo.settings.eyebrow | escape }}</p>
+                    {%- endif -%}
+                    {%- if matching_promo.settings.heading != blank -%}
+                      <p class="mega-menu__promo-heading">{{ matching_promo.settings.heading | escape }}</p>
+                    {%- endif -%}
+                    {%- if matching_promo.settings.cta_label != blank and matching_promo.settings.cta_link != blank -%}
+                      <a href="{{ matching_promo.settings.cta_link }}" class="mega-menu__promo-cta">
+                        {{ matching_promo.settings.cta_label | escape }}
+                        <span aria-hidden="true">&rarr;</span>
+                      </a>
+                    {%- endif -%}
+                  </aside>
+                {%- endif -%}
               </div>
             </details>
           </header-menu>

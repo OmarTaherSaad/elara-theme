@@ -1,9 +1,9 @@
 [
   {
     "name": "theme_info",
-    "theme_name": "Dawn",
-    "theme_version": "15.4.0",
-    "theme_author": "Shopify",
+    "theme_name": "Elara",
+    "theme_version": "1.0.0",
+    "theme_author": "Omar Taher Saad",
     "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes",
     "theme_support_url": "https://support.shopify.com/"
   },
@@ -44,7 +44,7 @@
             "type": "color",
             "id": "background",
             "label": "t:settings_schema.colors.settings.background.label",
-            "default": "#FFFFFF"
+            "default": "#FBF9F6"
           },
           {
             "type": "color_background",
@@ -56,31 +56,31 @@
             "type": "color",
             "id": "text",
             "label": "t:settings_schema.colors.settings.text.label",
-            "default": "#121212"
+            "default": "#1A1714"
           },
           {
             "type": "color",
             "id": "button",
             "label": "t:settings_schema.colors.settings.button_background.label",
-            "default": "#121212"
+            "default": "#1A1714"
           },
           {
             "type": "color",
             "id": "button_label",
             "label": "t:settings_schema.colors.settings.button_label.label",
-            "default": "#FFFFFF"
+            "default": "#FBF9F6"
           },
           {
             "type": "color",
             "id": "secondary_button_label",
             "label": "t:settings_schema.colors.settings.secondary_button_label.label",
-            "default": "#121212"
+            "default": "#1A1714"
           },
           {
             "type": "color",
             "id": "shadow",
             "label": "t:settings_schema.colors.settings.shadow.label",
-            "default": "#121212"
+            "default": "#1A1714"
           }
         ],
         "role": {
@@ -111,7 +111,7 @@
       {
         "type": "font_picker",
         "id": "type_header_font",
-        "default": "assistant_n4",
+        "default": "playfair_display_n4",
         "label": "t:settings_schema.typography.settings.type_header_font.label"
       },
       {
@@ -122,7 +122,7 @@
         "step": 5,
         "unit": "%",
         "label": "t:settings_schema.typography.settings.heading_scale.label",
-        "default": 100
+        "default": 110
       },
       {
         "type": "header",
@@ -131,7 +131,7 @@
       {
         "type": "font_picker",
         "id": "type_body_font",
-        "default": "assistant_n4",
+        "default": "inter_n4",
         "label": "t:settings_schema.typography.settings.type_body_font.label"
       },
       {
@@ -228,6 +228,85 @@
         "default": "default",
         "label": "t:settings_schema.animations.settings.animations_hover_elements.label",
         "info": "t:settings_schema.animations.settings.animations_hover_elements.info"
+      }
+    ]
+  },
+  {
+    "name": "t:settings_schema.elara.name",
+    "settings": [
+      {
+        "type": "header",
+        "content": "t:settings_schema.elara.settings.header__motion.content"
+      },
+      {
+        "type": "select",
+        "id": "elara_motion_intensity",
+        "options": [
+          { "value": "subtle",   "label": "t:settings_schema.elara.settings.motion_intensity.options__1.label" },
+          { "value": "balanced", "label": "t:settings_schema.elara.settings.motion_intensity.options__2.label" },
+          { "value": "rich",     "label": "t:settings_schema.elara.settings.motion_intensity.options__3.label" }
+        ],
+        "default": "balanced",
+        "label": "t:settings_schema.elara.settings.motion_intensity.label",
+        "info": "t:settings_schema.elara.settings.motion_intensity.info"
+      },
+      {
+        "type": "checkbox",
+        "id": "elara_image_reveal",
+        "default": true,
+        "label": "t:settings_schema.elara.settings.image_reveal.label",
+        "info": "t:settings_schema.elara.settings.image_reveal.info"
+      },
+      {
+        "type": "checkbox",
+        "id": "elara_view_transitions",
+        "default": true,
+        "label": "t:settings_schema.elara.settings.view_transitions.label",
+        "info": "t:settings_schema.elara.settings.view_transitions.info"
+      },
+      {
+        "type": "header",
+        "content": "t:settings_schema.elara.settings.header__type_pairing.content"
+      },
+      {
+        "type": "select",
+        "id": "elara_type_pairing",
+        "options": [
+          { "value": "playfair_inter",       "label": "t:settings_schema.elara.settings.type_pairing.options__1.label" },
+          { "value": "cormorant_montserrat", "label": "t:settings_schema.elara.settings.type_pairing.options__2.label" },
+          { "value": "libre_caslon_work",    "label": "t:settings_schema.elara.settings.type_pairing.options__3.label" },
+          { "value": "custom",               "label": "t:settings_schema.elara.settings.type_pairing.options__4.label" }
+        ],
+        "default": "playfair_inter",
+        "label": "t:settings_schema.elara.settings.type_pairing.label",
+        "info": "t:settings_schema.elara.settings.type_pairing.info"
+      },
+      {
+        "type": "header",
+        "content": "t:settings_schema.elara.settings.header__layout.content"
+      },
+      {
+        "type": "select",
+        "id": "elara_density",
+        "options": [
+          { "value": "editorial", "label": "t:settings_schema.elara.settings.density.options__1.label" },
+          { "value": "balanced",  "label": "t:settings_schema.elara.settings.density.options__2.label" },
+          { "value": "compact",   "label": "t:settings_schema.elara.settings.density.options__3.label" }
+        ],
+        "default": "editorial",
+        "label": "t:settings_schema.elara.settings.density.label",
+        "info": "t:settings_schema.elara.settings.density.info"
+      },
+      {
+        "type": "header",
+        "content": "t:settings_schema.elara.settings.header__accent.content"
+      },
+      {
+        "type": "color",
+        "id": "elara_accent_color",
+        "default": "#B8956A",
+        "label": "t:settings_schema.elara.settings.accent_color.label",
+        "info": "t:settings_schema.elara.settings.accent_color.info"
       }
     ]
   },
