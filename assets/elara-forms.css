@@ -1,0 +1,255 @@
+/* ============================================================
+   Elara form & input editorial layer
+   Loaded globally from layout/theme.liquid. Replaces Dawn's
+   default boxed inputs with a hairline bottom-border treatment
+   that reads as editorial across every form on the site.
+   ============================================================ */
+
+/* ---- Base field reset ---- */
+.field,
+.customer .field,
+.select {
+  --inputs-radius: 0 !important;
+  --inputs-border-opacity: 0 !important;
+  --inputs-shadow-opacity: 0 !important;
+}
+
+.field__input,
+.select__select,
+.customer .field input[type="text"],
+.customer .field input[type="email"],
+.customer .field input[type="password"],
+.customer .field input[type="tel"],
+.customer .field input[type="search"],
+textarea.field__input,
+textarea.text-area {
+  background-color: transparent;
+  border: 0;
+  border-bottom: 1px solid rgba(var(--color-foreground), 0.22);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 1.8rem 0 1rem;
+  font-family: var(--font-body-family);
+  font-size: 1.5rem;
+  letter-spacing: 0.01em;
+  line-height: 1.5;
+  color: rgb(var(--color-foreground));
+  transition: border-color var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, ease);
+  width: 100%;
+}
+
+.field__input:hover,
+.customer .field input:hover {
+  border-bottom-color: rgba(var(--color-foreground), 0.55);
+  box-shadow: none;
+}
+
+.field__input:focus,
+.field__input:focus-visible,
+.customer .field input:focus,
+.customer .field input:focus-visible,
+textarea.field__input:focus,
+textarea.text-area:focus {
+  outline: none;
+  border-bottom-color: rgb(var(--color-foreground));
+  border-bottom-width: 1px;
+  box-shadow: 0 1px 0 0 rgb(var(--color-foreground));
+  /* Doubles the bottom border weight without adding a layout-affecting border. */
+}
+
+/* Disabled / invalid */
+.field__input:disabled {
+  opacity: 0.5;
+}
+
+.field__input[aria-invalid='true'],
+.field--error .field__input {
+  border-bottom-color: var(--elara-error, #8e2a20);
+  box-shadow: 0 1px 0 0 var(--elara-error, #8e2a20);
+}
+
+/* ---- Floating label ---- */
+.field__label,
+.customer .field label {
+  font-family: var(--font-body-family);
+  font-size: 1.4rem;
+  letter-spacing: 0.04em;
+  color: rgba(var(--color-foreground), 0.55);
+  background-color: transparent !important;
+  padding: 0 !important;
+  left: 0 !important;
+  top: 1.8rem !important;
+  pointer-events: none;
+  transition: top var(--elara-dur-fast, 240ms) var(--elara-ease-out-quart, ease),
+              font-size var(--elara-dur-fast, 240ms) var(--elara-ease-out-quart, ease),
+              letter-spacing var(--elara-dur-fast, 240ms) var(--elara-ease-out-quart, ease),
+              color var(--elara-dur-fast, 240ms) ease;
+}
+
+/* When input is focused or has content, label scales up into eyebrow position */
+.field__input:focus + .field__label,
+.field__input:not(:placeholder-shown) + .field__label,
+.field__input:-webkit-autofill + .field__label,
+.customer .field input:focus + label,
+.customer .field input:not(:placeholder-shown) + label,
+.customer .field input:-webkit-autofill + label {
+  top: 0 !important;
+  font-size: 1.1rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(var(--color-foreground), 0.7);
+}
+
+/* Remove Dawn's left/right padding compensation for the floating label */
+.field {
+  padding: 1.4rem 0 0;
+}
+
+/* ---- Select / dropdown ---- */
+.select {
+  position: relative;
+}
+
+.select__select {
+  padding: 1.8rem 3rem 1rem 0;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: none;
+}
+
+.select .svg-wrapper,
+.select::after {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* ---- Textarea ---- */
+textarea.field__input,
+textarea.text-area {
+  resize: vertical;
+  min-height: 8rem;
+  padding-top: 2rem;
+  padding-bottom: 1.2rem;
+}
+
+/* ---- Form layout containers ---- */
+.contact .field,
+.contact .select,
+.newsletter-form__field-wrapper .field,
+.customer .field {
+  margin: 0 0 var(--elara-space-5, 2.4rem);
+}
+
+/* ---- Newsletter form (footer + newsletter section) ---- */
+.newsletter-form {
+  width: 100%;
+  max-width: 56rem;
+}
+
+.newsletter-form__field-wrapper {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--elara-space-3, 1.2rem);
+  border-bottom: 1px solid rgba(var(--color-foreground), 0.22);
+  padding-bottom: 0;
+  position: relative;
+}
+
+.newsletter-form__field-wrapper .field {
+  flex: 1 1 auto;
+  margin: 0;
+  border: 0;
+}
+
+.newsletter-form__field-wrapper .field__input {
+  border: 0;
+  box-shadow: none;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.newsletter-form__field-wrapper .field__input:focus {
+  box-shadow: none;
+}
+
+.newsletter-form__field-wrapper .field__input + .field__label {
+  left: 0 !important;
+}
+
+.newsletter-form__button {
+  flex: 0 0 auto;
+  width: auto;
+  min-height: auto;
+  padding: 1rem 0;
+  background: transparent;
+  color: rgb(var(--color-foreground));
+  border: 0;
+  font-family: var(--font-body-family);
+  font-weight: 500;
+  font-size: 1.2rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity var(--elara-dur-fast, 240ms) ease;
+}
+
+.newsletter-form__button:hover {
+  opacity: 0.65;
+}
+
+.newsletter-form__button::before,
+.newsletter-form__button::after {
+  display: none;
+}
+
+.newsletter-form__button .svg-wrapper {
+  display: inline-flex;
+  align-items: center;
+}
+
+.newsletter-form__button svg {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+
+/* When the newsletter form successfully posts */
+.newsletter-form__message {
+  font-family: var(--font-body-family);
+  font-size: 1.3rem;
+  font-style: italic;
+  color: rgba(var(--color-foreground), 0.75);
+  margin-top: var(--elara-space-3, 1.2rem);
+}
+
+/* ---- Inline form errors / success ---- */
+.form__message,
+.form-status {
+  font-family: var(--font-body-family);
+  font-size: 1.3rem;
+  letter-spacing: 0.02em;
+}
+
+/* ---- Header search overlay polish ---- */
+.header__search .field__input,
+predictive-search .search__input.field__input {
+  font-size: 1.8rem;
+  padding-top: 2.4rem;
+  padding-bottom: 1.4rem;
+}
+
+@media screen and (min-width: 750px) {
+  .header__search .field__input,
+  predictive-search .search__input.field__input {
+    font-size: 2.2rem;
+  }
+}
+
+/* ---- Search field in header / mobile ---- */
+.search__input + .search__button {
+  background: transparent;
+  border: 0;
+}

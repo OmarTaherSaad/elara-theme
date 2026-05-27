@@ -1,0 +1,209 @@
+/* ============================================================
+   Elara customer-account editorial layer
+   Refines Dawn's stock customer.css output (login, register,
+   account, addresses, order detail, reset/activate password)
+   into editorial-luxury layouts: narrow centered column, eyebrow
+   + serif display heading, refined link affordances.
+   ============================================================ */
+
+.customer {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: var(--elara-space-9, 9.6rem) var(--elara-space-5, 2.4rem);
+}
+
+.customer.account,
+.customer.order {
+  max-width: 96rem;
+}
+
+/* Headings */
+.customer h1 {
+  font-family: var(--font-heading-family);
+  font-weight: var(--font-heading-weight);
+  font-size: clamp(3.6rem, 5vw, 5.6rem);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  margin: 0 0 var(--elara-space-5, 2.4rem);
+  color: rgb(var(--color-foreground));
+}
+
+.customer h2,
+.customer .h2 {
+  font-family: var(--font-heading-family);
+  font-weight: var(--font-heading-weight);
+  font-size: 2.4rem;
+  line-height: 1.2;
+  letter-spacing: -0.005em;
+  margin: 0 0 var(--elara-space-3, 1.2rem);
+  color: rgb(var(--color-foreground));
+}
+
+@media screen and (min-width: 750px) {
+  .customer h2,
+  .customer .h2 {
+    font-size: 2.8rem;
+  }
+}
+
+.customer h3 {
+  font-family: var(--font-heading-family);
+  font-weight: 500;
+  font-size: 1.8rem;
+  line-height: 1.3;
+  margin: 0 0 var(--elara-space-3, 1.2rem);
+}
+
+/* Eyebrow above each major heading via ::before with a Liquid-set data-attr */
+.customer h1::before,
+.customer .login h1::before {
+  content: 'Account';
+  display: block;
+  font-family: var(--font-body-family);
+  font-weight: 500;
+  font-size: 1.1rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(var(--color-foreground), 0.6);
+  margin-bottom: var(--elara-space-3, 1.2rem);
+}
+
+.customer.register h1::before { content: 'Become a member'; }
+.customer.login h1::before    { content: 'Sign in'; }
+.customer.reset h1::before    { content: 'Reset password'; }
+.customer.activate h1::before { content: 'Activate account'; }
+.customer.account h1::before  { content: 'Your account'; }
+.customer.order h1::before    { content: 'Order detail'; }
+.customer.addresses h1::before { content: 'Saved addresses'; }
+
+/* Recover password section gets its own eyebrow tone */
+.customer.login h1#recover::before { content: 'Reset password'; }
+
+/* Paragraphs & supporting copy */
+.customer p {
+  font-family: var(--font-body-family);
+  font-size: 1.5rem;
+  line-height: 1.65;
+  color: rgba(var(--color-foreground), 0.85);
+  margin: 0 0 var(--elara-space-4, 1.6rem);
+}
+
+/* Buttons inside customer forms — full-width, editorial */
+.customer button:not(.svg-wrapper):not(.skip-to-content-link),
+.customer .button {
+  width: 100%;
+  min-height: 5.6rem;
+  margin-top: var(--elara-space-3, 1.2rem);
+}
+
+/* Link rows below the form (cancel, create account, forgot password) */
+.customer a:not(.button) {
+  font-family: var(--font-body-family);
+  font-size: 1.3rem;
+  letter-spacing: 0.04em;
+  color: rgb(var(--color-foreground));
+  text-decoration: underline;
+  text-underline-offset: 0.3rem;
+  text-decoration-thickness: 1px;
+  transition: text-underline-offset var(--elara-dur-fast, 240ms) ease;
+}
+
+.customer a:not(.button):hover {
+  text-underline-offset: 0.5rem;
+  text-decoration-thickness: 2px;
+}
+
+/* Sectional divider between recover-password block and login block */
+.customer h1#login {
+  margin-top: var(--elara-space-9, 9.6rem);
+  padding-top: var(--elara-space-7, 4.8rem);
+  border-top: 1px solid var(--elara-border-hair);
+}
+
+/* Account dashboard tables (orders list, addresses list) */
+.customer table,
+.customer .order-history {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body-family);
+  font-size: 1.4rem;
+}
+
+.customer th {
+  font-weight: 500;
+  font-size: 1.1rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(var(--color-foreground), 0.6);
+  text-align: left;
+  padding: var(--elara-space-3, 1.2rem) 0;
+  border-bottom: 1px solid rgba(var(--color-foreground), 0.18);
+}
+
+.customer td {
+  padding: var(--elara-space-4, 1.6rem) 0;
+  border-bottom: 1px solid var(--elara-border-hair);
+}
+
+/* Address list cards */
+.customer.addresses li {
+  list-style: none;
+  padding: var(--elara-space-5, 2.4rem) 0;
+  border-top: 1px solid var(--elara-border-hair);
+}
+
+.customer.addresses li:last-child {
+  border-bottom: 1px solid var(--elara-border-hair);
+}
+
+/* Order details */
+.customer.order .order-info {
+  margin-bottom: var(--elara-space-6, 3.2rem);
+  padding-bottom: var(--elara-space-5, 2.4rem);
+  border-bottom: 1px solid var(--elara-border-hair);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--elara-space-5, 2.4rem);
+}
+
+.customer.order .order-info > * {
+  font-family: var(--font-body-family);
+  font-size: 1.3rem;
+  letter-spacing: 0.04em;
+  color: rgba(var(--color-foreground), 0.7);
+}
+
+/* Form messages (success / error) */
+.customer .form__message,
+.customer .form-status,
+.customer .errors {
+  font-family: var(--font-body-family);
+  font-size: 1.3rem;
+  margin: var(--elara-space-3, 1.2rem) 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: rgba(var(--color-foreground), 0.85);
+}
+
+.customer .errors {
+  color: var(--elara-error, #8e2a20);
+}
+
+/* Hide the floating account icon (Shop Pay button etc.) sticking out on
+   login pages so they don't compete with the form. */
+.customer shop-login-button-following-prompt {
+  margin-top: var(--elara-space-4, 1.6rem);
+  display: block;
+}
+
+@media screen and (max-width: 749px) {
+  .customer {
+    padding: var(--elara-space-7, 4.8rem) var(--elara-space-4, 1.6rem);
+  }
+
+  .customer h1#login {
+    margin-top: var(--elara-space-7, 4.8rem);
+    padding-top: var(--elara-space-5, 2.4rem);
+  }
+}
