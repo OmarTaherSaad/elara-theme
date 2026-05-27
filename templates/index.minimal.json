@@ -9,7 +9,7 @@
       },
       "block_order": ["heading", "text", "button"],
       "settings": {
-        "image_overlay_opacity": 25,
+        "image_overlay_opacity": 30,
         "image_height": "large",
         "desktop_content_position": "middle-center",
         "show_text_box": false,

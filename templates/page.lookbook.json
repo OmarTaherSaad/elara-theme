@@ -8,7 +8,7 @@
       },
       "block_order": ["heading", "text"],
       "settings": {
-        "image_overlay_opacity": 25,
+        "image_overlay_opacity": 30,
         "image_height": "large",
         "desktop_content_position": "bottom-left",
         "show_text_box": false,

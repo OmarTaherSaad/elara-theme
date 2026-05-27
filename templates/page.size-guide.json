@@ -37,20 +37,10 @@
       }
     },
     "size_table": {
-      "type": "rich-text",
-      "blocks": {
-        "heading": { "type": "heading", "settings": { "heading": "Womenswear", "heading_size": "h3" } },
-        "text": {
-          "type": "text",
-          "settings": {
-            "text": "<table><thead><tr><th>Size</th><th>Bust (cm)</th><th>Waist (cm)</th><th>Hip (cm)</th></tr></thead><tbody><tr><td>XS</td><td>78–82</td><td>60–64</td><td>86–90</td></tr><tr><td>S</td><td>82–86</td><td>64–68</td><td>90–94</td></tr><tr><td>M</td><td>86–92</td><td>68–74</td><td>94–100</td></tr><tr><td>L</td><td>92–98</td><td>74–80</td><td>100–106</td></tr><tr><td>XL</td><td>98–104</td><td>80–86</td><td>106–112</td></tr></tbody></table>"
-          }
-        }
-      },
-      "block_order": ["heading", "text"],
+      "type": "custom-liquid",
       "settings": {
+        "custom_liquid": "<div class=\"page-width\" style=\"max-width:80rem;margin:0 auto;\"><h3 class=\"elara-h3\" style=\"margin:0 0 2.4rem;\">Womenswear</h3><table class=\"elara-size-table\" style=\"width:100%;border-collapse:collapse;font-family:var(--font-body-family);font-size:1.4rem;\"><thead><tr style=\"text-align:left;border-bottom:1px solid rgba(var(--color-foreground),0.15);\"><th style=\"padding:1.2rem 0.8rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;font-size:1.1rem;\">Size</th><th style=\"padding:1.2rem 0.8rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;font-size:1.1rem;\">Bust (cm)</th><th style=\"padding:1.2rem 0.8rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;font-size:1.1rem;\">Waist (cm)</th><th style=\"padding:1.2rem 0.8rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;font-size:1.1rem;\">Hip (cm)</th></tr></thead><tbody><tr style=\"border-bottom:1px solid rgba(var(--color-foreground),0.08);\"><td style=\"padding:1.2rem 0.8rem;\">XS</td><td style=\"padding:1.2rem 0.8rem;\">78–82</td><td style=\"padding:1.2rem 0.8rem;\">60–64</td><td style=\"padding:1.2rem 0.8rem;\">86–90</td></tr><tr style=\"border-bottom:1px solid rgba(var(--color-foreground),0.08);\"><td style=\"padding:1.2rem 0.8rem;\">S</td><td style=\"padding:1.2rem 0.8rem;\">82–86</td><td style=\"padding:1.2rem 0.8rem;\">64–68</td><td style=\"padding:1.2rem 0.8rem;\">90–94</td></tr><tr style=\"border-bottom:1px solid rgba(var(--color-foreground),0.08);\"><td style=\"padding:1.2rem 0.8rem;\">M</td><td style=\"padding:1.2rem 0.8rem;\">86–92</td><td style=\"padding:1.2rem 0.8rem;\">68–74</td><td style=\"padding:1.2rem 0.8rem;\">94–100</td></tr><tr style=\"border-bottom:1px solid rgba(var(--color-foreground),0.08);\"><td style=\"padding:1.2rem 0.8rem;\">L</td><td style=\"padding:1.2rem 0.8rem;\">92–98</td><td style=\"padding:1.2rem 0.8rem;\">74–80</td><td style=\"padding:1.2rem 0.8rem;\">100–106</td></tr><tr><td style=\"padding:1.2rem 0.8rem;\">XL</td><td style=\"padding:1.2rem 0.8rem;\">98–104</td><td style=\"padding:1.2rem 0.8rem;\">80–86</td><td style=\"padding:1.2rem 0.8rem;\">106–112</td></tr></tbody></table></div>",
         "color_scheme": "scheme-1",
-        "full_width": false,
         "padding_top": 16,
         "padding_bottom": 48
       }
