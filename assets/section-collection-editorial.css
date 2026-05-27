@@ -1,0 +1,217 @@
+/* ============================================================
+   Elara editorial collection grid
+   Layered on top of Dawn's template-collection.css and
+   component-facets.css. Adds the editorial toolbar (density toggle),
+   sidebar-aware grid, pill-style facets, and infinite-scroll sentinel.
+   ============================================================ */
+
+/* ---- Toolbar ---- */
+.elara-collection__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--elara-space-4, 1.6rem);
+  margin: 0 0 var(--elara-space-5, 2.4rem);
+  padding-bottom: var(--elara-space-3, 1.2rem);
+  border-bottom: 1px solid var(--elara-border-hair);
+}
+
+.elara-collection__count {
+  margin: 0;
+  font-family: var(--font-body-family);
+  font-size: 1.2rem;
+  letter-spacing: 0.04em;
+  color: rgba(var(--color-foreground), 0.7);
+}
+
+/* ---- Density toggle ---- */
+.elara-density-toggle {
+  display: inline-flex;
+  gap: var(--elara-space-2, 0.8rem);
+}
+
+.elara-density-toggle__btn {
+  width: 3.2rem;
+  height: 3.2rem;
+  border: 1px solid var(--elara-border-soft);
+  background: transparent;
+  color: rgba(var(--color-foreground), 0.6);
+  font-family: var(--font-body-family);
+  font-size: 1.2rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  cursor: pointer;
+  transition: color var(--elara-dur-fast, 240ms) ease,
+              border-color var(--elara-dur-fast, 240ms) ease,
+              background-color var(--elara-dur-fast, 240ms) ease;
+}
+
+.elara-density-toggle__btn:hover {
+  color: rgb(var(--color-foreground));
+  border-color: rgba(var(--color-foreground), 0.45);
+}
+
+.elara-density-toggle__btn[aria-pressed='true'],
+.elara-density-toggle__btn--active {
+  background-color: rgb(var(--color-foreground));
+  color: rgb(var(--color-background));
+  border-color: rgb(var(--color-foreground));
+}
+
+.elara-density-toggle__btn:focus-visible {
+  outline: 2px solid var(--elara-accent, #b8956a);
+  outline-offset: 2px;
+}
+
+/* ---- Editorial grid (density-driven columns) ---- */
+@media screen and (min-width: 990px) {
+  .elara-collection__grid.product-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-cols, 4), minmax(0, 1fr));
+    gap: var(--grid-desktop-vertical-spacing, 3.2rem) var(--grid-desktop-horizontal-spacing, 3.2rem);
+  }
+}
+
+/* ---- Infinite-scroll sentinel ---- */
+.elara-collection__sentinel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--elara-space-6, 3.2rem) 0;
+  opacity: 0;
+  transition: opacity var(--elara-dur-fast, 240ms) ease;
+}
+
+.elara-collection__sentinel--loading {
+  opacity: 1;
+}
+
+.elara-collection__sentinel--done {
+  display: none;
+}
+
+.elara-collection__sentinel-spinner {
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  border: 2px solid rgba(var(--color-foreground), 0.15);
+  border-top-color: rgb(var(--color-foreground));
+  animation: elaraSpin 0.8s linear infinite;
+}
+
+/* When JS is up and infinite scroll is active, the fallback pagination is
+   hidden — but it remains in the DOM as a no-JS fallback. */
+.js .elara-collection__pagination-fallback--hidden-js {
+  display: none;
+}
+
+/* ============================================================
+   Pill-style facet overrides
+   Layers on top of component-facets.css. Visually converts the
+   default checkbox-text facet rows into compact pills, while keeping
+   the same DOM (and the same facets.js behavior) for accessibility.
+   ============================================================ */
+
+.facets__display .facets__list,
+.facets-vertical .facets__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.facets__display .facets__item,
+.facets-vertical .facets__item {
+  margin: 0;
+}
+
+.facets__display .facet-checkbox,
+.facets-vertical .facet-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.2rem;
+  border: 1px solid var(--elara-border-soft);
+  border-radius: var(--elara-radius-pill, 999px);
+  font-family: var(--font-body-family);
+  font-size: 1.2rem;
+  letter-spacing: 0.04em;
+  color: rgba(var(--color-foreground), 0.85);
+  cursor: pointer;
+  transition: border-color var(--elara-dur-fast, 240ms) ease,
+              background-color var(--elara-dur-fast, 240ms) ease,
+              color var(--elara-dur-fast, 240ms) ease;
+  line-height: 1.3;
+}
+
+.facets__display .facet-checkbox input[type='checkbox'],
+.facets-vertical .facet-checkbox input[type='checkbox'] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.facets__display .facet-checkbox > .svg-wrapper,
+.facets-vertical .facet-checkbox > .svg-wrapper {
+  display: none;
+}
+
+.facets__display .facet-checkbox:hover,
+.facets-vertical .facet-checkbox:hover {
+  border-color: rgba(var(--color-foreground), 0.5);
+}
+
+.facets__display .facet-checkbox:has(input:checked),
+.facets-vertical .facet-checkbox:has(input:checked) {
+  background-color: rgb(var(--color-foreground));
+  color: rgb(var(--color-background));
+  border-color: rgb(var(--color-foreground));
+}
+
+.facets__display .facet-checkbox:has(input:focus-visible),
+.facets-vertical .facet-checkbox:has(input:focus-visible) {
+  outline: 2px solid var(--elara-accent, #b8956a);
+  outline-offset: 2px;
+}
+
+.facets__display .facet-checkbox--disabled,
+.facets-vertical .facet-checkbox--disabled,
+.facets__display .facet-checkbox:has(input:disabled),
+.facets-vertical .facet-checkbox:has(input:disabled) {
+  opacity: 0.4;
+  pointer-events: none;
+  text-decoration: line-through;
+}
+
+/* ---- Active-filter chip bar above the grid ---- */
+.active-facets__button-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: var(--elara-space-3, 1.2rem);
+}
+
+.active-facets__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 1rem;
+  border: 1px solid var(--elara-border-soft);
+  border-radius: var(--elara-radius-pill, 999px);
+  background-color: rgba(var(--color-foreground), 0.05);
+  font-family: var(--font-body-family);
+  font-size: 1.1rem;
+  letter-spacing: 0.04em;
+  color: rgb(var(--color-foreground));
+  text-decoration: none;
+  transition: background-color var(--elara-dur-fast, 240ms) ease;
+}
+
+.active-facets__button:hover {
+  background-color: rgba(var(--color-foreground), 0.1);
+}

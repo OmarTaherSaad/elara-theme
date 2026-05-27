@@ -7,6 +7,18 @@
 
 {{ 'quantity-popover.css' | asset_url | stylesheet_tag }}
 {{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-card-editorial.css' | asset_url | stylesheet_tag }}
+{%- if settings.elara_free_shipping_threshold > 0 -%}
+  {{ 'component-free-shipping-bar.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'progress-shipping-bar.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+{%- if settings.elara_enable_gift_note -%}
+  <script src="{{ 'elara-cart-attribute.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+{%- if settings.elara_enable_cart_recommendations -%}
+  {{ 'component-card-editorial.css' | asset_url | stylesheet_tag }}
+{%- endif -%}
+{{ 'elara-cart-drawer.css' | asset_url | stylesheet_tag }}
 
 <script src="{{ 'cart.js' | asset_url }}" defer="defer"></script>
 <script src="{{ 'quantity-popover.js' | asset_url }}" defer="defer"></script>
@@ -74,6 +86,10 @@
           </span>
         </button>
       </div>
+
+      {%- if cart != empty and settings.elara_free_shipping_threshold > 0 -%}
+        {% render 'free-shipping-bar', threshold: settings.elara_free_shipping_threshold, current: cart.total_price %}
+      {%- endif -%}
       <cart-drawer-items
         {% if cart == empty %}
           class=" is-empty"
@@ -495,6 +511,29 @@
           </details>
         {%- endif -%}
 
+        {%- if settings.elara_enable_gift_note and cart != empty -%}
+          <details class="elara-cart-drawer__gift-note">
+            <summary class="elara-cart-drawer__gift-note-summary">
+              <span class="elara-cart-drawer__gift-note-label">
+                {{ settings.elara_gift_note_label | default: 'Add a gift message' }}
+              </span>
+              <span class="elara-cart-drawer__gift-note-icon" aria-hidden="true">+</span>
+            </summary>
+            <div class="elara-cart-drawer__gift-note-content field">
+              <label class="visually-hidden" for="CartDrawer-GiftNote">{{ 'sections.elara.cart.gift_note_label' | t }}</label>
+              <textarea
+                id="CartDrawer-GiftNote"
+                class="text-area text-area--resize-vertical field__input"
+                name="attributes[gift_note]"
+                rows="3"
+                placeholder="{{ 'sections.elara.cart.gift_note_placeholder' | t }}"
+                data-elara-gift-note
+              >{{ cart.attributes.gift_note }}</textarea>
+              <p class="elara-cart-drawer__gift-note-hint">{{ 'sections.elara.cart.gift_note_hint' | t }}</p>
+            </div>
+          </details>
+        {%- endif -%}
+
         <!-- Start blocks -->
         <!-- Subtotals -->
 
@@ -576,6 +615,10 @@
           </button>
         </div>
       </div>
+
+      {%- if settings.elara_enable_cart_recommendations and cart != empty and settings.cart_drawer_collection != blank -%}
+        {% section 'cart-recommendations' %}
+      {%- endif -%}
     </div>
   </div>
 </cart-drawer>

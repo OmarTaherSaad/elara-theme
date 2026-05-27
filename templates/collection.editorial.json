@@ -1,0 +1,55 @@
+{
+  "sections": {
+    "banner": {
+      "type": "main-collection-banner",
+      "settings": {
+        "show_collection_description": true,
+        "show_collection_image": true,
+        "color_scheme": "scheme-4"
+      }
+    },
+    "story": {
+      "type": "editorial-story",
+      "blocks": {
+        "heading": { "type": "heading", "settings": { "text": "Behind this edit" } },
+        "paragraph": {
+          "type": "paragraph",
+          "settings": {
+            "text": "<p>A short note from the studio on what brought this collection together. Replace this copy with your own — a season, a craft, a story.</p>"
+          }
+        },
+        "link": { "type": "link", "settings": { "label": "Read the journal entry", "url": "shopify://blogs/news" } }
+      },
+      "block_order": ["heading", "paragraph", "link"],
+      "settings": {
+        "layout": "image_left",
+        "image_ratio": "landscape",
+        "eyebrow": "The edit",
+        "color_scheme": "scheme-1",
+        "padding_top": 96,
+        "padding_bottom": 64
+      }
+    },
+    "product-grid": {
+      "type": "main-collection-product-grid",
+      "settings": {
+        "elara_card_style": "editorial",
+        "elara_density_toggle": true,
+        "elara_pagination_mode": "paginate",
+        "products_per_page": 16,
+        "columns_desktop": 4,
+        "image_ratio": "portrait",
+        "show_secondary_image": true,
+        "show_vendor": true,
+        "show_rating": false,
+        "enable_filtering": true,
+        "enable_sorting": true,
+        "filter_type": "vertical",
+        "columns_mobile": "2",
+        "padding_top": 36,
+        "padding_bottom": 96
+      }
+    }
+  },
+  "order": ["banner", "story", "product-grid"]
+}

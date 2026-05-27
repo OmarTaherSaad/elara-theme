@@ -1,0 +1,156 @@
+/* ============================================================
+   Elara cart drawer polish
+   Layered on top of Dawn's component-cart-drawer.css / component-cart.css.
+   Refines the easing, thumbnail size, typography, and adds styles for
+   the gift-note accordion + suggested products carousel.
+   ============================================================ */
+
+/* ---- Easing & timing ---- */
+.cart-drawer .drawer__inner {
+  transition: transform var(--elara-dur-base, 480ms) var(--elara-ease-luxury, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+cart-drawer:not(.active) .cart-drawer__overlay,
+cart-drawer:not(.active) .drawer__inner {
+  transition-duration: 320ms;
+}
+
+/* ---- Header typography ---- */
+.cart-drawer .drawer__heading {
+  font-family: var(--font-heading-family);
+  font-weight: var(--font-heading-weight);
+  font-size: 2rem;
+  letter-spacing: -0.01em;
+}
+
+/* ---- Larger thumbnails ---- */
+.cart-drawer .cart-item__image-container,
+.cart-drawer .cart-item__media {
+  width: 9.6rem;
+}
+
+.cart-drawer .cart-item__image {
+  width: 9.6rem;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+
+.cart-drawer .cart-items {
+  --cart-items-row-gap: 1.6rem;
+}
+
+.cart-drawer .cart-item {
+  padding-top: var(--elara-space-4, 1.6rem);
+  padding-bottom: var(--elara-space-4, 1.6rem);
+}
+
+.cart-drawer .cart-item__name {
+  font-family: var(--font-heading-family);
+  font-weight: var(--font-heading-weight);
+  font-size: 1.6rem;
+  letter-spacing: -0.005em;
+}
+
+.cart-drawer .product-option {
+  font-family: var(--font-body-family);
+  font-size: 1.2rem;
+  letter-spacing: 0.02em;
+  color: rgba(var(--color-foreground), 0.7);
+}
+
+/* ---- Gift-note accordion ---- */
+.elara-cart-drawer__gift-note {
+  border-top: 1px solid var(--elara-border-hair);
+  border-bottom: 1px solid var(--elara-border-hair);
+  margin: var(--elara-space-3, 1.2rem) 0;
+}
+
+.elara-cart-drawer__gift-note-summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--elara-space-3, 1.2rem) 0;
+  cursor: pointer;
+  font-family: var(--font-body-family);
+  font-weight: 500;
+  font-size: 1.2rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgb(var(--color-foreground));
+}
+
+.elara-cart-drawer__gift-note-summary::-webkit-details-marker {
+  display: none;
+}
+
+.elara-cart-drawer__gift-note-icon {
+  font-family: var(--font-body-family);
+  font-weight: 300;
+  font-size: 2rem;
+  line-height: 1;
+  transition: transform var(--elara-dur-fast, 240ms) ease;
+}
+
+.elara-cart-drawer__gift-note[open] .elara-cart-drawer__gift-note-icon {
+  transform: rotate(45deg);
+}
+
+.elara-cart-drawer__gift-note-content {
+  padding-bottom: var(--elara-space-3, 1.2rem);
+}
+
+.elara-cart-drawer__gift-note-content textarea {
+  font-family: var(--font-body-family);
+  font-size: 1.4rem;
+  line-height: 1.5;
+  min-height: 8rem;
+}
+
+.elara-cart-drawer__gift-note-hint {
+  margin: var(--elara-space-2, 0.8rem) 0 0;
+  font-family: var(--font-body-family);
+  font-size: 1.1rem;
+  color: rgba(var(--color-foreground), 0.6);
+  font-style: italic;
+}
+
+/* ---- Suggested products carousel ---- */
+.elara-cart-drawer__recommendations {
+  border-top: 1px solid var(--elara-border-hair);
+  padding: var(--elara-space-4, 1.6rem) var(--elara-space-4, 1.6rem) 0;
+}
+
+.elara-cart-drawer__recommendations-heading {
+  margin: 0 0 var(--elara-space-3, 1.2rem);
+  font-family: var(--font-body-family);
+  font-weight: 500;
+  font-size: 1.1rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(var(--color-foreground), 0.72);
+}
+
+.elara-cart-drawer__recommendations-track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 14rem;
+  gap: var(--elara-space-3, 1.2rem);
+  padding-bottom: var(--elara-space-3, 1.2rem);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  margin: 0;
+  list-style: none;
+}
+
+.elara-cart-drawer__recommendations-item {
+  scroll-snap-align: start;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cart-drawer .drawer__inner {
+    transition: none;
+  }
+}

@@ -1528,6 +1528,35 @@
         "id": "cart_color_scheme",
         "label": "t:sections.all.colors.label",
         "default": "scheme-1"
+      },
+      {
+        "type": "header",
+        "content": "Elara cart enhancements"
+      },
+      {
+        "type": "number",
+        "id": "elara_free_shipping_threshold",
+        "label": "Free shipping threshold (in cents)",
+        "info": "Set the amount in your store's currency subunit (e.g. 10000 for $100.00). Set to 0 to disable the progress bar.",
+        "default": 10000
+      },
+      {
+        "type": "checkbox",
+        "id": "elara_enable_gift_note",
+        "default": true,
+        "label": "Show gift-note accordion in cart drawer"
+      },
+      {
+        "type": "checkbox",
+        "id": "elara_enable_cart_recommendations",
+        "default": true,
+        "label": "Show suggested products in cart drawer"
+      },
+      {
+        "type": "text",
+        "id": "elara_gift_note_label",
+        "default": "Add a gift message",
+        "label": "Gift note trigger label"
       }
     ]
   }

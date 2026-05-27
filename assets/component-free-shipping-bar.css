@@ -1,0 +1,44 @@
+/* ============================================================
+   Elara free-shipping progress bar
+   Renders inside the cart drawer above the line items.
+   ============================================================ */
+
+.elara-free-shipping {
+  display: block;
+  padding: var(--elara-space-3, 1.2rem) var(--elara-space-4, 1.6rem);
+  border-bottom: 1px solid var(--elara-border-hair);
+  background-color: var(--elara-surface-1);
+}
+
+.elara-free-shipping__label {
+  margin: 0 0 var(--elara-space-2, 0.8rem);
+  font-family: var(--font-body-family);
+  font-size: 1.2rem;
+  letter-spacing: 0.02em;
+  color: rgb(var(--color-foreground));
+  text-align: center;
+}
+
+.elara-free-shipping__track {
+  position: relative;
+  width: 100%;
+  height: 0.3rem;
+  background-color: rgba(var(--color-foreground), 0.12);
+  overflow: hidden;
+  border-radius: 999px;
+}
+
+.elara-free-shipping__fill {
+  display: block;
+  height: 100%;
+  width: var(--progress, 0%);
+  background-color: rgb(var(--color-foreground));
+  border-radius: 999px;
+  transition: width var(--elara-dur-slow, 700ms) var(--elara-ease-luxury, ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .elara-free-shipping__fill {
+    transition: none;
+  }
+}

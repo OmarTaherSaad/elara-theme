@@ -1,0 +1,51 @@
+{%- comment -%}
+  Renders a free-shipping progress bar.
+
+  Accepts:
+    - threshold:    {Integer} Required. The free-shipping minimum in the store's
+                     currency subunit (e.g. 10000 = $100.00 USD).
+    - current:      {Integer} Optional. Current cart total in subunit; defaults
+                     to cart.total_price.
+    - label_remaining: {String} Optional override translation key.
+    - label_qualified: {String} Optional override translation key.
+
+  The wrapper carries data-threshold so the ProgressShippingBar custom
+  element can recompute after cart updates.
+{%- endcomment -%}
+{%- liquid
+  assign current_total = current | default: cart.total_price
+  assign threshold_amount = threshold | default: 0
+  if threshold_amount <= 0
+    assign threshold_amount = 1
+  endif
+  assign progress = current_total | times: 100.0 | divided_by: threshold_amount
+  if progress > 100
+    assign progress = 100
+  endif
+  assign remaining = threshold_amount | minus: current_total
+  if remaining < 0
+    assign remaining = 0
+  endif
+-%}
+<elara-progress-shipping-bar
+  class="elara-free-shipping"
+  data-threshold="{{ threshold_amount }}"
+  data-label-remaining-key="{{ label_remaining | default: 'sections.elara.cart.free_shipping_remaining' }}"
+  data-label-qualified-key="{{ label_qualified | default: 'sections.elara.cart.free_shipping_qualified' }}"
+>
+  <p class="elara-free-shipping__label" data-free-shipping-label aria-live="polite">
+    {%- if remaining > 0 -%}
+      {{
+        'sections.elara.cart.free_shipping_remaining'
+        | t: amount: remaining | money
+      }}
+    {%- else -%}
+      {{ 'sections.elara.cart.free_shipping_qualified' | t }}
+    {%- endif -%}
+  </p>
+  <div class="elara-free-shipping__track" role="progressbar"
+       aria-valuemin="0" aria-valuemax="100"
+       aria-valuenow="{{ progress | round: 0 }}">
+    <span class="elara-free-shipping__fill" data-free-shipping-fill style="--progress: {{ progress }}%;"></span>
+  </div>
+</elara-progress-shipping-bar>

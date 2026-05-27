@@ -176,6 +176,10 @@
       "elara_type_pairing": "playfair_inter",
       "elara_density": "editorial",
       "elara_accent_color": "#B8956A",
+      "elara_free_shipping_threshold": 10000,
+      "elara_enable_gift_note": true,
+      "elara_enable_cart_recommendations": true,
+      "elara_gift_note_label": "Add a gift message",
       "sections": {
         "main-password-header": {
           "type": "main-password-header",

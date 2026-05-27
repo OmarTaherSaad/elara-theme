@@ -2,6 +2,17 @@
 {{ 'component-card.css' | asset_url | stylesheet_tag }}
 {{ 'component-price.css' | asset_url | stylesheet_tag }}
 
+{%- if section.settings.elara_card_style == 'editorial' -%}
+  {{ 'component-card-editorial.css' | asset_url | stylesheet_tag }}
+{%- endif -%}
+{{ 'section-collection-editorial.css' | asset_url | stylesheet_tag }}
+{%- if section.settings.elara_density_toggle -%}
+  <script src="{{ 'density-toggle.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+{%- if section.settings.elara_pagination_mode == 'infinite' -%}
+  <script src="{{ 'collection-infinite-scroll.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
 {% if section.settings.image_shape == 'blob' %}
   {{ 'mask-blobs.css' | asset_url | stylesheet_tag }}
 {%- endif -%}
@@ -143,13 +154,67 @@
             class="collection{% if section.settings.filter_type != 'vertical' %} page-width{% endif %}"
           >
             <div class="loading-overlay gradient"></div>
+
+            {%- if section.settings.elara_density_toggle -%}
+              <div class="elara-collection__toolbar">
+                <p class="elara-collection__count caption" role="status">
+                  {%- if collection.results_count -%}
+                    {{ 'templates.search.results_with_count' | t: terms: collection.terms, count: collection.results_count }}
+                  {%- elsif collection.products_count == collection.all_products_count -%}
+                    {{ 'products.facets.product_count_simple' | t: count: collection.products_count }}
+                  {%- else -%}
+                    {{ 'products.facets.product_count' | t: product_count: collection.products_count, count: collection.all_products_count }}
+                  {%- endif -%}
+                </p>
+                <elara-density-toggle
+                  class="elara-density-toggle"
+                  data-target-selector="#product-grid"
+                  data-default-density="{{ section.settings.columns_desktop }}"
+                  data-storage-key="elara:density:{{ section.id }}"
+                  role="group"
+                  aria-label="{{ 'sections.elara.collection.density_label' | t }}"
+                >
+                  {%- for cols in (3..6) -%}
+                    {%- if cols == 3 or cols == 4 or cols == 6 -%}
+                      <button
+                        type="button"
+                        class="elara-density-toggle__btn"
+                        data-density="{{ cols }}"
+                        aria-label="{{ 'sections.elara.collection.density_n_cols' | t: count: cols }}"
+                        aria-pressed="{% if cols == section.settings.columns_desktop %}true{% else %}false{% endif %}"
+                      >{{ cols }}</button>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </elara-density-toggle>
+              </div>
+            {%- endif -%}
+
+            {%- liquid
+              assign use_infinite = false
+              if section.settings.elara_pagination_mode == 'infinite' and paginate.next
+                assign use_infinite = true
+              endif
+            -%}
+
+            {%- if use_infinite -%}
+              <elara-collection-infinite-scroll
+                data-section-id="{{ section.id }}"
+                data-grid-selector="#product-grid"
+                data-next-url="{{ paginate.next.url }}"
+              >
+            {%- endif -%}
+
             <ul
               id="product-grid"
               data-id="{{ section.id }}"
+              data-collection-grid
+              data-density="{{ section.settings.columns_desktop }}"
+              style="--grid-cols: {{ section.settings.columns_desktop }};"
               class="
                 grid product-grid grid--{{ section.settings.columns_mobile }}-col-tablet-down
                 grid--{{ section.settings.columns_desktop }}-col-desktop
                 {% if section.settings.quick_add == 'bulk' %} collection-quick-add-bulk{% endif %}
+                {% if section.settings.elara_card_style == 'editorial' %} elara-collection__grid elara-collection__grid--editorial{% endif %}
               "
             >
               {% assign skip_card_product_styles = false %}
@@ -165,25 +230,50 @@
                     style="--animation-order: {{ forloop.index }};"
                   {% endif %}
                 >
-                  {% render 'card-product',
-                    card_product: product,
-                    media_aspect_ratio: section.settings.image_ratio,
-                    image_shape: section.settings.image_shape,
-                    show_secondary_image: section.settings.show_secondary_image,
-                    show_vendor: section.settings.show_vendor,
-                    show_rating: section.settings.show_rating,
-                    lazy_load: lazy_load,
-                    skip_styles: skip_card_product_styles,
-                    quick_add: section.settings.quick_add,
-                    section_id: section.id
-                  %}
+                  {%- if section.settings.elara_card_style == 'editorial' -%}
+                    {% render 'card-product-editorial',
+                      card_product: product,
+                      media_aspect_ratio: section.settings.image_ratio,
+                      show_secondary_image: section.settings.show_secondary_image,
+                      show_vendor: section.settings.show_vendor
+                    %}
+                  {%- else -%}
+                    {% render 'card-product',
+                      card_product: product,
+                      media_aspect_ratio: section.settings.image_ratio,
+                      image_shape: section.settings.image_shape,
+                      show_secondary_image: section.settings.show_secondary_image,
+                      show_vendor: section.settings.show_vendor,
+                      show_rating: section.settings.show_rating,
+                      lazy_load: lazy_load,
+                      skip_styles: skip_card_product_styles,
+                      quick_add: section.settings.quick_add,
+                      section_id: section.id
+                    %}
+                  {%- endif -%}
                 </li>
                 {%- assign skip_card_product_styles = true -%}
               {%- endfor -%}
             </ul>
 
+            {%- if use_infinite -%}
+              <div
+                class="elara-collection__sentinel"
+                data-sentinel
+                aria-hidden="true"
+              >
+                <span class="elara-collection__sentinel-spinner" aria-hidden="true"></span>
+              </div>
+            {%- endif -%}
+
             {%- if paginate.pages > 1 -%}
-              {% render 'pagination', paginate: paginate, anchor: '' %}
+              <div class="elara-collection__pagination-fallback{% if use_infinite %} elara-collection__pagination-fallback--hidden-js{% endif %}">
+                {% render 'pagination', paginate: paginate, anchor: '' %}
+              </div>
+            {%- endif -%}
+
+            {%- if use_infinite -%}
+              </elara-collection-infinite-scroll>
             {%- endif -%}
           </div>
         {%- endif -%}
@@ -200,6 +290,38 @@
   "name": "t:sections.main-collection-product-grid.name",
   "class": "section",
   "settings": [
+    {
+      "type": "header",
+      "content": "Editorial"
+    },
+    {
+      "type": "select",
+      "id": "elara_card_style",
+      "options": [
+        { "value": "default",   "label": "Dawn card" },
+        { "value": "editorial", "label": "Elara editorial card" }
+      ],
+      "default": "editorial",
+      "label": "Card style",
+      "info": "Editorial card has portrait crop, vendor eyebrow, right-aligned price, and hover-reveal secondary image."
+    },
+    {
+      "type": "checkbox",
+      "id": "elara_density_toggle",
+      "default": true,
+      "label": "Show density toggle (3 / 4 / 6 columns)",
+      "info": "Lets shoppers choose grid density on the fly. Persisted per visitor."
+    },
+    {
+      "type": "select",
+      "id": "elara_pagination_mode",
+      "options": [
+        { "value": "paginate", "label": "Paginated" },
+        { "value": "infinite", "label": "Infinite scroll" }
+      ],
+      "default": "paginate",
+      "label": "Pagination mode"
+    },
     {
       "type": "range",
       "id": "products_per_page",

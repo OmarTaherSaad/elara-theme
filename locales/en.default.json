@@ -292,6 +292,20 @@
       },
       "recently_viewed": {
         "empty": "Nothing recently viewed yet."
+      },
+      "collection": {
+        "density_label": "Grid density",
+        "density_n_cols": {
+          "one": "{{ count }} column",
+          "other": "{{ count }} columns"
+        }
+      },
+      "cart": {
+        "free_shipping_remaining": "{{ amount }} away from free shipping",
+        "free_shipping_qualified": "You've unlocked free shipping",
+        "gift_note_label": "Gift message",
+        "gift_note_placeholder": "Add a personal note with this order…",
+        "gift_note_hint": "Saved automatically when you close the field."
       }
     },
     "announcements": {
