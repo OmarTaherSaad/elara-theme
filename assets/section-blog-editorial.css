@@ -1,0 +1,90 @@
+/* ============================================================
+   Elara editorial blog list
+   Magazine-style layout: the first article becomes a full-width
+   hero card; the rest sit in a refined grid below.
+   ============================================================ */
+
+.main-blog--editorial {
+  padding-top: var(--elara-space-8, 6.4rem);
+}
+
+.main-blog--editorial .elara-section-header {
+  margin-bottom: var(--elara-space-7, 4.8rem);
+}
+
+.blog-articles--editorial {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--elara-space-6, 3.2rem);
+}
+
+@media screen and (min-width: 750px) {
+  .blog-articles--editorial {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--elara-space-7, 4.8rem) var(--elara-space-6, 3.2rem);
+  }
+}
+
+@media screen and (min-width: 990px) {
+  .blog-articles--editorial {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  /* Hero — first card spans two rows / two columns. */
+  .blog-articles--editorial > .blog-articles__article:first-child {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+
+  .blog-articles--editorial > .blog-articles__article:first-child .article-card__image {
+    aspect-ratio: 16 / 11;
+    max-height: 56rem;
+  }
+
+  .blog-articles--editorial > .blog-articles__article:first-child .article-card__title,
+  .blog-articles--editorial > .blog-articles__article:first-child .h3 {
+    font-size: 3.2rem;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin-bottom: var(--elara-space-3, 1.2rem);
+  }
+
+  .blog-articles--editorial > .blog-articles__article:first-child .article-card__excerpt {
+    font-size: 1.6rem;
+    line-height: 1.65;
+  }
+}
+
+/* Editorial card refinements — applies to all article-cards inside the
+   editorial blog grid without forking article-card.liquid. */
+.blog-articles--editorial .article-card-wrapper,
+.blog-articles--editorial .article-card {
+  border: 0;
+  background: transparent;
+  height: 100%;
+}
+
+.blog-articles--editorial .article-card__image-wrapper {
+  margin-bottom: var(--elara-space-3, 1.2rem);
+}
+
+.blog-articles--editorial .article-card__title,
+.blog-articles--editorial .h3 {
+  font-family: var(--font-heading-family);
+  font-weight: var(--font-heading-weight);
+  letter-spacing: -0.005em;
+}
+
+.blog-articles--editorial .article-card__info,
+.blog-articles--editorial .caption-with-letter-spacing {
+  font-family: var(--font-body-family);
+  font-size: 1.1rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(var(--color-foreground), 0.6);
+}
+
+.blog-articles--editorial .article-card__excerpt {
+  font-family: var(--font-body-family);
+  color: rgba(var(--color-foreground), 0.78);
+}

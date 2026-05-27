@@ -1,0 +1,142 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "vendor": {
+          "type": "text",
+          "settings": { "text": "{{ product.vendor }}", "text_style": "uppercase" }
+        },
+        "title": { "type": "title" },
+        "caption": {
+          "type": "text",
+          "settings": { "text": "{{ product.metafields.descriptors.subtitle.value }}", "text_style": "subtitle" }
+        },
+        "price": { "type": "price" },
+        "variant_picker": { "type": "variant_picker", "settings": { "picker_type": "button" } },
+        "quantity_selector": { "type": "quantity_selector" },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": { "show_dynamic_checkout": true, "show_gift_card_recipient": false }
+        },
+        "description": { "type": "description" },
+        "accordion_group": {
+          "type": "accordion_group",
+          "settings": {
+            "open_first": false,
+            "panel_1_heading": "Notes",
+            "panel_1_content": "<p><strong>Top:</strong> bergamot, neroli, pink pepper<br><strong>Heart:</strong> jasmine, iris, fig leaf<br><strong>Base:</strong> sandalwood, musk, amber</p>",
+            "panel_2_heading": "Ingredients",
+            "panel_2_content": "<p>Alcohol denat., parfum (fragrance), aqua, limonene, linalool, citral, geraniol. Phthalate-free, IFRA-compliant.</p>",
+            "panel_3_heading": "How to wear",
+            "panel_3_content": "<p>Spray onto pulse points — wrists, behind the ears, the inner elbow. Avoid rubbing; let it settle into the skin.</p>",
+            "panel_4_heading": "Shipping & returns",
+            "panel_4_content": "<p>Fragile shipping. Returnable unopened within 30 days. Read the full policy.</p>"
+          }
+        },
+        "complete_look": {
+          "type": "complete_look",
+          "settings": { "heading": "Pairs well with" }
+        },
+        "share": { "type": "share" }
+      },
+      "block_order": [
+        "vendor",
+        "title",
+        "caption",
+        "price",
+        "variant_picker",
+        "quantity_selector",
+        "buy_buttons",
+        "description",
+        "accordion_group",
+        "complete_look",
+        "share"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "elara_sticky_media": true,
+        "enable_sticky_info": false,
+        "media_size": "large",
+        "constrain_to_viewport": true,
+        "media_fit": "contain",
+        "gallery_layout": "stacked",
+        "media_position": "left",
+        "image_zoom": "lightbox",
+        "mobile_thumbnails": "show",
+        "hide_variants": false,
+        "enable_video_looping": false,
+        "padding_top": 36,
+        "padding_bottom": 12
+      }
+    },
+    "ingredients_story": {
+      "type": "sticky-scroll-story",
+      "blocks": {
+        "step_1": {
+          "type": "step",
+          "settings": {
+            "heading": "Top",
+            "text": "<p>The first impression — fresh, bright, brief. Lifts off the skin within minutes.</p>"
+          }
+        },
+        "step_2": {
+          "type": "step",
+          "settings": {
+            "heading": "Heart",
+            "text": "<p>The body of the scent. Settles into the skin and stays for hours.</p>"
+          }
+        },
+        "step_3": {
+          "type": "step",
+          "settings": {
+            "heading": "Base",
+            "text": "<p>The lingering trail. Deeper, warmer, the part you remember.</p>"
+          }
+        }
+      },
+      "block_order": ["step_1", "step_2", "step_3"],
+      "settings": {
+        "eyebrow": "The composition",
+        "heading": "How the scent unfolds",
+        "media_side": "left",
+        "color_scheme": "scheme-2",
+        "padding_top": 96,
+        "padding_bottom": 96
+      }
+    },
+    "heritage_story": {
+      "type": "editorial-story",
+      "blocks": {
+        "heading": { "type": "heading", "settings": { "text": "From the perfumer's bench" } },
+        "paragraph": {
+          "type": "paragraph",
+          "settings": { "text": "<p>A short note from the perfumer on the scent's origin — the memory it carries, the ingredients sourced for it, the moment it became finished.</p>" }
+        },
+        "byline": { "type": "byline", "settings": { "text": "Words by the perfumer" } }
+      },
+      "block_order": ["heading", "byline", "paragraph"],
+      "settings": {
+        "layout": "image_right",
+        "image_ratio": "portrait",
+        "eyebrow": "The maker",
+        "color_scheme": "scheme-1",
+        "padding_top": 64,
+        "padding_bottom": 96
+      }
+    },
+    "recently_viewed": {
+      "type": "recently-viewed",
+      "settings": {
+        "eyebrow": "More from your edit",
+        "heading": "Recently viewed",
+        "max_items": 8,
+        "storage_key": "elara:recently-viewed",
+        "color_scheme": "scheme-1",
+        "padding_top": 32,
+        "padding_bottom": 96
+      }
+    }
+  },
+  "order": ["main", "ingredients_story", "heritage_story", "recently_viewed"]
+}

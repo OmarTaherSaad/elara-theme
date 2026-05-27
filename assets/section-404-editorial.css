@@ -1,0 +1,44 @@
+/* ============================================================
+   Elara editorial 404 page
+   Generous whitespace, oversized serif headline, calm pair of CTAs.
+   ============================================================ */
+
+.elara-404 {
+  min-height: calc(100vh - var(--header-height, 8rem));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--elara-space-9, 9.6rem) var(--elara-space-5, 2.4rem);
+}
+
+.elara-404__inner {
+  max-width: 56rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--elara-space-4, 1.6rem);
+}
+
+.elara-404__title {
+  margin: 0;
+  color: rgb(var(--color-foreground));
+}
+
+.elara-404__subtext {
+  margin: 0;
+  font-family: var(--font-body-family);
+  font-size: 1.6rem;
+  line-height: 1.65;
+  color: rgba(var(--color-foreground), 0.78);
+  max-width: 42ch;
+}
+
+.elara-404__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--elara-space-4, 1.6rem);
+  margin-top: var(--elara-space-3, 1.2rem);
+}

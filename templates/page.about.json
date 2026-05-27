@@ -1,0 +1,137 @@
+{
+  "sections": {
+    "image_banner": {
+      "type": "image-banner",
+      "blocks": {
+        "heading": { "type": "heading", "settings": { "heading": "About the house", "heading_size": "h0" } },
+        "text": { "type": "text", "settings": { "text": "A studied wardrobe, made in small numbers.", "text_style": "subtitle" } }
+      },
+      "block_order": ["heading", "text"],
+      "settings": {
+        "image_overlay_opacity": 35,
+        "image_height": "large",
+        "desktop_content_position": "middle-center",
+        "show_text_box": false,
+        "desktop_content_alignment": "center",
+        "color_scheme": "scheme-4",
+        "mobile_content_alignment": "center"
+      }
+    },
+    "founder_story": {
+      "type": "editorial-story",
+      "blocks": {
+        "heading": { "type": "heading", "settings": { "text": "From a workroom in Lisbon" } },
+        "paragraph": {
+          "type": "paragraph",
+          "settings": { "text": "<p>Elara began as a single tailor's bench and a refusal to compromise on cloth. Replace this paragraph with the story of your founder, place, and the moment the brand began.</p><p>Keep it specific. Names of streets. The smell of the workroom. What you almost didn't make.</p>" }
+        },
+        "byline": { "type": "byline", "settings": { "text": "Founder · Atelier head" } },
+        "link": { "type": "link", "settings": { "label": "Meet the studio", "url": "shopify://pages/team" } }
+      },
+      "block_order": ["heading", "byline", "paragraph", "link"],
+      "settings": {
+        "layout": "image_left",
+        "image_ratio": "portrait",
+        "eyebrow": "Origin",
+        "color_scheme": "scheme-1",
+        "padding_top": 96,
+        "padding_bottom": 96
+      }
+    },
+    "manifesto": {
+      "type": "sticky-scroll-story",
+      "blocks": {
+        "step_1": {
+          "type": "step",
+          "settings": {
+            "heading": "We work with the cloth, not against it",
+            "text": "<p>Every fabric arrives with a behaviour. We let it lead.</p>"
+          }
+        },
+        "step_2": {
+          "type": "step",
+          "settings": {
+            "heading": "We make in small runs",
+            "text": "<p>Small batches, named makers, no anonymous warehouses.</p>"
+          }
+        },
+        "step_3": {
+          "type": "step",
+          "settings": {
+            "heading": "We repair what we ship",
+            "text": "<p>If it falls out of shape, we fix it. Send it back to the studio.</p>"
+          }
+        }
+      },
+      "block_order": ["step_1", "step_2", "step_3"],
+      "settings": {
+        "eyebrow": "How we work",
+        "heading": "Three commitments",
+        "media_side": "right",
+        "color_scheme": "scheme-2",
+        "padding_top": 96,
+        "padding_bottom": 96
+      }
+    },
+    "press": {
+      "type": "press-strip",
+      "blocks": {
+        "logo_1": { "type": "logo" },
+        "logo_2": { "type": "logo" },
+        "logo_3": { "type": "logo" },
+        "logo_4": { "type": "logo" }
+      },
+      "block_order": ["logo_1", "logo_2", "logo_3", "logo_4"],
+      "settings": {
+        "eyebrow": "Featured in",
+        "quote": "A new kind of patience for fashion.",
+        "attribution": "Studio Editorial",
+        "color_scheme": "scheme-1",
+        "padding_top": 64,
+        "padding_bottom": 64
+      }
+    },
+    "team": {
+      "type": "multicolumn",
+      "blocks": {
+        "col_1": {
+          "type": "column",
+          "settings": {
+            "title": "Founder",
+            "text": "<p>Brief bio of the founder. Where they studied, where they made their first piece, what keeps them at the bench.</p>"
+          }
+        },
+        "col_2": {
+          "type": "column",
+          "settings": {
+            "title": "Head of studio",
+            "text": "<p>Brief bio. Their role, their craft, the thing they care about most.</p>"
+          }
+        },
+        "col_3": {
+          "type": "column",
+          "settings": {
+            "title": "Production",
+            "text": "<p>Brief bio. How the maker came to the house and what they bring.</p>"
+          }
+        }
+      },
+      "block_order": ["col_1", "col_2", "col_3"],
+      "settings": {
+        "title": "The studio",
+        "heading_size": "h2",
+        "image_width": "third",
+        "image_ratio": "portrait",
+        "columns_desktop": 3,
+        "column_alignment": "left",
+        "background_style": "none",
+        "swipe_on_mobile": false,
+        "color_scheme": "scheme-1",
+        "columns_mobile": "1",
+        "padding_top": 64,
+        "padding_bottom": 96
+      }
+    }
+  },
+  "order": ["image_banner", "founder_story", "manifesto", "press", "team"]
+}

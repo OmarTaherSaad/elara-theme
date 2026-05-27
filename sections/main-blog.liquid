@@ -1,6 +1,7 @@
 {{ 'component-article-card.css' | asset_url | stylesheet_tag }}
 {{ 'component-card.css' | asset_url | stylesheet_tag }}
 {{ 'section-main-blog.css' | asset_url | stylesheet_tag }}
+{{ 'section-blog-editorial.css' | asset_url | stylesheet_tag }}
 
 {%- style -%}
   .section-{{ section.id }}-padding {
@@ -17,12 +18,19 @@
 {%- endstyle -%}
 
 {%- paginate blog.articles by 6 -%}
-  <div class="main-blog page-width section-{{ section.id }}-padding">
-    <h1 class="title--primary{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
-      {{ blog.title | escape }}
-    </h1>
+  <div class="main-blog page-width section-{{ section.id }}-padding{% if section.settings.elara_editorial_layout %} main-blog--editorial{% endif %}">
+    {%- if section.settings.elara_editorial_layout -%}
+      <header class="elara-section-header elara-section-header--left">
+        <p class="elara-eyebrow">{{ section.settings.elara_eyebrow | default: 'Journal' | escape }}</p>
+        <h1 class="elara-display-lg elara-section-header__heading">{{ blog.title | escape }}</h1>
+      </header>
+    {%- else -%}
+      <h1 class="title--primary{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
+        {{ blog.title | escape }}
+      </h1>
+    {%- endif -%}
 
-    <div class="blog-articles {% if section.settings.layout == 'collage' %}blog-articles--collage{% endif %}">
+    <div class="blog-articles {% if section.settings.layout == 'collage' %}blog-articles--collage{% endif %}{% if section.settings.elara_editorial_layout %} blog-articles--editorial{% endif %}">
       {%- for article in blog.articles -%}
         <div
           class="blog-articles__article article{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
@@ -56,6 +64,23 @@
   "tag": "section",
   "class": "section",
   "settings": [
+    {
+      "type": "header",
+      "content": "Editorial"
+    },
+    {
+      "type": "checkbox",
+      "id": "elara_editorial_layout",
+      "default": true,
+      "label": "Editorial layout",
+      "info": "Magazine-style hero post + grid below. Adds an eyebrow above the blog title."
+    },
+    {
+      "type": "text",
+      "id": "elara_eyebrow",
+      "label": "Eyebrow",
+      "default": "Journal"
+    },
     {
       "type": "select",
       "id": "layout",

@@ -1,0 +1,96 @@
+{
+  "sections": {
+    "image_banner": {
+      "type": "image-banner",
+      "blocks": {
+        "heading": { "type": "heading", "settings": { "heading": "The lookbook", "heading_size": "h0" } },
+        "text": { "type": "text", "settings": { "text": "Atelier 02 styled in the studio.", "text_style": "subtitle" } }
+      },
+      "block_order": ["heading", "text"],
+      "settings": {
+        "image_overlay_opacity": 25,
+        "image_height": "large",
+        "desktop_content_position": "bottom-left",
+        "show_text_box": false,
+        "desktop_content_alignment": "left",
+        "color_scheme": "scheme-4",
+        "mobile_content_alignment": "center"
+      }
+    },
+    "lookbook_1": {
+      "type": "lookbook-hotspot",
+      "blocks": {
+        "h1": { "type": "hotspot", "settings": { "position_x": 30, "position_y": 35 } },
+        "h2": { "type": "hotspot", "settings": { "position_x": 55, "position_y": 60 } },
+        "h3": { "type": "hotspot", "settings": { "position_x": 72, "position_y": 28 } }
+      },
+      "block_order": ["h1", "h2", "h3"],
+      "settings": {
+        "eyebrow": "Look 01",
+        "heading": "The morning walk",
+        "pin_style": "numbered",
+        "reveal_mode": "click",
+        "color_scheme": "scheme-1",
+        "padding_top": 96,
+        "padding_bottom": 64
+      }
+    },
+    "editorial_story": {
+      "type": "editorial-story",
+      "blocks": {
+        "heading": { "type": "heading", "settings": { "text": "Atelier 02" } },
+        "paragraph": {
+          "type": "paragraph",
+          "settings": { "text": "<p>A short letter from the studio. Replace this with the story behind the lookbook — fabrics, locations, the inspiration that shaped it.</p>" }
+        },
+        "byline": { "type": "byline", "settings": { "text": "Words by the studio · Photography by name" } }
+      },
+      "block_order": ["heading", "byline", "paragraph"],
+      "settings": {
+        "layout": "image_right",
+        "image_ratio": "portrait",
+        "eyebrow": "The story",
+        "color_scheme": "scheme-2",
+        "padding_top": 96,
+        "padding_bottom": 96
+      }
+    },
+    "lookbook_2": {
+      "type": "lookbook-hotspot",
+      "blocks": {
+        "h1": { "type": "hotspot", "settings": { "position_x": 24, "position_y": 42 } },
+        "h2": { "type": "hotspot", "settings": { "position_x": 50, "position_y": 55 } },
+        "h3": { "type": "hotspot", "settings": { "position_x": 76, "position_y": 36 } }
+      },
+      "block_order": ["h1", "h2", "h3"],
+      "settings": {
+        "eyebrow": "Look 02",
+        "heading": "Evening at home",
+        "pin_style": "numbered",
+        "reveal_mode": "click",
+        "color_scheme": "scheme-3",
+        "padding_top": 64,
+        "padding_bottom": 96
+      }
+    },
+    "featured_collection": {
+      "type": "featured-collection",
+      "settings": {
+        "title": "Shop the lookbook",
+        "heading_size": "h2",
+        "collection": "all",
+        "products_to_show": 8,
+        "columns_desktop": 4,
+        "color_scheme": "scheme-1",
+        "show_view_all": true,
+        "image_ratio": "portrait",
+        "show_secondary_image": true,
+        "show_vendor": true,
+        "columns_mobile": "2",
+        "padding_top": 64,
+        "padding_bottom": 96
+      }
+    }
+  },
+  "order": ["image_banner", "lookbook_1", "editorial_story", "lookbook_2", "featured_collection"]
+}

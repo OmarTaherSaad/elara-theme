@@ -1,6 +1,21 @@
 {{ 'section-blog-post.css' | asset_url | stylesheet_tag }}
+{{ 'section-article-editorial.css' | asset_url | stylesheet_tag }}
 
-<article class="article-template">
+{%- liquid
+  comment
+    Compute reading time client-side-free. Strip HTML, count words, divide
+    by 200 wpm, round up to the nearest minute. Floor at 1 minute.
+  endcomment
+  assign article_word_count = article.content | strip_html | strip_newlines | split: ' ' | size
+  assign reading_time_minutes = article_word_count | divided_by: 200 | at_least: 1
+  if section.settings.elara_editorial_layout == nil
+    assign elara_editorial = true
+  else
+    assign elara_editorial = section.settings.elara_editorial_layout
+  endif
+-%}
+
+<article class="article-template{% if elara_editorial %} article-template--editorial{% endif %}">
   {%- for block in section.blocks -%}
     {%- case block.type -%}
       {%- when '@app' -%}
@@ -43,29 +58,49 @@
 
       {%- when 'title' -%}
         <header
-          class="page-width page-width--narrow{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
+          class="page-width page-width--narrow{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}{% if elara_editorial %} article-template__header--editorial{% endif %}"
           {{ block.shopify_attributes }}
         >
-          <h1
-            class="article-template__title"
-          >
-            {{ article.title | escape }}
-          </h1>
-          {%- if block.settings.blog_show_date -%}
-            <span class="circle-divider caption-with-letter-spacing">
-              {{- article.published_at | time_tag: format: 'date' -}}
-            </span>
-          {%- endif -%}
-          {%- if block.settings.blog_show_author -%}
-            <span class="caption-with-letter-spacing">
-              <span>{{ article.author }}</span>
-            </span>
+          {%- if elara_editorial -%}
+            {%- if article.tags.size > 0 -%}
+              <p class="elara-eyebrow article-template__eyebrow">{{ article.tags.first | escape }}</p>
+            {%- elsif blog.title != blank -%}
+              <p class="elara-eyebrow article-template__eyebrow">{{ blog.title | escape }}</p>
+            {%- endif -%}
+            <h1 class="elara-display-lg article-template__title">{{ article.title | escape }}</h1>
+            <div class="article-template__meta">
+              {%- if block.settings.blog_show_date -%}
+                <span class="article-template__meta-item">
+                  <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
+                    {{- article.published_at | time_tag: format: 'date' -}}
+                  </time>
+                </span>
+              {%- endif -%}
+              {%- if block.settings.blog_show_author -%}
+                <span class="article-template__meta-item">{{ article.author | escape }}</span>
+              {%- endif -%}
+              <span class="article-template__meta-item">
+                {{ 'sections.elara.article.reading_time' | t: count: reading_time_minutes }}
+              </span>
+            </div>
+          {%- else -%}
+            <h1 class="article-template__title">{{ article.title | escape }}</h1>
+            {%- if block.settings.blog_show_date -%}
+              <span class="circle-divider caption-with-letter-spacing">
+                {{- article.published_at | time_tag: format: 'date' -}}
+              </span>
+            {%- endif -%}
+            {%- if block.settings.blog_show_author -%}
+              <span class="caption-with-letter-spacing">
+                <span>{{ article.author }}</span>
+              </span>
+            {%- endif -%}
           {%- endif -%}
         </header>
 
       {%- when 'content' -%}
         <div
-          class="article-template__content page-width page-width--narrow rte{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+          class="article-template__content page-width page-width--narrow rte{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}{% if elara_editorial %} article-template__content--editorial{% endif %}"
           {{ block.shopify_attributes }}
         >
           {{ article.content }}
@@ -297,6 +332,19 @@
   "name": "t:sections.main-article.name",
   "tag": "section",
   "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Editorial"
+    },
+    {
+      "type": "checkbox",
+      "id": "elara_editorial_layout",
+      "default": true,
+      "label": "Editorial layout",
+      "info": "Magazine-style: eyebrow + serif display headline + meta row (date · author · reading time) + drop-cap on the first paragraph."
+    }
+  ],
   "blocks": [
     {
       "type": "@app"

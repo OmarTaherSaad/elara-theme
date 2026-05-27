@@ -1,0 +1,111 @@
+{
+  "sections": {
+    "image_banner": {
+      "type": "image-banner",
+      "blocks": {
+        "heading": { "type": "heading", "settings": { "heading": "Size guide", "heading_size": "h1" } },
+        "text": { "type": "text", "settings": { "text": "Measurements, fit notes, and how each piece sits.", "text_style": "subtitle" } }
+      },
+      "block_order": ["heading", "text"],
+      "settings": {
+        "image_overlay_opacity": 20,
+        "image_height": "medium",
+        "desktop_content_position": "middle-center",
+        "show_text_box": false,
+        "desktop_content_alignment": "center",
+        "color_scheme": "scheme-2",
+        "mobile_content_alignment": "center"
+      }
+    },
+    "intro": {
+      "type": "rich-text",
+      "blocks": {
+        "heading": { "type": "heading", "settings": { "heading": "How to measure", "heading_size": "h2" } },
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Measure against the body with a relaxed posture and a soft tape. For best results, wear the kind of layer you'd typically wear under the piece you're sizing.</p><p><strong>Chest:</strong> at the fullest point, across the shoulder blades. <strong>Waist:</strong> at the natural waist, where the body bends. <strong>Hip:</strong> at the fullest point of the seat.</p>"
+          }
+        }
+      },
+      "block_order": ["heading", "text"],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "full_width": false,
+        "padding_top": 64,
+        "padding_bottom": 32
+      }
+    },
+    "size_table": {
+      "type": "rich-text",
+      "blocks": {
+        "heading": { "type": "heading", "settings": { "heading": "Womenswear", "heading_size": "h3" } },
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "<table><thead><tr><th>Size</th><th>Bust (cm)</th><th>Waist (cm)</th><th>Hip (cm)</th></tr></thead><tbody><tr><td>XS</td><td>78–82</td><td>60–64</td><td>86–90</td></tr><tr><td>S</td><td>82–86</td><td>64–68</td><td>90–94</td></tr><tr><td>M</td><td>86–92</td><td>68–74</td><td>94–100</td></tr><tr><td>L</td><td>92–98</td><td>74–80</td><td>100–106</td></tr><tr><td>XL</td><td>98–104</td><td>80–86</td><td>106–112</td></tr></tbody></table>"
+          }
+        }
+      },
+      "block_order": ["heading", "text"],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "full_width": false,
+        "padding_top": 16,
+        "padding_bottom": 48
+      }
+    },
+    "image_with_text": {
+      "type": "image-with-text",
+      "blocks": {
+        "heading": { "type": "heading", "settings": { "heading": "Fit notes", "heading_size": "h2" } },
+        "text": { "type": "text", "settings": { "text": "<p>Each silhouette has its own intended ease. Tailored pieces sit close. Knits relax. Outerwear is cut to layer over a midweight knit. When you're between sizes, size down for structured cuts, size up for knits and drape.</p>" } }
+      },
+      "block_order": ["heading", "text"],
+      "settings": {
+        "color_scheme": "scheme-2",
+        "image_ratio": "landscape",
+        "layout": "text_first",
+        "padding_top": 32,
+        "padding_bottom": 48
+      }
+    },
+    "faq": {
+      "type": "collapsible-content",
+      "blocks": {
+        "row_1": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "What if I'm between sizes?",
+            "row_content": "<p>Size down for structured pieces, up for knits and outerwear meant to layer.</p>"
+          }
+        },
+        "row_2": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "How do I find my measurements?",
+            "row_content": "<p>Use the guide above. If you'd like a second opinion, contact the concierge — we'll help you size from a recent garment.</p>"
+          }
+        },
+        "row_3": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "Can I exchange for a different size?",
+            "row_content": "<p>Yes. Within 30 days, unworn pieces can be exchanged or returned at no cost. See our shipping & returns policy for details.</p>"
+          }
+        }
+      },
+      "block_order": ["row_1", "row_2", "row_3"],
+      "settings": {
+        "heading": "Common questions",
+        "heading_size": "h2",
+        "color_scheme": "scheme-1",
+        "container_color_scheme": "background-2",
+        "layout": "row",
+        "padding_top": 48,
+        "padding_bottom": 96
+      }
+    }
+  },
+  "order": ["image_banner", "intro", "size_table", "image_with_text", "faq"]
+}

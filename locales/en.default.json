@@ -263,8 +263,10 @@
       }
     },
     "404": {
-      "title": "Page not found",
-      "subtext": "404"
+      "title": "We can't find that page",
+      "subtext": "The link may be outdated, or the page may have moved. Try one of the routes below.",
+      "eyebrow": "404 · Page not found",
+      "back_home": "Return home"
     }
   },
   "sections": {
@@ -306,6 +308,14 @@
         "gift_note_label": "Gift message",
         "gift_note_placeholder": "Add a personal note with this order…",
         "gift_note_hint": "Saved automatically when you close the field."
+      },
+      "article": {
+        "reading_time": {
+          "one": "{{ count }} min read",
+          "other": "{{ count }} min read"
+        },
+        "category_label": "In",
+        "related_heading": "More from the journal"
       }
     },
     "announcements": {
