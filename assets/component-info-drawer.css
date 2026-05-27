@@ -1,0 +1,151 @@
+/* ============================================================
+   Elara info drawer
+   Generic right-edge drawer with overlay backdrop. Used for size
+   guides, gift forms, fit calculators, and any auxiliary content
+   that shouldn't live inline on the product page.
+   ============================================================ */
+
+.elara-info-drawer[hidden] {
+  display: none;
+}
+
+.elara-info-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+}
+
+.elara-info-drawer__overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(20, 17, 14, 0.45);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, ease);
+}
+
+.elara-info-drawer--open {
+  pointer-events: auto;
+}
+
+.elara-info-drawer--open .elara-info-drawer__overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.elara-info-drawer__panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(48rem, 100vw);
+  background-color: rgb(var(--color-background));
+  color: rgb(var(--color-foreground));
+  box-shadow: var(--elara-shadow-4, -24px 0 48px rgba(20, 17, 14, 0.08));
+  display: flex;
+  flex-direction: column;
+  transform: translate3d(100%, 0, 0);
+  transition: transform var(--elara-dur-base, 400ms) var(--elara-ease-luxury, cubic-bezier(0.22, 0.61, 0.36, 1));
+  outline: none;
+}
+
+.elara-info-drawer--open .elara-info-drawer__panel {
+  transform: translate3d(0, 0, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .elara-info-drawer__panel,
+  .elara-info-drawer__overlay {
+    transition: none;
+  }
+}
+
+.elara-info-drawer__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--elara-space-4, 1.6rem);
+  padding: var(--elara-space-5, 2.4rem) var(--elara-space-5, 2.4rem) var(--elara-space-4, 1.6rem);
+  border-bottom: 1px solid var(--elara-border-hair);
+}
+
+.elara-info-drawer__titles {
+  display: flex;
+  flex-direction: column;
+  gap: var(--elara-space-1, 0.4rem);
+  min-width: 0;
+}
+
+.elara-info-drawer__eyebrow {
+  margin: 0;
+}
+
+.elara-info-drawer__heading {
+  margin: 0;
+  color: rgb(var(--color-foreground));
+}
+
+.elara-info-drawer__close {
+  flex: 0 0 auto;
+  width: 4.4rem;
+  height: 4.4rem;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: rgb(var(--color-foreground));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.elara-info-drawer__close:focus-visible {
+  outline: 2px solid var(--elara-accent, #b8956a);
+  outline-offset: 2px;
+}
+
+.elara-info-drawer__close svg {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+
+.elara-info-drawer__body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: var(--elara-space-5, 2.4rem);
+  font-family: var(--font-body-family);
+  font-size: 1.5rem;
+  line-height: 1.65;
+}
+
+.elara-info-drawer__loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--elara-space-7, 4.8rem) 0;
+}
+
+.elara-info-drawer__spinner {
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  border: 2px solid rgba(var(--color-foreground), 0.15);
+  border-top-color: rgb(var(--color-foreground));
+  animation: elaraSpin 0.8s linear infinite;
+}
+
+@keyframes elaraSpin {
+  to { transform: rotate(360deg); }
+}
+
+.elara-info-drawer__error {
+  text-align: center;
+  color: var(--elara-error, #8e2a20);
+  font-size: 1.4rem;
+}
+
+/* When the drawer is open, lock body scroll behind it. */
+html.elara-info-drawer-open {
+  overflow: hidden;
+}

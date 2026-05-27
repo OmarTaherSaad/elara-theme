@@ -1,0 +1,24 @@
+{%- comment -%}
+  A minimal section used as the response target for
+  /products/{handle}?section_id=recently-viewed-card.
+  Returns a single editorial product card so the RecentlyViewed
+  custom element can hydrate the horizontal scroller without
+  re-fetching the entire product page.
+{%- endcomment -%}
+{{ 'component-card-editorial.css' | asset_url | stylesheet_tag }}
+
+{% render 'card-product-editorial',
+  card_product: product,
+  media_aspect_ratio: 'portrait',
+  show_vendor: true,
+  show_secondary_image: false,
+  sizes: '(min-width: 990px) 20rem, 18rem'
+%}
+
+{% schema %}
+{
+  "name": "Recently viewed card",
+  "tag": "div",
+  "settings": []
+}
+{% endschema %}

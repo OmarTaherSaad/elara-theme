@@ -1,0 +1,126 @@
+{{ 'component-card-editorial.css' | asset_url | stylesheet_tag }}
+{{ 'section-recently-viewed.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'recently-viewed.js' | asset_url }}" defer="defer"></script>
+
+<section
+  class="elara-recently-viewed color-{{ section.settings.color_scheme }} gradient elara-padded-section section-{{ section.id }}-padding"
+  hidden
+  data-recently-viewed-section
+>
+  <div class="page-width">
+    <header class="elara-recently-viewed__header">
+      {%- if section.settings.eyebrow != blank -%}
+        {% render 'editorial-eyebrow', text: section.settings.eyebrow %}
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="elara-h2 elara-recently-viewed__heading">{{ section.settings.heading | escape }}</h2>
+      {%- endif -%}
+    </header>
+
+    <elara-recently-viewed
+      class="elara-recently-viewed__container"
+      data-storage-key="{{ section.settings.storage_key | default: 'elara:recently-viewed' }}"
+      data-max-items="{{ section.settings.max_items }}"
+      data-current-handle="{{ product.handle | default: '' }}"
+      data-card-section="recently-viewed-card"
+    >
+      <ul class="elara-recently-viewed__track list-unstyled" data-recently-viewed-track></ul>
+      <p class="elara-recently-viewed__empty" data-recently-viewed-empty hidden>
+        {{ 'sections.elara.recently_viewed.empty' | t }}
+      </p>
+    </elara-recently-viewed>
+  </div>
+</section>
+
+{% style %}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Recently viewed",
+  "tag": "section",
+  "class": "section section--recently-viewed",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Your edits"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Recently viewed"
+    },
+    {
+      "type": "range",
+      "id": "max_items",
+      "min": 4,
+      "max": 16,
+      "step": 1,
+      "default": 8,
+      "label": "Max items stored"
+    },
+    {
+      "type": "text",
+      "id": "storage_key",
+      "label": "Local storage key",
+      "default": "elara:recently-viewed",
+      "info": "Change this to reset the persisted history for all visitors."
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 64
+    }
+  ],
+  "presets": [
+    {
+      "name": "Recently viewed"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["product", "collection", "index", "search"]
+  }
+}
+{% endschema %}

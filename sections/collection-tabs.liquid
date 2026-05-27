@@ -1,5 +1,5 @@
 {{ 'section-collection-tabs.css' | asset_url | stylesheet_tag }}
-{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-card-editorial.css' | asset_url | stylesheet_tag }}
 {{ 'component-price.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'tabbed-carousel.js' | asset_url }}" defer="defer"></script>
 
@@ -66,13 +66,11 @@
               >
                 {%- for product in collection_object.products limit: products_per_tab -%}
                   <li class="elara-tabs__grid-item">
-                    {% render 'card-product',
+                    {% render 'card-product-editorial',
                       card_product: product,
                       media_aspect_ratio: 'portrait',
-                      show_secondary_image: true,
                       show_vendor: section.settings.show_vendor,
-                      show_rating: false,
-                      show_quick_add: false
+                      show_secondary_image: true
                     %}
                   </li>
                 {%- endfor -%}

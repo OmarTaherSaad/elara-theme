@@ -1,0 +1,115 @@
+{%- comment -%}
+  Renders an editorial product card. Leaner than Dawn's card-product —
+  opinionated for the Elara aesthetic.
+
+  Accepts:
+    - card_product: {Object} Required. Product Liquid object.
+    - media_aspect_ratio: {String} 'portrait' (default) | 'square' | 'landscape' | 'natural'.
+    - show_vendor: {Boolean} Show the vendor as an eyebrow above the title. Default true.
+    - show_secondary_image: {Boolean} Crossfade to the second media on hover. Default true.
+    - sizes: {String} Optional override for the responsive image sizes attribute.
+    - placeholder_image: {String} Placeholder slug if no product provided. Default 'product-apparel-2'.
+
+  Usage:
+    {% render 'card-product-editorial',
+       card_product: product,
+       media_aspect_ratio: 'portrait',
+       show_vendor: true,
+       show_secondary_image: true %}
+{%- endcomment -%}
+
+{%- liquid
+  assign ratio_class = 'elara-card__media--portrait'
+  case media_aspect_ratio
+    when 'square'
+      assign ratio_class = 'elara-card__media--square'
+    when 'landscape'
+      assign ratio_class = 'elara-card__media--landscape'
+    when 'natural'
+      assign ratio_class = 'elara-card__media--natural'
+  endcase
+
+  assign show_vendor_resolved = true
+  if show_vendor == false
+    assign show_vendor_resolved = false
+  endif
+
+  assign show_secondary = true
+  if show_secondary_image == false
+    assign show_secondary = false
+  endif
+
+  assign placeholder = placeholder_image | default: 'product-apparel-2'
+  assign img_sizes = sizes | default: '(min-width: 990px) calc((100vw - 12rem) / 4), (min-width: 750px) calc((100vw - 8rem) / 3), calc((100vw - 3rem) / 2)'
+-%}
+
+<article class="elara-card elara-card--product">
+  {%- if card_product != blank and card_product != empty -%}
+    <a href="{{ card_product.url }}" class="elara-card__media-link" aria-label="{{ card_product.title | escape }}">
+      <div class="elara-card__media {{ ratio_class }}{% if show_secondary and card_product.media[1] %} elara-card__media--has-secondary{% endif %}">
+        {%- if card_product.featured_media != blank -%}
+          {{
+            card_product.featured_media.preview_image
+            | image_url: width: 1100
+            | image_tag:
+              loading: 'lazy',
+              class: 'elara-card__image elara-card__image--primary',
+              widths: '180, 240, 360, 540, 720, 990, 1100',
+              sizes: img_sizes,
+              alt: card_product.featured_media.alt | default: card_product.title
+          }}
+          {%- if show_secondary and card_product.media[1] != blank -%}
+            {{
+              card_product.media[1].preview_image
+              | image_url: width: 1100
+              | image_tag:
+                loading: 'lazy',
+                class: 'elara-card__image elara-card__image--secondary',
+                widths: '180, 240, 360, 540, 720, 990, 1100',
+                sizes: img_sizes,
+                alt: card_product.media[1].alt | default: card_product.title,
+                aria_hidden: 'true'
+            }}
+          {%- endif -%}
+        {%- else -%}
+          {{ placeholder | placeholder_svg_tag: 'elara-card__image elara-card__image--placeholder' }}
+        {%- endif -%}
+
+        {%- if card_product.compare_at_price > card_product.price and card_product.available -%}
+          <span class="elara-card__badge elara-card__badge--sale">{{ 'products.product.on_sale' | t }}</span>
+        {%- elsif card_product.available == false -%}
+          <span class="elara-card__badge elara-card__badge--sold-out">{{ 'products.product.sold_out' | t }}</span>
+        {%- endif -%}
+      </div>
+    </a>
+
+    <div class="elara-card__content">
+      <div class="elara-card__heading">
+        {%- if show_vendor_resolved and card_product.vendor != blank -%}
+          <p class="elara-card__vendor elara-eyebrow">{{ card_product.vendor | escape }}</p>
+        {%- endif -%}
+        <p class="elara-card__title">
+          <a href="{{ card_product.url }}" class="elara-card__title-link">{{ card_product.title | escape }}</a>
+        </p>
+      </div>
+      <p class="elara-card__price">
+        {%- if card_product.price_varies -%}
+          {{ 'products.product.price.from_price_html' | t: price: card_product.price_min | money }}
+        {%- else -%}
+          {{ card_product.price | money }}
+        {%- endif -%}
+        {%- if card_product.compare_at_price > card_product.price -%}
+          <s class="elara-card__price-compare">{{ card_product.compare_at_price | money }}</s>
+        {%- endif -%}
+      </p>
+    </div>
+  {%- else -%}
+    <div class="elara-card__media {{ ratio_class }}">
+      {{ placeholder | placeholder_svg_tag: 'elara-card__image elara-card__image--placeholder' }}
+    </div>
+    <div class="elara-card__content">
+      <p class="elara-card__title">{{ 'onboarding.product_title' | t }}</p>
+      <p class="elara-card__price">{{ 1999 | money }}</p>
+    </div>
+  {%- endif -%}
+</article>

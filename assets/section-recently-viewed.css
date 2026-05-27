@@ -1,0 +1,55 @@
+/* ============================================================
+   Elara recently-viewed section
+   Horizontal scroll of editorial product cards hydrated client-side
+   from localStorage. Hidden by default; revealed once at least one
+   card has resolved.
+   ============================================================ */
+
+.elara-recently-viewed[hidden] {
+  display: none;
+}
+
+.elara-recently-viewed__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--elara-space-1, 0.4rem);
+  margin-bottom: var(--elara-space-5, 2.4rem);
+}
+
+.elara-recently-viewed__heading {
+  margin: 0;
+}
+
+.elara-recently-viewed__container {
+  display: block;
+}
+
+.elara-recently-viewed__track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(16rem, 20rem);
+  gap: var(--elara-space-3, 1.2rem);
+  margin: 0;
+  padding: 0 0 var(--elara-space-3, 1.2rem);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media screen and (min-width: 750px) {
+  .elara-recently-viewed__track {
+    grid-auto-columns: minmax(20rem, 24rem);
+    gap: var(--elara-space-4, 1.6rem);
+  }
+}
+
+.elara-recently-viewed__item {
+  scroll-snap-align: start;
+  min-width: 0;
+}
+
+.elara-recently-viewed__empty {
+  margin: 0;
+  font-style: italic;
+  color: rgba(var(--color-foreground), 0.55);
+}

@@ -15,6 +15,9 @@
   {{ 'component-slider.css' | asset_url | stylesheet_tag }}
   {{ 'component-rating.css' | asset_url | stylesheet_tag }}
   {{ 'component-deferred-media.css' | asset_url | stylesheet_tag }}
+  {{ 'component-card-editorial.css' | asset_url | stylesheet_tag }}
+  {{ 'component-info-drawer.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'info-drawer.js' | asset_url }}" defer="defer"></script>
 
   {% unless product.has_only_default_variant %}
     {{ 'component-product-variant-picker.css' | asset_url | stylesheet_tag }}
@@ -74,7 +77,7 @@
 
   {% assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src' %}
   <div class="page-width">
-    <div class="product product--{{ section.settings.media_size }} product--{{ section.settings.media_position }} product--{{ section.settings.gallery_layout }} product--mobile-{{ section.settings.mobile_thumbnails }} grid grid--1-col {% if product.media.size > 0 %}grid--2-col-tablet{% else %}product--no-media{% endif %}">
+    <div class="product product--{{ section.settings.media_size }} product--{{ section.settings.media_position }} product--{{ section.settings.gallery_layout }} product--mobile-{{ section.settings.mobile_thumbnails }} grid grid--1-col {% if product.media.size > 0 %}grid--2-col-tablet{% else %}product--no-media{% endif %}{% if section.settings.elara_sticky_media and product.media.size > 0 %} product--elara-sticky-media{% endif %}">
       <div class="grid__item product__media-wrapper">
         {% render 'product-media-gallery', variant_images: variant_images %}
       </div>
@@ -227,6 +230,87 @@
                     </div>
                   </details>
                 </div>
+              {%- when 'accordion_group' -%}
+                <div class="elara-product__accordion" {{ block.shopify_attributes }}>
+                  {%- for n in (1..6) -%}
+                    {%- assign heading_key = 'panel_' | append: n | append: '_heading' -%}
+                    {%- assign content_key = 'panel_' | append: n | append: '_content' -%}
+                    {%- assign panel_heading = block.settings[heading_key] -%}
+                    {%- assign panel_content = block.settings[content_key] -%}
+                    {%- if panel_heading != blank and panel_content != blank -%}
+                      <details id="AccordionGroup-{{ block.id }}-{{ section.id }}-{{ n }}"{% if block.settings.open_first and n == 1 %} open{% endif %}>
+                        <summary>
+                          <span class="elara-product__accordion-title">{{ panel_heading | escape }}</span>
+                        </summary>
+                        <div class="elara-product__accordion-content rte">
+                          {{ panel_content }}
+                        </div>
+                      </details>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </div>
+              {%- when 'complete_look' -%}
+                {%- liquid
+                  assign look_products = empty
+                  if product.metafields.elara.complete_look.value != blank
+                    assign look_products = product.metafields.elara.complete_look.value
+                  elsif block.settings.fallback_collection != blank
+                    assign look_products = collections[block.settings.fallback_collection].products
+                  endif
+                -%}
+                {%- if look_products != empty and look_products.size > 0 -%}
+                  <div class="elara-product__complete-look" {{ block.shopify_attributes }}>
+                    <p class="elara-product__complete-look-heading">
+                      {%- if block.settings.heading != blank -%}
+                        {{ block.settings.heading | escape }}
+                      {%- else -%}
+                        {{ 'sections.elara.product.complete_look_heading' | t }}
+                      {%- endif -%}
+                    </p>
+                    <ul class="elara-product__complete-look-track list-unstyled">
+                      {%- for look_product in look_products limit: 8 -%}
+                        {%- if look_product.id == product.id -%}{%- continue -%}{%- endif -%}
+                        <li class="elara-product__complete-look-item">
+                          {% render 'card-product-editorial',
+                            card_product: look_product,
+                            media_aspect_ratio: 'portrait',
+                            show_vendor: false,
+                            show_secondary_image: false,
+                            sizes: '18rem'
+                          %}
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  </div>
+                {%- endif -%}
+              {%- when 'size_guide_drawer' -%}
+                {%- if block.settings.page != blank -%}
+                  {%- assign size_drawer_id = 'SizeGuideDrawer-' | append: section.id | append: '-' | append: block.id -%}
+                  <div class="elara-product__size-guide-trigger" {{ block.shopify_attributes }}>
+                    <button
+                      type="button"
+                      class="elara-link"
+                      data-info-drawer-open="{{ size_drawer_id }}"
+                    >
+                      {%- if block.settings.button_label != blank -%}
+                        {{ block.settings.button_label | escape }}
+                      {%- else -%}
+                        {{ 'sections.elara.product.size_guide_label' | t }}
+                      {%- endif -%}
+                      <span aria-hidden="true">&rarr;</span>
+                    </button>
+                  </div>
+                  {%- capture size_guide_html -%}
+                    <h2 class="elara-h2">{{ block.settings.page.title | escape }}</h2>
+                    <div class="rte">{{ block.settings.page.content }}</div>
+                  {%- endcapture -%}
+                  {% render 'info-drawer',
+                    id: size_drawer_id,
+                    eyebrow: block.settings.eyebrow,
+                    heading: block.settings.page.title,
+                    content_html: size_guide_html
+                  %}
+                {%- endif -%}
               {%- when 'quantity_selector' -%}
                 <div
                   id="Quantity-Form-{{ section.id }}"
@@ -1165,6 +1249,92 @@
       ]
     },
     {
+      "type": "accordion_group",
+      "name": "Editorial accordion",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "A single stacked accordion replacing scattered collapsible blocks. Define up to six panels below."
+        },
+        {
+          "type": "checkbox",
+          "id": "open_first",
+          "default": false,
+          "label": "Open first panel by default"
+        },
+        { "type": "header", "content": "Panel 1" },
+        { "type": "text", "id": "panel_1_heading", "label": "Heading", "default": "Details" },
+        { "type": "richtext", "id": "panel_1_content", "label": "Content" },
+        { "type": "header", "content": "Panel 2" },
+        { "type": "text", "id": "panel_2_heading", "label": "Heading", "default": "Materials" },
+        { "type": "richtext", "id": "panel_2_content", "label": "Content" },
+        { "type": "header", "content": "Panel 3" },
+        { "type": "text", "id": "panel_3_heading", "label": "Heading", "default": "Care" },
+        { "type": "richtext", "id": "panel_3_content", "label": "Content" },
+        { "type": "header", "content": "Panel 4" },
+        { "type": "text", "id": "panel_4_heading", "label": "Heading", "default": "Shipping & returns" },
+        { "type": "richtext", "id": "panel_4_content", "label": "Content" },
+        { "type": "header", "content": "Panel 5" },
+        { "type": "text", "id": "panel_5_heading", "label": "Heading" },
+        { "type": "richtext", "id": "panel_5_content", "label": "Content" },
+        { "type": "header", "content": "Panel 6" },
+        { "type": "text", "id": "panel_6_heading", "label": "Heading" },
+        { "type": "richtext", "id": "panel_6_content", "label": "Content" }
+      ]
+    },
+    {
+      "type": "complete_look",
+      "name": "Complete the look",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Renders a horizontal scroller of suggested products. Source: product.metafields.elara.complete_look (List of product references), falling back to the selected collection below."
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Complete the look"
+        },
+        {
+          "type": "collection",
+          "id": "fallback_collection",
+          "label": "Fallback collection",
+          "info": "Used only when the product has no complete_look metafield."
+        }
+      ]
+    },
+    {
+      "type": "size_guide_drawer",
+      "name": "Size guide drawer",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Adds a trigger that opens a right-edge drawer with size-chart content. Point at a Shopify page that holds the chart and copy."
+        },
+        {
+          "type": "text",
+          "id": "eyebrow",
+          "label": "Drawer eyebrow",
+          "default": "Fit"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Trigger label",
+          "default": "Size guide"
+        },
+        {
+          "type": "page",
+          "id": "page",
+          "label": "Size guide page"
+        }
+      ]
+    },
+    {
       "type": "popup",
       "name": "t:sections.main-product.blocks.popup.name",
       "settings": [
@@ -2090,10 +2260,22 @@
   ],
   "settings": [
     {
+      "type": "header",
+      "content": "Editorial layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "elara_sticky_media",
+      "default": true,
+      "label": "Sticky media (desktop)",
+      "info": "Pins the product gallery while the info column scrolls. Recommended for editorial product pages."
+    },
+    {
       "type": "checkbox",
       "id": "enable_sticky_info",
-      "default": true,
-      "label": "t:sections.main-product.settings.enable_sticky_info.label"
+      "default": false,
+      "label": "t:sections.main-product.settings.enable_sticky_info.label",
+      "info": "Legacy: pins the info column instead of the media. Disable if Sticky media is enabled."
     },
     {
       "type": "color_scheme",

@@ -85,3 +85,55 @@
   transform: rotate(-45deg);
   transform-origin: left;
 }
+
+/* ============================================================
+   Elara editorial swatch polish
+   Refined ring on selected, deliberate hover, larger default size,
+   and a quieter unselected border.
+   ============================================================ */
+
+.product-form__input--swatch .swatch-input__input + .swatch-input__label {
+  --swatch-input--size: 4.4rem;
+  outline-offset: 0.4rem;
+  transition: outline-offset var(--elara-dur-fast, 240ms) var(--elara-ease-out-quart, ease),
+              outline-color var(--elara-dur-fast, 240ms) ease;
+}
+
+.product-form__input--swatch .swatch-input__input + .swatch-input__label .swatch {
+  border-color: var(--elara-border-soft, rgba(0, 0, 0, 0.16));
+  transition: border-color var(--elara-dur-fast, 240ms) ease;
+}
+
+.product-form__input--swatch .swatch-input__input:checked + .swatch-input__label {
+  outline: 1px solid rgb(var(--color-foreground));
+  outline-offset: 0.4rem;
+}
+
+.product-form__input--swatch .swatch-input__input:checked + .swatch-input__label .swatch {
+  border-color: rgb(var(--color-foreground));
+}
+
+.product-form__input--swatch .swatch-input__input:hover:not(:checked) + .swatch-input__label {
+  outline: 1px solid rgba(var(--color-foreground), 0.3);
+  outline-offset: 0.3rem;
+}
+
+/* Editorial option label treatment */
+.product-form__input .form__label {
+  font-family: var(--font-body-family);
+  font-weight: 500;
+  font-size: 1.1rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(var(--color-foreground), 0.7);
+}
+
+.product-form__input .form__label .header__active-option {
+  font-family: var(--font-body-family);
+  font-weight: 400;
+  font-size: 1.4rem;
+  letter-spacing: 0;
+  text-transform: none;
+  color: rgb(var(--color-foreground));
+  margin-left: 0.6rem;
+}

@@ -78,7 +78,8 @@
     "total_reviews": "total reviews",
     "star_reviews_info": "{{ rating_value }} out of {{ rating_max }} stars",
     "collapsible_content_title": "Collapsible content",
-    "complementary_products": "Complementary products"
+    "complementary_products": "Complementary products",
+    "drawer": "Drawer"
   },
   "blogs": {
     "article": {
@@ -284,6 +285,13 @@
       },
       "mega_menu": {
         "promo_default_cta": "Shop now"
+      },
+      "product": {
+        "complete_look_heading": "Complete the look",
+        "size_guide_label": "Size guide"
+      },
+      "recently_viewed": {
+        "empty": "Nothing recently viewed yet."
       }
     },
     "announcements": {

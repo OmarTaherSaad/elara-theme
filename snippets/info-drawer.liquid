@@ -1,0 +1,73 @@
+{%- comment -%}
+  Generic right-edge drawer container. Reusable for size guides, gift
+  recipient forms, fit calculators, store locators, etc. Pair with a
+  trigger button like:
+
+      <button type="button" data-info-drawer-open="SizeGuide-{{ section.id }}">
+        Size guide
+      </button>
+
+  Accepts:
+    - id:           {String} Required. The drawer's id. Trigger buttons reference
+                     this via data-info-drawer-open.
+    - heading:      {String} Optional drawer heading.
+    - eyebrow:      {String} Optional small eyebrow above the heading.
+    - fetch_url:    {String} Optional. If supplied, the drawer's content is
+                     fetched via Section Rendering API on first open instead
+                     of being rendered server-side. The response must contain
+                     the section markup.
+    - fetch_section_id: {String} The section_id parameter to fetch (only
+                     used with fetch_url).
+    - content_html: {String} Optional pre-rendered HTML to put inside the
+                     drawer body. Used when fetch_url is empty.
+
+  Usage:
+    {%- capture body -%}<p>Size chart content here.</p>{%- endcapture -%}
+    {% render 'info-drawer',
+      id: 'SizeGuide',
+      heading: 'Size guide',
+      content_html: body
+    %}
+{%- endcomment -%}
+{%- liquid
+  assign drawer_id = id | default: 'InfoDrawer'
+-%}
+<elara-info-drawer
+  id="{{ drawer_id }}"
+  class="elara-info-drawer"
+  {% if fetch_url %}data-fetch-url="{{ fetch_url }}"{% endif %}
+  {% if fetch_section_id %}data-fetch-section-id="{{ fetch_section_id }}"{% endif %}
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="{{ drawer_id }}-heading"
+  hidden
+>
+  <div class="elara-info-drawer__overlay" data-info-drawer-close aria-hidden="true"></div>
+  <aside class="elara-info-drawer__panel" tabindex="-1">
+    <header class="elara-info-drawer__header">
+      <div class="elara-info-drawer__titles">
+        {%- if eyebrow != blank -%}
+          <p class="elara-info-drawer__eyebrow elara-eyebrow">{{ eyebrow | escape }}</p>
+        {%- endif -%}
+        {%- if heading != blank -%}
+          <h2 id="{{ drawer_id }}-heading" class="elara-info-drawer__heading elara-h3">{{ heading | escape }}</h2>
+        {%- else -%}
+          <span id="{{ drawer_id }}-heading" class="visually-hidden">{{ 'accessibility.drawer' | t | default: 'Drawer' }}</span>
+        {%- endif -%}
+      </div>
+      <button type="button" class="elara-info-drawer__close" data-info-drawer-close aria-label="{{ 'accessibility.close' | t }}">
+        {{ 'icon-close.svg' | inline_asset_content }}
+      </button>
+    </header>
+    <div class="elara-info-drawer__body" data-info-drawer-body>
+      {%- if fetch_url -%}
+        <div class="elara-info-drawer__loader" data-info-drawer-loader>
+          <span class="visually-hidden">{{ 'accessibility.loading' | t | default: 'Loading…' }}</span>
+          <span class="elara-info-drawer__spinner" aria-hidden="true"></span>
+        </div>
+      {%- elsif content_html -%}
+        {{ content_html }}
+      {%- endif -%}
+    </div>
+  </aside>
+</elara-info-drawer>
