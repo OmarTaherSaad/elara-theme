@@ -12,6 +12,7 @@
 {% endcomment %}
 
 {{ 'component-pagination.css' | asset_url | stylesheet_tag }}
+{{ 'component-pagination-editorial.css' | asset_url | stylesheet_tag }}
 
 {%- if paginate.parts.size > 0 -%}
   <div class="pagination-wrapper" data-page="{{ paginate.current_page }}">

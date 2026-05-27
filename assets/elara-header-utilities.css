@@ -1,0 +1,184 @@
+/* ============================================================
+   Elara header utility polish
+   Refines the cart count bubble, localization (country/language)
+   selectors, account icon, and the right-side icon cluster on the
+   header. Loaded globally from layout/theme.liquid via header CSS.
+   ============================================================ */
+
+/* ---- Header icons cluster ---- */
+.header__icons {
+  gap: var(--elara-space-1, 0.4rem);
+}
+
+.header__icon {
+  width: 4.4rem;
+  height: 4.4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  color: rgb(var(--color-foreground));
+  transition: color var(--elara-dur-fast, 240ms) ease,
+              opacity var(--elara-dur-fast, 240ms) ease;
+}
+
+.header__icon:hover {
+  opacity: 0.7;
+}
+
+.header__icon .svg-wrapper {
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+}
+
+.header__icon .svg-wrapper svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ---- Cart count bubble — sleek pill with overline tracking ---- */
+.cart-count-bubble {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  min-width: 1.6rem;
+  height: 1.6rem;
+  padding: 0 0.4rem;
+  background-color: rgb(var(--color-foreground));
+  color: rgb(var(--color-background));
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body-family);
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.cart-count-bubble span[aria-hidden="true"] {
+  display: inline-block;
+  line-height: 1;
+}
+
+/* When in transparent-on-hero mode, invert the bubble */
+body.has-hero-template:not(.scrolled-past-header) .cart-count-bubble {
+  background-color: rgba(255, 255, 255, 0.95);
+  color: #14110e;
+}
+
+/* ---- Localization (country + language) selectors ---- */
+.localization-form__select.disclosure__button {
+  font-family: var(--font-body-family);
+  font-size: 1.2rem;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: rgb(var(--color-foreground));
+  background: transparent;
+  border: 0;
+  padding: 0.6rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  transition: opacity var(--elara-dur-fast, 240ms) ease;
+}
+
+.localization-form__select.disclosure__button:hover {
+  opacity: 0.65;
+}
+
+.localization-form__select.disclosure__button .icon-caret {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
+/* Disclosure list (the dropdown) — minimal hairline */
+.disclosure .disclosure__list {
+  background-color: rgb(var(--color-background));
+  border: 1px solid var(--elara-border-hair);
+  box-shadow: var(--elara-shadow-2, 0 4px 8px rgba(20, 17, 14, 0.04));
+  border-radius: 0;
+  padding: var(--elara-space-2, 0.8rem) 0;
+  min-width: 16rem;
+}
+
+.disclosure .disclosure__item {
+  padding: 0;
+}
+
+.disclosure .disclosure__item .link {
+  font-family: var(--font-body-family);
+  font-size: 1.3rem;
+  letter-spacing: 0.02em;
+  color: rgb(var(--color-foreground));
+  text-decoration: none;
+  padding: 0.8rem 1.6rem;
+  display: block;
+  transition: background-color var(--elara-dur-fast, 240ms) ease;
+}
+
+.disclosure .disclosure__item .link:hover,
+.disclosure .disclosure__item .link.disclosure__link--active {
+  background-color: var(--elara-surface-2, rgba(0, 0, 0, 0.04));
+}
+
+/* ---- Customer avatar — subtle, monochrome ---- */
+.header__icon--account .customer-avatar {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  background-color: rgba(var(--color-foreground), 0.08);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* ---- Mega menu summary affordance ---- */
+.header__menu-item {
+  font-family: var(--font-body-family);
+  font-weight: 500;
+  font-size: 1.2rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgb(var(--color-foreground));
+  padding: 1rem 1.6rem;
+  transition: opacity var(--elara-dur-fast, 240ms) ease;
+}
+
+.header__menu-item:hover,
+.header__menu-item:focus-visible {
+  opacity: 0.65;
+  text-decoration: none;
+}
+
+.header__menu-item .icon-caret {
+  width: 0.8rem;
+  height: 0.8rem;
+  margin-left: 0.4rem;
+}
+
+.header__active-menu-item {
+  position: relative;
+}
+
+.header__active-menu-item::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.4rem;
+  height: 1px;
+  background-color: currentColor;
+  opacity: 0.6;
+}
+
+/* ---- When header is transparent over hero, brighten the icons ---- */
+body.has-hero-template:not(.scrolled-past-header) .header__icon {
+  color: #ffffff;
+}
+
+body.has-hero-template:not(.scrolled-past-header) .localization-form__select.disclosure__button {
+  color: #ffffff;
+}

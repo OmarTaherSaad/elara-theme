@@ -1,0 +1,141 @@
+/* ============================================================
+   Elara cart notification toast editorial layer
+   Polishes the cart-notification popup (used when cart_type is
+   set to "notification"). Keeps Dawn's positioning behavior but
+   refines the typography, easing, and border treatment.
+   ============================================================ */
+
+cart-notification {
+  --popup-border-opacity: 0;
+  --popup-shadow-opacity: 0.08;
+}
+
+cart-notification .cart-notification {
+  background-color: rgb(var(--color-background));
+  padding: var(--elara-space-5, 2.4rem);
+  border-top: 1px solid var(--elara-border-hair);
+  box-shadow: var(--elara-shadow-3, 0 12px 24px rgba(20, 17, 14, 0.08));
+  transition: transform var(--elara-dur-base, 480ms) var(--elara-ease-luxury, cubic-bezier(0.22, 1, 0.36, 1)),
+              opacity var(--elara-dur-base, 480ms) var(--elara-ease-luxury, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+@media screen and (min-width: 750px) {
+  cart-notification .cart-notification {
+    max-width: 40rem;
+    border: 1px solid var(--elara-border-hair);
+    border-radius: 0;
+  }
+}
+
+/* Header row */
+.cart-notification__header {
+  display: flex;
+  align-items: center;
+  gap: var(--elara-space-3, 1.2rem);
+  margin-bottom: var(--elara-space-4, 1.6rem);
+}
+
+.cart-notification__heading {
+  font-family: var(--font-body-family);
+  font-weight: 500;
+  font-size: 1.2rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgb(var(--color-foreground));
+  margin: 0;
+  flex: 1 1 auto;
+}
+
+.cart-notification__heading .icon-checkmark {
+  width: 1.4rem;
+  height: 1.4rem;
+  color: rgb(var(--color-foreground));
+  margin-right: 0.4rem;
+}
+
+.cart-notification__close {
+  flex: 0 0 auto;
+  width: 3.6rem;
+  height: 3.6rem;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+/* Product line */
+.cart-notification-product {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--elara-space-4, 1.6rem);
+  padding-bottom: var(--elara-space-4, 1.6rem);
+  border-bottom: 1px solid var(--elara-border-hair);
+  margin-bottom: var(--elara-space-4, 1.6rem);
+}
+
+.cart-notification-product__image {
+  display: block;
+  width: 7.2rem;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+
+.cart-notification-product__name {
+  font-family: var(--font-heading-family);
+  font-size: 1.5rem;
+  letter-spacing: -0.005em;
+  line-height: 1.3;
+  color: rgb(var(--color-foreground));
+  margin: 0 0 0.4rem;
+}
+
+.cart-notification-product__variant,
+.cart-notification-product dt,
+.cart-notification-product dd {
+  font-family: var(--font-body-family);
+  font-size: 1.2rem;
+  letter-spacing: 0.02em;
+  color: rgba(var(--color-foreground), 0.7);
+  margin: 0;
+}
+
+.cart-notification-product dl {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+/* CTAs */
+.cart-notification__links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--elara-space-2, 0.8rem);
+}
+
+.cart-notification__links .button,
+.cart-notification__links button {
+  width: 100%;
+  min-height: 5.6rem;
+}
+
+/* Secondary "Continue shopping" link */
+.cart-notification__links .button--secondary {
+  background: transparent !important;
+  border: 0 !important;
+  min-height: auto !important;
+  padding: 0.8rem 0 !important;
+  text-decoration: underline;
+  text-underline-offset: 0.3rem;
+}
+
+.cart-notification__links .button--secondary::before,
+.cart-notification__links .button--secondary::after {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  cart-notification .cart-notification {
+    transition: none;
+  }
+}

@@ -1,0 +1,105 @@
+/* ============================================================
+   Elara search page editorial layer
+   Applied via the .template-search--editorial wrapper.
+   ============================================================ */
+
+.template-search--editorial {
+  padding-top: var(--elara-space-9, 9.6rem);
+}
+
+.template-search--editorial .template-search__header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: var(--elara-space-3, 1.2rem);
+  margin-bottom: var(--elara-space-7, 4.8rem);
+}
+
+.template-search--editorial .template-search__eyebrow {
+  margin: 0;
+}
+
+.template-search--editorial .template-search__title {
+  margin: 0;
+  color: rgb(var(--color-foreground));
+  font-style: italic;
+}
+
+.template-search--editorial .template-search__search {
+  width: 100%;
+  max-width: 64rem;
+  margin: var(--elara-space-3, 1.2rem) 0 0;
+}
+
+.template-search--editorial .template-search__search .search {
+  margin-top: 0;
+}
+
+/* Search input: large editorial type */
+.template-search--editorial .search__input.field__input {
+  font-size: 2rem;
+  border-bottom: 1px solid rgba(var(--color-foreground), 0.22);
+  padding: 1.6rem 4rem 1rem 0;
+}
+
+@media screen and (min-width: 750px) {
+  .template-search--editorial .search__input.field__input {
+    font-size: 2.4rem;
+  }
+}
+
+.template-search--editorial .search__input.field__input + .field__label {
+  font-size: 1.2rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(var(--color-foreground), 0.55);
+  top: 0 !important;
+}
+
+.template-search--editorial .search__button {
+  background: transparent;
+  border: 0;
+  width: 4.4rem;
+  height: 4.4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.template-search--editorial .search__button .icon,
+.template-search--editorial .search__button svg {
+  width: 2rem;
+  height: 2rem;
+  color: rgb(var(--color-foreground));
+}
+
+/* Results count + sort row */
+.template-search--editorial .product-count,
+.template-search--editorial .product-count-vertical {
+  font-family: var(--font-body-family);
+  font-size: 1.2rem;
+  letter-spacing: 0.04em;
+  color: rgba(var(--color-foreground), 0.6);
+  margin: 0 0 var(--elara-space-4, 1.6rem);
+}
+
+/* Empty state — promote to display scale */
+.template-search--editorial.template-search--empty .template-search__header {
+  align-items: center;
+  text-align: center;
+  margin-bottom: 0;
+}
+
+.template-search--editorial.template-search--empty .template-search__title {
+  font-style: normal;
+}
+
+/* No-results suggestions list (Dawn renders these inline) */
+.template-search--editorial .template-search__results-text {
+  font-family: var(--font-body-family);
+  font-size: 1.5rem;
+  line-height: 1.65;
+  color: rgba(var(--color-foreground), 0.8);
+  max-width: 52ch;
+}
