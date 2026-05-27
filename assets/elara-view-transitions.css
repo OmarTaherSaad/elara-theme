@@ -1,0 +1,56 @@
+/* ============================================================
+   Elara View Transitions visual tuning
+   The browser fires the default cross-fade automatically when
+   document.startViewTransition wraps a navigation. These rules
+   refine the timing, easing, and add a product-image morph.
+   ============================================================ */
+
+@view-transition {
+  navigation: auto;
+}
+
+/* Slow the default fade to feel premium */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--elara-dur-base, 400ms);
+  animation-timing-function: var(--elara-ease-luxury, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+::view-transition-old(root) {
+  animation-name: elaraVtOut;
+}
+
+::view-transition-new(root) {
+  animation-name: elaraVtIn;
+}
+
+@keyframes elaraVtOut {
+  to { opacity: 0; }
+}
+
+@keyframes elaraVtIn {
+  from { opacity: 0; }
+}
+
+/* Product image morph — when the source has view-transition-name set
+   matching the destination, the browser pairs them and tweens. */
+::view-transition-image-pair([name^="vt-product-"]) {
+  animation-duration: var(--elara-dur-slow, 700ms);
+  animation-timing-function: var(--elara-ease-out-quart, ease);
+}
+
+::view-transition-old([name^="vt-product-"]),
+::view-transition-new([name^="vt-product-"]) {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root),
+  ::view-transition-old([name^="vt-product-"]),
+  ::view-transition-new([name^="vt-product-"]) {
+    animation: none;
+  }
+}

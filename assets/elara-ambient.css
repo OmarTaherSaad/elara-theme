@@ -1,0 +1,210 @@
+/* ============================================================
+   Elara ambient background system
+   Subtle SVG noise overlays, gradient meshes, vignettes, and
+   color-tinted section transitions. Applied via utility classes
+   or data attributes on section wrappers.
+   ============================================================ */
+
+/* ---------- Noise texture utility ----------
+   Apply via class `.elara-noise` on any container. Adds an
+   absolutely-positioned ::after with an inline SVG noise pattern.
+   Subtle by default (8% opacity). Use --elara-noise-opacity to tune.
+*/
+.elara-noise {
+  position: relative;
+  isolation: isolate;
+}
+
+.elara-noise::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: var(--elara-noise-opacity, 0.06);
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5 0'/></filter><rect width='240' height='240' filter='url(%23n)'/></svg>");
+  background-size: 240px 240px;
+}
+
+.elara-noise > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* ---------- Gradient mesh utility ----------
+   A subtle 3-color radial mesh in editorial neutrals. Use on hero
+   image-banner backgrounds, newsletter sections, story containers
+   that lack their own imagery.
+
+   Tune with --elara-mesh-tint-{1,2,3}.
+*/
+.elara-mesh {
+  position: relative;
+  isolation: isolate;
+  background-color: rgb(var(--color-background));
+  --elara-mesh-tint-1: rgba(184, 149, 106, 0.22);  /* warm accent */
+  --elara-mesh-tint-2: rgba(20, 17, 14, 0.08);
+  --elara-mesh-tint-3: rgba(242, 235, 221, 0.5);   /* champagne */
+}
+
+.elara-mesh::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(60% 70% at 20% 30%, var(--elara-mesh-tint-1) 0%, transparent 60%),
+    radial-gradient(50% 60% at 80% 70%, var(--elara-mesh-tint-2) 0%, transparent 65%),
+    radial-gradient(50% 50% at 50% 95%, var(--elara-mesh-tint-3) 0%, transparent 60%);
+  filter: blur(20px) saturate(105%);
+  opacity: 1;
+}
+
+.elara-mesh > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Slow drift on the mesh */
+@media (prefers-reduced-motion: no-preference) {
+  .elara-mesh::before {
+    animation: elaraMeshDrift 28s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes elaraMeshDrift {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  100% { transform: translate3d(-2%, -2%, 0) scale(1.04); }
+}
+
+/* ---------- Vignette utility ----------
+   Subtle darkening at the corners of a media-led section. Use on
+   hero banners where you want focus pulled to the center copy.
+*/
+.elara-vignette {
+  position: relative;
+  isolation: isolate;
+}
+
+.elara-vignette::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 55%,
+    rgba(0, 0, 0, 0.18) 85%,
+    rgba(0, 0, 0, 0.32) 100%
+  );
+}
+
+.elara-vignette > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* ---------- Section transition rule ----------
+   A hairline rule + ample whitespace between consecutive sections
+   that share the same color scheme. Activated when sections sit
+   directly back-to-back without a darker scheme between them.
+*/
+.shopify-section + .shopify-section .color-scheme-1.gradient,
+.shopify-section + .shopify-section .color-scheme-2.gradient {
+  border-top: 1px solid var(--elara-border-hair);
+}
+
+/* ---------- Color-aware section ambience ----------
+   Editorial Black scheme gets a subtle warm-glow accent at the top.
+   Champagne / Ivory schemes get a faint vignette to soften flat backgrounds.
+*/
+.color-scheme-4 {
+  position: relative;
+  isolation: isolate;
+}
+
+.color-scheme-4::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    80% 60% at 50% 0%,
+    rgba(184, 149, 106, 0.12) 0%,
+    transparent 65%
+  );
+}
+
+.color-scheme-4 > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- Banner-specific ambient layer ----------
+   The image-banner already has an ::after for the overlay; add a
+   secondary ::before for a soft top→bottom warm-cool gradient so
+   the hero never looks like a flat photograph.
+*/
+.banner--elara-editorial::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    radial-gradient(45% 35% at 15% 20%, rgba(184, 149, 106, 0.18) 0%, transparent 65%),
+    radial-gradient(45% 35% at 85% 80%, rgba(43, 22, 18, 0.22) 0%, transparent 70%);
+  mix-blend-mode: soft-light;
+}
+
+/* ---------- Soft section dividers ----------
+   For hero-to-narrative transitions: a 4rem soft shadow gradient
+   that fades any photo-edge into the next section's background.
+*/
+.elara-fade-bottom {
+  position: relative;
+}
+
+.elara-fade-bottom::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 6rem;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 0%, rgb(var(--color-background)) 100%);
+  z-index: 3;
+}
+
+/* ---------- Editorial divider lines ----------
+   Reusable hairline divider with optional centered glyph.
+*/
+.elara-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--elara-space-5, 2.4rem);
+  margin: var(--elara-space-7, 4.8rem) auto;
+  max-width: 64rem;
+  color: rgba(var(--color-foreground), 0.4);
+}
+
+.elara-divider::before,
+.elara-divider::after {
+  content: '';
+  flex: 1 1 auto;
+  height: 1px;
+  background-color: currentColor;
+  opacity: 0.4;
+}
+
+.elara-divider__glyph {
+  font-family: var(--font-heading-family);
+  font-style: italic;
+  font-size: 1.4rem;
+  color: rgba(var(--color-foreground), 0.65);
+}

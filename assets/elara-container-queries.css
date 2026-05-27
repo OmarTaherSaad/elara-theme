@@ -1,0 +1,81 @@
+/* ============================================================
+   Elara container queries
+   Component-level responsive behavior. Cards and editorial blocks
+   adapt to the width of their container (sidebar, narrow column,
+   wide hero) rather than the viewport. Falls back to vw-based
+   media queries on browsers without container query support.
+   ============================================================ */
+
+/* Mark common card and section wrappers as containment contexts */
+.elara-card,
+.elara-tabs__grid-item,
+.elara-recently-viewed__item,
+.elara-product__complete-look-item,
+.blog-articles__article,
+.elara-press-strip__item {
+  container-type: inline-size;
+  container-name: elara-card;
+}
+
+.elara-story__inner,
+.elara-sticky-story__layout,
+.elara-lookbook__container,
+.elara-recently-viewed__container {
+  container-type: inline-size;
+  container-name: elara-section;
+}
+
+/* ---------- Card container queries ---------- */
+@supports (container-type: inline-size) {
+  /* Tight card (< 220px) — drop vendor eyebrow, tighten typography */
+  @container elara-card (max-width: 220px) {
+    .elara-card__vendor { display: none; }
+    .elara-card__title  { font-size: 1.3rem; }
+    .elara-card__price  { font-size: 1.2rem; }
+    .elara-card__content { gap: 0.4rem; }
+  }
+
+  /* Wide card (> 360px) — promote typography */
+  @container elara-card (min-width: 360px) {
+    .elara-card__title  { font-size: 1.7rem; }
+    .elara-card__vendor { font-size: 1.2rem; }
+    .elara-card__price  { font-size: 1.5rem; }
+    .elara-card__content { gap: var(--elara-space-4, 1.6rem); }
+  }
+
+  /* ---------- Section container queries ---------- */
+  /* Editorial-story stays stacked below 640px container width */
+  @container elara-section (max-width: 640px) {
+    .elara-story__inner {
+      grid-template-columns: 1fr !important;
+      gap: var(--elara-space-5, 2.4rem) !important;
+    }
+  }
+
+  /* Sticky-scroll-story stacks below 720px container width */
+  @container elara-section (max-width: 720px) {
+    .elara-sticky-story__layout {
+      grid-template-columns: 1fr !important;
+    }
+    .elara-sticky-story__media-column {
+      display: none !important;
+    }
+    .elara-sticky-story__step-media {
+      display: block !important;
+    }
+  }
+
+  /* Lookbook stage uses container-based pin sizing */
+  @container elara-section (max-width: 560px) {
+    .elara-lookbook__pin {
+      display: none !important;
+    }
+  }
+
+  /* Recently-viewed track auto-columns scale with container */
+  @container elara-section (max-width: 480px) {
+    .elara-recently-viewed__track {
+      grid-auto-columns: minmax(14rem, 16rem);
+    }
+  }
+}

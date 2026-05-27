@@ -1,0 +1,150 @@
+/* ============================================================
+   Elara fluid typography & breakpoint tokens
+   Loaded after elara-tokens.css. Replaces step-based responsive
+   typography with continuously fluid clamp()-based sizes that
+   scale smoothly from 360px to 1920px viewports.
+
+   Breakpoint anchors:
+     --bp-sm:  36rem  (576px)
+     --bp-md:  48rem  (768px)
+     --bp-lg:  62rem  (992px)
+     --bp-xl:  78rem  (1248px)
+     --bp-2xl: 96rem  (1536px)
+
+   Each fluid size uses the form:
+     clamp(MIN, MIN + slope * (vw - VW_MIN), MAX)
+
+   where slope is precomputed for a 360px → 1440px range.
+   ============================================================ */
+
+:root {
+  --bp-sm:  36rem;
+  --bp-md:  48rem;
+  --bp-lg:  62rem;
+  --bp-xl:  78rem;
+  --bp-2xl: 96rem;
+
+  /* Container scales */
+  --elara-container-narrow: 72rem;   /* article prose */
+  --elara-container-base:   var(--page-width, 140rem);
+  --elara-container-wide:   168rem;  /* lookbook / story media */
+  --elara-container-full:   100vw;
+
+  /* Fluid spacing — scales 75% to 125% across viewport */
+  --elara-fluid-tight:    clamp(0.8rem,  1.0vw + 0.2rem, 1.6rem);
+  --elara-fluid-snug:     clamp(1.6rem,  2.0vw + 0.4rem, 3.2rem);
+  --elara-fluid-base:     clamp(2.4rem,  3.0vw + 0.6rem, 4.8rem);
+  --elara-fluid-loose:    clamp(3.2rem,  4.0vw + 0.8rem, 6.4rem);
+  --elara-fluid-section:  clamp(4.8rem,  6.0vw + 1.2rem, 9.6rem);
+  --elara-fluid-hero:     clamp(6.4rem,  8.0vw + 1.6rem, 12.8rem);
+}
+
+/* ---------- Fluid editorial type ---------- */
+
+.elara-display-xl {
+  font-size: clamp(4.8rem, 4.2vw + 3rem, 11.2rem);
+  line-height: 1.02;
+  letter-spacing: clamp(-0.04em, -0.02em - 0.1vw, -0.02em);
+}
+
+.elara-display-lg {
+  font-size: clamp(4rem, 3.4vw + 2.4rem, 8.8rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.elara-h1 {
+  font-size: clamp(3.2rem, 2.4vw + 2rem, 6.4rem);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+}
+
+.elara-h2 {
+  font-size: clamp(2.4rem, 1.6vw + 1.6rem, 4.4rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.elara-h3 {
+  font-size: clamp(2rem, 0.8vw + 1.6rem, 2.8rem);
+  line-height: 1.20;
+}
+
+.elara-h4 {
+  font-size: clamp(1.6rem, 0.4vw + 1.4rem, 2rem);
+  line-height: 1.30;
+}
+
+.elara-h5 {
+  font-size: clamp(1.4rem, 0.2vw + 1.3rem, 1.6rem);
+  line-height: 1.40;
+}
+
+.elara-h6 {
+  font-size: clamp(1.2rem, 0.2vw + 1.1rem, 1.4rem);
+  line-height: 1.45;
+}
+
+.elara-eyebrow {
+  font-size: clamp(1rem, 0.2vw + 0.9rem, 1.2rem);
+  letter-spacing: 0.18em;
+}
+
+.elara-body-lg {
+  font-size: clamp(1.5rem, 0.4vw + 1.3rem, 1.9rem);
+  line-height: 1.65;
+}
+
+.elara-body {
+  font-size: clamp(1.4rem, 0.3vw + 1.3rem, 1.7rem);
+  line-height: 1.70;
+}
+
+.elara-body-sm {
+  font-size: clamp(1.2rem, 0.2vw + 1.1rem, 1.4rem);
+  line-height: 1.65;
+}
+
+.elara-caption {
+  font-size: clamp(1rem, 0.2vw + 0.9rem, 1.2rem);
+  line-height: 1.55;
+}
+
+/* Drop-cap scales with viewport */
+.elara-dropcap::first-letter,
+.article-template--editorial .article-template__content--editorial > p:first-of-type::first-letter {
+  font-size: clamp(5.6rem, 6vw + 1.6rem, 11rem);
+  line-height: 0.85;
+}
+
+/* ---------- Fluid container helper ---------- */
+.elara-container,
+.elara-container-narrow,
+.elara-container-wide {
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: clamp(1.6rem, 3vw, 4.8rem);
+  padding-right: clamp(1.6rem, 3vw, 4.8rem);
+  width: 100%;
+}
+
+.elara-container        { max-width: var(--elara-container-base); }
+.elara-container-narrow { max-width: var(--elara-container-narrow); }
+.elara-container-wide   { max-width: var(--elara-container-wide); }
+
+/* ---------- Fluid section helper ---------- */
+.elara-section {
+  padding-top: var(--elara-fluid-section);
+  padding-bottom: var(--elara-fluid-section);
+}
+
+.elara-section-hero {
+  padding-top: var(--elara-fluid-hero);
+  padding-bottom: var(--elara-fluid-hero);
+}
+
+/* ---------- Fluid grid gap ---------- */
+.elara-grid-fluid {
+  display: grid;
+  gap: var(--elara-fluid-base);
+}

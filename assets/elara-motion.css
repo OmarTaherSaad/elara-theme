@@ -1,0 +1,235 @@
+/* ============================================================
+   Elara motion & scroll system
+   Modern scroll-driven CSS animations using the View Timeline API
+   (animation-timeline: view()). All effects are progressive: in
+   browsers without view-timeline support, content renders fully
+   visible without animation. prefers-reduced-motion disables
+   everything.
+   ============================================================ */
+
+/* ---------- Smooth scroll ---------- */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--header-height, 8rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+/* ---------- View-timeline-driven reveals ----------
+   These work without any JavaScript or IntersectionObserver and
+   stay perfectly synced to scroll position. Apply on any element:
+
+     <div class="elara-reveal">…</div>
+     <h2 class="elara-reveal-up">…</h2>
+     <img class="elara-reveal-image"…>
+
+   When animation-timeline is unsupported, the element ends in its
+   final state via the static fallback rule.
+*/
+
+/* Base: end-state visible. The keyframe animates from a hidden state
+   into the natural state as the element enters the viewport. */
+.elara-reveal,
+.elara-reveal-up,
+.elara-reveal-image,
+.elara-reveal-scale {
+  opacity: 1;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    /* Plain fade-in */
+    .elara-reveal {
+      animation: elaraRevealFade linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 30%;
+    }
+
+    /* Fade up — the most common editorial reveal */
+    .elara-reveal-up {
+      animation: elaraRevealUp linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 35%;
+    }
+
+    /* Image clip-path reveal — used on hero / editorial story images */
+    .elara-reveal-image {
+      animation: elaraRevealImage linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 50%;
+    }
+
+    /* Scale up subtly on entry */
+    .elara-reveal-scale {
+      animation: elaraRevealScale linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 30%;
+    }
+
+    /* Parallax-y for backgrounds: drift up slowly while in view */
+    .elara-parallax-y {
+      animation: elaraParallaxY linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+
+    /* Subtle horizontal parallax for marquee-ish strips */
+    .elara-parallax-x {
+      animation: elaraParallaxX linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+  }
+}
+
+@keyframes elaraRevealFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes elaraRevealUp {
+  from { opacity: 0; transform: translate3d(0, 3.2rem, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes elaraRevealImage {
+  from { opacity: 0.8; clip-path: inset(8% 4%); transform: scale(1.02); }
+  to   { opacity: 1;   clip-path: inset(0 0);    transform: scale(1); }
+}
+
+@keyframes elaraRevealScale {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes elaraParallaxY {
+  from { transform: translate3d(0, 6%, 0); }
+  to   { transform: translate3d(0, -6%, 0); }
+}
+
+@keyframes elaraParallaxX {
+  from { transform: translate3d(-3%, 0, 0); }
+  to   { transform: translate3d(3%, 0, 0); }
+}
+
+/* ---------- Scroll progress bar (top of page) ---------- */
+@supports (animation-timeline: scroll(root)) {
+  @media (prefers-reduced-motion: no-preference) {
+    .elara-scroll-progress {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background-color: rgba(var(--color-foreground), 0.18);
+      z-index: 100;
+      pointer-events: none;
+    }
+    .elara-scroll-progress::after {
+      content: '';
+      display: block;
+      height: 100%;
+      width: 100%;
+      background-color: rgb(var(--color-foreground));
+      transform-origin: left center;
+      animation: elaraScrollGrow linear forwards;
+      animation-timeline: scroll(root);
+    }
+    body.has-hero-template:not(.scrolled-past-header) .elara-scroll-progress {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    body.has-hero-template:not(.scrolled-past-header) .elara-scroll-progress::after {
+      background-color: #ffffff;
+    }
+  }
+}
+
+@keyframes elaraScrollGrow {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+/* ---------- Cascade for editorial grids ----------
+   Each child in a .elara-cascade container fades up with a slight
+   delay relative to its index. Used in featured-collection, blog
+   list, lookbook mobile cards, etc.
+*/
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .elara-cascade > * {
+      animation: elaraRevealUp linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 25%;
+    }
+  }
+}
+
+/* ---------- Sticky header refinements ----------
+   Reveal/hide the header as the user changes scroll direction.
+   The body class `.elara-header-hidden` is added by elara-sticky-header.js.
+*/
+sticky-header,
+.section-header {
+  transition: transform var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, ease),
+              opacity var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, ease);
+}
+
+body.elara-header-hidden sticky-header,
+body.elara-header-hidden .section-header {
+  transform: translate3d(0, -100%, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  sticky-header,
+  .section-header {
+    transition: none;
+  }
+}
+
+/* ---------- Cursor & hover utilities ---------- */
+@media (hover: hover) and (pointer: fine) {
+  /* Subtle "hover lift" applied via class — already used by buttons elsewhere */
+  .elara-hover-lift {
+    transition: transform var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, ease),
+                box-shadow var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, ease);
+  }
+  .elara-hover-lift:hover {
+    transform: translate3d(0, -3px, 0);
+    box-shadow: var(--elara-shadow-3, 0 12px 24px rgba(20, 17, 14, 0.06));
+  }
+}
+
+/* ---------- Page-load entrance ----------
+   Body fades in once everything settles. Avoids the "flash of white"
+   that bare server-rendered themes show during font swap.
+*/
+@media (prefers-reduced-motion: no-preference) {
+  body {
+    animation: elaraPageEnter var(--elara-dur-slow, 700ms) var(--elara-ease-out-quart, ease);
+  }
+}
+
+@keyframes elaraPageEnter {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ---------- Selection style ---------- */
+::selection {
+  background-color: rgba(var(--color-foreground), 0.92);
+  color: rgb(var(--color-background));
+}
+
+/* ---------- Focus ring polish ---------- */
+:focus-visible {
+  outline: 2px solid var(--elara-accent, #b8956a);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Specific elements shouldn't show the global focus ring (they have their own). */
+.button:focus-visible,
+.cart-drawer__overlay:focus-visible,
+.elara-info-drawer__overlay:focus-visible {
+  outline-offset: 0;
+}

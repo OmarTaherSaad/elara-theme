@@ -45,7 +45,12 @@
 
 <article class="elara-card elara-card--product">
   {%- if card_product != blank and card_product != empty -%}
-    <a href="{{ card_product.url }}" class="elara-card__media-link" aria-label="{{ card_product.title | escape }}">
+    <a
+      href="{{ card_product.url }}"
+      class="elara-card__media-link"
+      aria-label="{{ card_product.title | escape }}"
+      data-elara-product-handle="{{ card_product.handle }}"
+    >
       <div class="elara-card__media {{ ratio_class }}{% if show_secondary and card_product.media[1] %} elara-card__media--has-secondary{% endif %}">
         {%- if card_product.featured_media != blank -%}
           {{
@@ -56,7 +61,8 @@
               class: 'elara-card__image elara-card__image--primary',
               widths: '180, 240, 360, 540, 720, 990, 1100',
               sizes: img_sizes,
-              alt: card_product.featured_media.alt | default: card_product.title
+              alt: card_product.featured_media.alt | default: card_product.title,
+              style: 'view-transition-name: vt-product-' | append: card_product.handle
           }}
           {%- if show_secondary and card_product.media[1] != blank -%}
             {{

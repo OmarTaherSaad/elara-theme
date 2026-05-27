@@ -1,0 +1,76 @@
+/* ============================================================
+   Elara magnetic & cursor-aware visual layer
+   Companion styles for assets/elara-magnetic.js.
+   ============================================================ */
+
+[data-elara-magnetic] {
+  --magnet-x: 0px;
+  --magnet-y: 0px;
+  transform: translate3d(var(--magnet-x), var(--magnet-y), 0);
+  transition: transform var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, ease);
+  will-change: transform;
+}
+
+[data-elara-pointer-aware] {
+  --mx: 50%;
+  --my: 50%;
+}
+
+/* ---------- Spotlight effect ----------
+   Apply both data-elara-pointer-aware AND .elara-spotlight to a
+   container. A radial accent follows the pointer.
+*/
+.elara-spotlight {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.elara-spotlight::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(
+    220px 220px at var(--mx) var(--my),
+    rgba(255, 255, 255, 0.16),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity var(--elara-dur-fast, 240ms) ease;
+}
+
+.elara-spotlight:hover::after,
+.elara-spotlight:focus-within::after {
+  opacity: 1;
+}
+
+.elara-spotlight > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* ---------- Tilt-on-pointer effect ----------
+   .elara-tilt + data-elara-pointer-aware. The element tilts on the
+   x/y axes proportional to pointer position. Used on the lookbook
+   image and hero banner image for a subtle 3D parallax feel.
+*/
+.elara-tilt {
+  --tilt-x: calc((var(--my, 50%) - 50%) * -0.06);
+  --tilt-y: calc((var(--mx, 50%) - 50%) *  0.06);
+  transform: perspective(1000px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  transition: transform var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, ease);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-elara-magnetic],
+  .elara-tilt {
+    transform: none !important;
+  }
+  .elara-spotlight::after {
+    display: none;
+  }
+}

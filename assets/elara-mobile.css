@@ -1,0 +1,165 @@
+/* ============================================================
+   Elara mobile polish & touch optimization
+   - Edge-to-edge media on mobile so hero/story imagery breathes.
+   - 44px+ tap targets on icons, nav, swatches, pins.
+   - Momentum scrolling on horizontal scrollers.
+   - Larger pin tap zones on lookbook hotspots.
+   - Refined drawer easing for mobile (mobile pointer/touch behaves
+     better with slightly faster slide-in).
+   ============================================================ */
+
+@media screen and (max-width: 749px) {
+  /* ---------- Edge-to-edge media on small viewports ---------- */
+  .image-banner .banner__media,
+  .banner--elara-editorial .banner__media,
+  .elara-lookbook__stage,
+  .elara-story__media,
+  .elara-sticky-story__step-image {
+    margin-left: calc(var(--elara-space-4, 1.6rem) * -1);
+    margin-right: calc(var(--elara-space-4, 1.6rem) * -1);
+    border-radius: 0;
+  }
+
+  .elara-story__media-wrapper {
+    margin-left: calc(var(--elara-space-4, 1.6rem) * -1);
+    margin-right: calc(var(--elara-space-4, 1.6rem) * -1);
+  }
+
+  /* Story media gets edge-to-edge regardless of page-width container */
+  .elara-story__inner > .elara-story__media-wrapper {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  /* ---------- Tap targets — guarantee 44px hit area ---------- */
+  .header__icon,
+  .header__menu-item,
+  .menu-drawer__menu-item,
+  .swatch-input__label,
+  .product-form__input--swatch .swatch-input__input + .swatch-input__label,
+  .elara-density-toggle__btn,
+  .elara-tabs__tab,
+  .pagination__item,
+  .field__input,
+  .button {
+    min-height: 4.4rem;
+  }
+
+  /* Mobile menu items get generous vertical padding */
+  .menu-drawer__menu-item {
+    padding: 1.6rem 0;
+  }
+
+  /* ---------- Lookbook pins ---------- */
+  .elara-lookbook__pin {
+    display: inline-flex !important;
+    width: 4.4rem;
+    height: 4.4rem;
+  }
+
+  .elara-lookbook__pin-marker {
+    width: 3.6rem;
+    height: 3.6rem;
+  }
+
+  /* Popover becomes a sheet on small viewports */
+  .elara-lookbook__popover--open {
+    position: fixed !important;
+    left: var(--elara-space-4, 1.6rem) !important;
+    right: var(--elara-space-4, 1.6rem) !important;
+    bottom: var(--elara-space-4, 1.6rem) !important;
+    top: auto !important;
+    transform: none !important;
+    width: auto !important;
+    max-width: none;
+    z-index: 100;
+    box-shadow: var(--elara-shadow-4, 0 24px 48px rgba(20, 17, 14, 0.08));
+  }
+
+  /* ---------- Horizontal scrollers — momentum + scrollbar polish ---------- */
+  .elara-tabs__panel,
+  .elara-lookbook__mobile-list,
+  .elara-product__complete-look-track,
+  .elara-recently-viewed__track,
+  .elara-cart-drawer__recommendations-track {
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    scroll-padding-left: var(--elara-space-4, 1.6rem);
+    scroll-padding-right: var(--elara-space-4, 1.6rem);
+  }
+
+  .elara-tabs__panel::-webkit-scrollbar,
+  .elara-lookbook__mobile-list::-webkit-scrollbar,
+  .elara-product__complete-look-track::-webkit-scrollbar,
+  .elara-recently-viewed__track::-webkit-scrollbar,
+  .elara-cart-drawer__recommendations-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ---------- Forms on small viewports ---------- */
+  .field__input,
+  .customer .field input {
+    font-size: 16px;  /* Prevents iOS Safari from zooming on focus */
+  }
+
+  /* ---------- Sticky cart-drawer panel fills viewport on small screens ---------- */
+  .elara-info-drawer__panel,
+  cart-drawer .drawer__inner {
+    width: 100vw;
+  }
+
+  /* ---------- Hero content padding on smallest viewports ---------- */
+  .banner--elara-editorial .banner__content {
+    padding-left: var(--elara-space-4, 1.6rem);
+    padding-right: var(--elara-space-4, 1.6rem);
+  }
+
+  /* ---------- Reduce ken-burns extent on mobile so it's less distracting ---------- */
+  .banner--elara-ken-burns .banner__media img,
+  .banner--elara-ken-burns .banner__media-image-half {
+    animation-duration: 30s;
+  }
+
+  /* ---------- Footer columns stack with more air ---------- */
+  .footer-block__newsletter .footer-block__heading {
+    font-size: 2.8rem;
+  }
+
+  /* ---------- Marquee scales down ---------- */
+  .elara-marquee__text {
+    font-size: 2.8rem;
+  }
+
+  /* ---------- Header padding adjustment on mobile ---------- */
+  .header {
+    padding-left: var(--elara-space-4, 1.6rem) !important;
+    padding-right: var(--elara-space-4, 1.6rem) !important;
+  }
+}
+
+/* ---------- Tap highlight color (cross-browser) ---------- */
+a, button, [role="button"], [data-info-drawer-open], [data-info-drawer-close] {
+  -webkit-tap-highlight-color: rgba(20, 17, 14, 0.08);
+}
+
+/* ---------- Larger tap targets always for the icons themselves ---------- */
+.header__icon::before {
+  content: '';
+  position: absolute;
+  inset: -0.4rem;
+}
+
+/* ---------- Body lock when drawer or modal is open (prevents background scroll) ---------- */
+html.elara-info-drawer-open,
+html:has(cart-drawer.active) {
+  overflow: hidden;
+}
+
+@media screen and (max-width: 749px) {
+  html.elara-info-drawer-open body,
+  html:has(cart-drawer.active) body {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+  }
+}

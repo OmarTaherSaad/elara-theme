@@ -122,13 +122,13 @@
         {%- case block.type -%}
           {%- when 'heading' -%}
             <h2
-              class="banner__heading inline-richtext {{ block.settings.heading_size }}"
+              class="banner__heading inline-richtext {{ block.settings.heading_size }} elara-reveal-up"
               {{ block.shopify_attributes }}
             >
               {{ block.settings.heading }}
             </h2>
           {%- when 'text' -%}
-            <div class="banner__text rte {{ block.settings.text_style }}" {{ block.shopify_attributes }}>
+            <div class="banner__text rte {{ block.settings.text_style }} elara-reveal-up" {{ block.shopify_attributes }}>
               <p>{{ block.settings.text }}</p>
             </div>
           {%- when 'buttons' -%}
@@ -144,6 +144,7 @@
                     href="{{ block.settings.button_link_1 }}"
                   {% endif %}
                   class="button{% if block.settings.button_style_secondary_1 %} button--secondary{% else %} button--primary{% endif %}"
+                  {% unless block.settings.button_style_secondary_1 %}data-elara-magnetic data-elara-magnetic-strength="10"{% endunless %}
                 >
                   {{- block.settings.button_label_1 | escape -}}
                 </a>
@@ -156,6 +157,7 @@
                     href="{{ block.settings.button_link_2 }}"
                   {% endif %}
                   class="button{% if block.settings.button_style_secondary_2 %} button--secondary{% else %} button--primary{% endif %}"
+                  {% unless block.settings.button_style_secondary_2 %}data-elara-magnetic data-elara-magnetic-strength="10"{% endunless %}
                 >
                   {{- block.settings.button_label_2 | escape -}}
                 </a>

@@ -262,7 +262,20 @@
 
     {{ 'base.css' | asset_url | stylesheet_tag }}
     {{ 'elara-tokens.css' | asset_url | stylesheet_tag }}
+    {{ 'elara-fluid-type.css' | asset_url | stylesheet_tag }}
+    {{ 'elara-motion.css' | asset_url | stylesheet_tag }}
+    {{ 'elara-ambient.css' | asset_url | stylesheet_tag }}
+    {{ 'elara-magnetic.css' | asset_url | stylesheet_tag }}
+    {{ 'elara-container-queries.css' | asset_url | stylesheet_tag }}
+    {{ 'elara-mobile.css' | asset_url | stylesheet_tag }}
     {{ 'elara-forms.css' | asset_url | stylesheet_tag }}
+    {%- if settings.elara_view_transitions -%}
+      {{ 'elara-view-transitions.css' | asset_url | stylesheet_tag }}
+      <script src="{{ 'elara-view-transitions.js' | asset_url }}" defer="defer"></script>
+    {%- endif -%}
+    <script src="{{ 'elara-magnetic.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'elara-parallax.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'elara-sticky-header.js' | asset_url }}" defer="defer"></script>
     {%- if settings.cart_type == 'notification' -%}
       {{ 'elara-cart-notification.css' | asset_url | stylesheet_tag }}
     {%- endif -%}
@@ -305,6 +318,7 @@
       if (Shopify.designMode) {
         document.documentElement.classList.add('shopify-design-mode');
       }
+      window.__elaraViewTransitions = {{ settings.elara_view_transitions | json }};
     </script>
   </head>
 
@@ -319,6 +333,9 @@
     <a class="skip-to-content-link button visually-hidden" href="#MainContent">
       {{ 'accessibility.skip_to_text' | t }}
     </a>
+
+    {%- comment -%} Scroll-progress bar at top of viewport (scroll-driven CSS) {%- endcomment -%}
+    <div class="elara-scroll-progress" aria-hidden="true"></div>
 
     {%- if settings.cart_type == 'drawer' -%}
       {%- render 'cart-drawer' -%}
