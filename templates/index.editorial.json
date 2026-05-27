@@ -1,0 +1,100 @@
+{
+  "sections": {
+    "image_banner": {
+      "type": "image-banner",
+      "blocks": {
+        "heading": { "type": "heading", "settings": { "heading": "The Edit", "heading_size": "h0" } },
+        "text": { "type": "text", "settings": { "text": "Slow fashion, served at full volume.", "text_style": "subtitle" } },
+        "button": { "type": "buttons", "settings": { "button_label_1": "Begin browsing", "button_link_1": "shopify://collections/all", "button_style_secondary_1": false } }
+      },
+      "block_order": ["heading", "text", "button"],
+      "settings": {
+        "image_overlay_opacity": 30,
+        "image_height": "large",
+        "desktop_content_position": "middle-left",
+        "show_text_box": false,
+        "desktop_content_alignment": "left",
+        "color_scheme": "scheme-4",
+        "mobile_content_alignment": "center",
+        "stack_images_on_mobile": false
+      }
+    },
+    "lookbook_hotspot": {
+      "type": "lookbook-hotspot",
+      "blocks": {
+        "h1": { "type": "hotspot", "settings": { "position_x": 25, "position_y": 35 } },
+        "h2": { "type": "hotspot", "settings": { "position_x": 50, "position_y": 55 } },
+        "h3": { "type": "hotspot", "settings": { "position_x": 72, "position_y": 28 } }
+      },
+      "block_order": ["h1", "h2", "h3"],
+      "settings": {
+        "eyebrow": "Shop the look",
+        "heading": "Pieces in this image",
+        "pin_style": "numbered",
+        "reveal_mode": "click",
+        "color_scheme": "scheme-1",
+        "padding_top": 96,
+        "padding_bottom": 96
+      }
+    },
+    "sticky_scroll_story": {
+      "type": "sticky-scroll-story",
+      "blocks": {
+        "step_1": { "type": "step", "settings": { "heading": "Cut from a single hide", "text": "<p>Each piece begins with a single, full-grain hide selected for grain and patina.</p>" } },
+        "step_2": { "type": "step", "settings": { "heading": "Stitched by hand", "text": "<p>Every seam is set by hand. The thread chosen for tensile strength and aged colour.</p>" } },
+        "step_3": { "type": "step", "settings": { "heading": "Worn-in by design", "text": "<p>Pre-conditioned with natural oils so the bag arrives looking already loved.</p>" } }
+      },
+      "block_order": ["step_1", "step_2", "step_3"],
+      "settings": {
+        "eyebrow": "Inside the atelier",
+        "heading": "How a bag becomes a piece",
+        "media_side": "left",
+        "color_scheme": "scheme-2",
+        "padding_top": 96,
+        "padding_bottom": 96
+      }
+    },
+    "collection_tabs": {
+      "type": "collection-tabs",
+      "blocks": {
+        "tab_1": { "type": "tab", "settings": { "label": "New" } },
+        "tab_2": { "type": "tab", "settings": { "label": "Bestsellers" } },
+        "tab_3": { "type": "tab", "settings": { "label": "Limited" } }
+      },
+      "block_order": ["tab_1", "tab_2", "tab_3"],
+      "settings": {
+        "eyebrow": "Curated edits",
+        "heading": "Where to begin",
+        "products_per_tab": 8,
+        "columns_desktop": 4,
+        "show_vendor": true,
+        "color_scheme": "scheme-1",
+        "padding_top": 64,
+        "padding_bottom": 64
+      }
+    },
+    "editorial_story": {
+      "type": "editorial-story",
+      "blocks": {
+        "heading": { "type": "heading", "settings": { "text": "Built to last a decade" } },
+        "paragraph": { "type": "paragraph", "settings": { "text": "<p>Our pieces aren't designed for a season. They're built for a wardrobe you can return to year after year.</p>" } },
+        "link": { "type": "link", "settings": { "label": "Our promise", "url": "shopify://pages/about" } }
+      },
+      "block_order": ["heading", "paragraph", "link"],
+      "settings": {
+        "layout": "image_overlay",
+        "image_ratio": "landscape",
+        "color_scheme": "scheme-4",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "press_strip": {
+      "type": "press-strip",
+      "blocks": { "l1": { "type": "logo" }, "l2": { "type": "logo" }, "l3": { "type": "logo" }, "l4": { "type": "logo" } },
+      "block_order": ["l1", "l2", "l3", "l4"],
+      "settings": { "eyebrow": "As featured in", "color_scheme": "scheme-1", "padding_top": 64, "padding_bottom": 64 }
+    }
+  },
+  "order": ["image_banner", "lookbook_hotspot", "sticky_scroll_story", "collection_tabs", "editorial_story", "press_strip"]
+}

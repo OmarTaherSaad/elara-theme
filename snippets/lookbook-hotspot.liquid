@@ -1,0 +1,88 @@
+{%- comment -%}
+  Renders a single positioned product pin for a lookbook-hotspot section.
+
+  Accepts:
+    - block:   {Object} Required. The hotspot block (with settings: product,
+                position_x, position_y, label, description).
+    - index:   {Integer} Required. 1-based position used in numbered pin styles
+                and as the popover id suffix.
+    - section: {Object} Required. The parent section object (for id namespacing).
+{%- endcomment -%}
+{%- liquid
+  assign hotspot_product = block.settings.product
+  assign popover_id = 'LookbookPopover-' | append: section.id | append: '-' | append: index
+  assign pin_id = 'LookbookPin-' | append: section.id | append: '-' | append: index
+  assign label = block.settings.label
+  if label == blank and hotspot_product != blank
+    assign label = hotspot_product.title
+  endif
+-%}
+<button
+  type="button"
+  class="elara-lookbook__pin"
+  id="{{ pin_id }}"
+  aria-controls="{{ popover_id }}"
+  aria-expanded="false"
+  aria-haspopup="dialog"
+  data-hotspot-index="{{ index }}"
+  style="--pin-x: {{ block.settings.position_x }}%; --pin-y: {{ block.settings.position_y }}%;"
+  {{ block.shopify_attributes }}
+>
+  <span class="elara-lookbook__pin-marker" aria-hidden="true">
+    <span class="elara-lookbook__pin-number">{{ index }}</span>
+  </span>
+  <span class="visually-hidden">
+    {%- if label != blank -%}
+      {{ 'sections.elara.lookbook.view_product_named' | t: index: index, title: label }}
+    {%- else -%}
+      {{ 'sections.elara.lookbook.view_product' | t: index: index }}
+    {%- endif -%}
+  </span>
+</button>
+
+<div
+  class="elara-lookbook__popover"
+  id="{{ popover_id }}"
+  role="dialog"
+  aria-labelledby="{{ pin_id }}-heading"
+  hidden
+>
+  <button type="button" class="elara-lookbook__popover-close" aria-label="{{ 'sections.elara.lookbook.close_popover' | t }}">
+    {{ 'icon-close-small.svg' | inline_asset_content }}
+  </button>
+  {%- if hotspot_product != blank -%}
+    <a href="{{ hotspot_product.url }}" class="elara-lookbook__popover-image-link" tabindex="-1" aria-hidden="true">
+      {%- if hotspot_product.featured_media != blank -%}
+        {%- assign hotspot_image = hotspot_product.featured_media.preview_image -%}
+        {{
+          hotspot_image
+          | image_url: width: 400
+          | image_tag:
+            loading: 'lazy',
+            class: 'elara-lookbook__popover-image',
+            widths: '180, 240, 320, 400',
+            sizes: '160px',
+            alt: hotspot_image.alt
+        }}
+      {%- endif -%}
+    </a>
+    <div class="elara-lookbook__popover-content">
+      <p class="elara-lookbook__popover-eyebrow elara-caption">{{ hotspot_product.vendor | escape }}</p>
+      <p class="elara-h5 elara-lookbook__popover-heading" id="{{ pin_id }}-heading">{{ hotspot_product.title | escape }}</p>
+      <p class="elara-lookbook__popover-price">
+        {{ hotspot_product.price | money }}
+      </p>
+      <a href="{{ hotspot_product.url }}" class="elara-link elara-lookbook__popover-cta">
+        {{ 'sections.elara.lookbook.shop_the_piece' | t }}
+        <span aria-hidden="true">&rarr;</span>
+      </a>
+    </div>
+  {%- else -%}
+    <div class="elara-lookbook__popover-content">
+      <p class="elara-h5 elara-lookbook__popover-heading" id="{{ pin_id }}-heading">{{ label | escape | default: 'sections.elara.lookbook.hotspot_default_label' | t }}</p>
+      {%- if block.settings.description != blank -%}
+        <p class="elara-lookbook__popover-description">{{ block.settings.description | escape }}</p>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+</div>

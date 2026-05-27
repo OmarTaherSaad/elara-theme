@@ -1,0 +1,54 @@
+{%- comment -%}
+  Unified editorial section header: eyebrow + heading + description + optional
+  link cluster. Reused by every editorial section so the header treatment stays
+  consistent across the theme.
+
+  Accepts:
+    - eyebrow:     {String} Optional small uppercase caption.
+    - heading:     {String} Optional headline (renders as h2 by default).
+    - heading_tag: {String} Optional. Defaults to 'h2'.
+    - heading_size: {String} Optional - 'lg' or 'xl' (display sizes). Default is h1-ish.
+    - description: {String} Optional body copy (rich text allowed).
+    - link_label:  {String} Optional CTA label.
+    - link_url:    {String} Optional CTA URL.
+    - alignment:   {String} Optional 'left' | 'center'. Defaults to 'left'.
+
+  Usage:
+    {% render 'section-header',
+      eyebrow: 'The Edit',
+      heading: 'Latest arrivals',
+      description: '<p>Hand-picked pieces for this season.</p>',
+      link_label: 'Shop all',
+      link_url: routes.all_products_collection_url,
+      alignment: 'center'
+    %}
+{%- endcomment -%}
+{%- liquid
+  assign heading_element = heading_tag | default: 'h2'
+  assign header_align = alignment | default: 'left'
+  assign heading_class = 'elara-h2'
+  if heading_size == 'lg'
+    assign heading_class = 'elara-display-lg'
+  elsif heading_size == 'xl'
+    assign heading_class = 'elara-display-xl'
+  endif
+-%}
+{%- if eyebrow != blank or heading != blank or description != blank or link_label != blank -%}
+  <header class="elara-section-header elara-section-header--{{ header_align }}">
+    {%- if eyebrow != blank -%}
+      {% render 'editorial-eyebrow', text: eyebrow, class: 'elara-section-header__eyebrow' %}
+    {%- endif -%}
+    {%- if heading != blank -%}
+      <{{ heading_element }} class="{{ heading_class }} elara-section-header__heading">{{ heading | escape }}</{{ heading_element }}>
+    {%- endif -%}
+    {%- if description != blank -%}
+      <div class="elara-section-header__description rte">{{ description }}</div>
+    {%- endif -%}
+    {%- if link_label != blank and link_url != blank -%}
+      <a href="{{ link_url }}" class="elara-link elara-section-header__link">
+        {{ link_label | escape }}
+        <span aria-hidden="true">&rarr;</span>
+      </a>
+    {%- endif -%}
+  </header>
+{%- endif -%}

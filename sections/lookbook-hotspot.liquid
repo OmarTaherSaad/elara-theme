@@ -1,0 +1,233 @@
+{{ 'section-lookbook-hotspot.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'lookbook-hotspot.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign hotspot_blocks = section.blocks | where: 'type', 'hotspot'
+-%}
+
+<section
+  class="elara-lookbook color-{{ section.settings.color_scheme }} gradient elara-padded-section section-{{ section.id }}-padding{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+  {% if settings.animations_reveal_on_scroll %}data-cascade{% endif %}
+>
+  <div class="page-width">
+    {%- if section.settings.heading != blank or section.settings.eyebrow != blank -%}
+      {% render 'section-header',
+        eyebrow: section.settings.eyebrow,
+        heading: section.settings.heading,
+        description: section.settings.description,
+        alignment: 'left'
+      %}
+    {%- endif -%}
+
+    <elara-lookbook-hotspot
+      class="elara-lookbook__container elara-lookbook--reveal-{{ section.settings.reveal_mode }} elara-lookbook--pins-{{ section.settings.pin_style }}"
+      data-reveal-mode="{{ section.settings.reveal_mode }}"
+    >
+      <div class="elara-lookbook__stage">
+        {% render 'responsive-image',
+          image: section.settings.image,
+          sizes: '(min-width: 990px) 100vw, 100vw',
+          loading: 'lazy',
+          class: 'elara-lookbook__image'
+        %}
+
+        {%- for block in hotspot_blocks -%}
+          {% render 'lookbook-hotspot', block: block, index: forloop.index, section: section %}
+        {%- endfor -%}
+      </div>
+
+      {%- if hotspot_blocks.size > 0 -%}
+        <ol class="elara-lookbook__mobile-list list-unstyled">
+          {%- for block in hotspot_blocks -%}
+            {%- assign hotspot_product = block.settings.product -%}
+            <li class="elara-lookbook__mobile-item" {{ block.shopify_attributes }}>
+              {%- if hotspot_product != blank -%}
+                <a href="{{ hotspot_product.url }}" class="elara-lookbook__mobile-card">
+                  <span class="elara-lookbook__mobile-number" aria-hidden="true">{{ forloop.index }}</span>
+                  {%- if hotspot_product.featured_media != blank -%}
+                    {{
+                      hotspot_product.featured_media.preview_image
+                      | image_url: width: 240
+                      | image_tag:
+                        loading: 'lazy',
+                        class: 'elara-lookbook__mobile-image',
+                        widths: '120, 180, 240',
+                        sizes: '120px',
+                        alt: hotspot_product.featured_media.preview_image.alt
+                    }}
+                  {%- endif -%}
+                  <span class="elara-lookbook__mobile-meta">
+                    <span class="elara-lookbook__mobile-vendor elara-caption">{{ hotspot_product.vendor | escape }}</span>
+                    <span class="elara-lookbook__mobile-title elara-h6">{{ hotspot_product.title | escape }}</span>
+                    <span class="elara-lookbook__mobile-price">{{ hotspot_product.price | money }}</span>
+                  </span>
+                </a>
+              {%- elsif block.settings.label != blank -%}
+                <p class="elara-lookbook__mobile-label">
+                  <span class="elara-lookbook__mobile-number" aria-hidden="true">{{ forloop.index }}</span>
+                  {{ block.settings.label | escape }}
+                </p>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ol>
+      {%- endif -%}
+    </elara-lookbook-hotspot>
+  </div>
+</section>
+
+{% style %}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Lookbook hotspot",
+  "tag": "section",
+  "class": "section section--lookbook-hotspot",
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Shop the look"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Off-duty essentials"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Lookbook image",
+      "info": "16:9 or 4:5 works best. Add product pins via blocks below."
+    },
+    {
+      "type": "select",
+      "id": "pin_style",
+      "options": [
+        { "value": "dot",      "label": "Dot" },
+        { "value": "numbered", "label": "Numbered" }
+      ],
+      "default": "numbered",
+      "label": "Pin style"
+    },
+    {
+      "type": "select",
+      "id": "reveal_mode",
+      "options": [
+        { "value": "hover", "label": "Hover (desktop) / tap (mobile)" },
+        { "value": "click", "label": "Click / tap" }
+      ],
+      "default": "click",
+      "label": "Open product card by"
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 96
+    }
+  ],
+  "blocks": [
+    {
+      "type": "hotspot",
+      "name": "Hotspot",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Linked product"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Override label",
+          "info": "Optional. Defaults to the product title."
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "info": "Used only when no product is linked."
+        },
+        {
+          "type": "range",
+          "id": "position_x",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Horizontal position",
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "position_y",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Vertical position",
+          "default": 50
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Lookbook hotspot",
+      "blocks": [
+        { "type": "hotspot", "settings": { "position_x": 25, "position_y": 35 } },
+        { "type": "hotspot", "settings": { "position_x": 55, "position_y": 60 } },
+        { "type": "hotspot", "settings": { "position_x": 75, "position_y": 30 } }
+      ]
+    }
+  ]
+}
+{% endschema %}

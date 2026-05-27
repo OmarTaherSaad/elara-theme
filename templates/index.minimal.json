@@ -1,0 +1,41 @@
+{
+  "sections": {
+    "image_banner": {
+      "type": "image-banner",
+      "blocks": {
+        "heading": { "type": "heading", "settings": { "heading": "Elara", "heading_size": "h0" } },
+        "text": { "type": "text", "settings": { "text": "A studied wardrobe.", "text_style": "subtitle" } },
+        "button": { "type": "buttons", "settings": { "button_label_1": "Shop now", "button_link_1": "shopify://collections/all" } }
+      },
+      "block_order": ["heading", "text", "button"],
+      "settings": {
+        "image_overlay_opacity": 25,
+        "image_height": "large",
+        "desktop_content_position": "middle-center",
+        "show_text_box": false,
+        "desktop_content_alignment": "center",
+        "color_scheme": "scheme-4",
+        "mobile_content_alignment": "center"
+      }
+    },
+    "featured_collection": {
+      "type": "featured-collection",
+      "settings": {
+        "title": "The collection",
+        "heading_size": "h2",
+        "collection": "all",
+        "products_to_show": 8,
+        "columns_desktop": 4,
+        "color_scheme": "scheme-1",
+        "show_view_all": true,
+        "image_ratio": "portrait",
+        "show_secondary_image": true,
+        "show_vendor": false,
+        "columns_mobile": "2",
+        "padding_top": 96,
+        "padding_bottom": 96
+      }
+    }
+  },
+  "order": ["image_banner", "featured_collection"]
+}

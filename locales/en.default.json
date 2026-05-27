@@ -267,6 +267,25 @@
     }
   },
   "sections": {
+    "elara": {
+      "lookbook": {
+        "view_product": "View product {{ index }}",
+        "view_product_named": "View product {{ index }}: {{ title }}",
+        "shop_the_piece": "Shop the piece",
+        "close_popover": "Close product card",
+        "hotspot_default_label": "Hotspot"
+      },
+      "sticky_story": {
+        "shop_product": "Shop {{ title }}"
+      },
+      "tabs": {
+        "view_all": "View all {{ title }}",
+        "no_collection": "Pick a collection in the section editor to populate this tab."
+      },
+      "mega_menu": {
+        "promo_default_cta": "Shop now"
+      }
+    },
     "announcements": {
       "previous_announcement": "Previous announcement",
       "next_announcement": "Next announcement",

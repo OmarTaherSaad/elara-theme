@@ -1,0 +1,23 @@
+{%- comment -%}
+  Renders an editorial eyebrow caption. Used in section headers and editorial
+  blocks to introduce a heading with a small, uppercase tracked label.
+
+  Accepts:
+    - text:    {String} Required. The eyebrow text.
+    - tag:     {String} Optional HTML tag. Defaults to 'p'.
+    - divider: {Boolean} Optional. If true, renders a leading hairline rule.
+    - class:   {String} Optional extra class names.
+
+  Usage:
+    {% render 'editorial-eyebrow', text: 'The Edit', divider: true %}
+{%- endcomment -%}
+{%- liquid
+  assign eyebrow_tag = tag | default: 'p'
+  assign extra_class = class | default: ''
+-%}
+{%- if text != blank -%}
+  <{{ eyebrow_tag }} class="elara-eyebrow {{ extra_class }}{% if divider %} elara-eyebrow--with-divider{% endif %}">
+    {%- if divider -%}<span class="elara-eyebrow__rule" aria-hidden="true"></span>{%- endif -%}
+    <span class="elara-eyebrow__text">{{ text | escape }}</span>
+  </{{ eyebrow_tag }}>
+{%- endif -%}

@@ -1,0 +1,22 @@
+{%- comment -%}
+  Renders the inner track for a marquee section. Duplicates the supplied items
+  twice so the CSS animation can translate by -50% for a seamless loop. The
+  MarqueeScroll custom element may further duplicate at runtime if the track
+  isn't wide enough.
+
+  Accepts:
+    - items_html:  {String} Required. The HTML to repeat (a series of <li> or
+                    <span> elements, typically pre-rendered by the caller).
+    - aria_label:  {String} Optional ARIA label for the track region.
+
+  Usage:
+    {%- capture items_html -%}
+      <li>...</li>
+      <li>...</li>
+    {%- endcapture -%}
+    {% render 'marquee-track', items_html: items_html, aria_label: 'Marquee' %}
+{%- endcomment -%}
+<ul class="elara-marquee__track" role="list"{% if aria_label != blank %} aria-label="{{ aria_label | escape }}"{% endif %}>
+  {{ items_html }}
+  <span class="elara-marquee__duplicate" aria-hidden="true">{{ items_html }}</span>
+</ul>

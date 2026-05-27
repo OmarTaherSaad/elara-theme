@@ -1,0 +1,266 @@
+{{ 'section-editorial-story.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign layout_class = 'elara-story--image-left'
+  case section.settings.layout
+    when 'image_right'
+      assign layout_class = 'elara-story--image-right'
+    when 'image_overlay'
+      assign layout_class = 'elara-story--image-overlay'
+  endcase
+
+  assign image_ratio_class = 'elara-story__media--ratio-portrait'
+  case section.settings.image_ratio
+    when 'square'
+      assign image_ratio_class = 'elara-story__media--ratio-square'
+    when 'landscape'
+      assign image_ratio_class = 'elara-story__media--ratio-landscape'
+    when 'natural'
+      assign image_ratio_class = 'elara-story__media--ratio-natural'
+  endcase
+-%}
+
+<section
+  class="elara-story color-{{ section.settings.color_scheme }} gradient elara-padded-section {{ layout_class }} section-{{ section.id }}-padding{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+  {% if settings.animations_reveal_on_scroll %}data-cascade{% endif %}
+>
+  <div class="elara-story__inner page-width">
+    <figure class="elara-story__media-wrapper">
+      <div class="elara-story__media {{ image_ratio_class }}">
+        {% render 'responsive-image',
+          image: section.settings.image,
+          sizes: '(min-width: 990px) 55vw, 100vw',
+          loading: 'lazy',
+          class: 'elara-story__image'
+        %}
+      </div>
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'image_caption' and block.settings.text != blank -%}
+          <figcaption class="elara-story__caption" {{ block.shopify_attributes }}>
+            {{ block.settings.text | escape }}
+          </figcaption>
+        {%- endif -%}
+      {%- endfor -%}
+    </figure>
+
+    <div class="elara-story__content">
+      {%- if section.settings.eyebrow != blank -%}
+        {% render 'editorial-eyebrow', text: section.settings.eyebrow, divider: true %}
+      {%- endif -%}
+
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'heading' -%}
+            <h2 class="elara-display-lg elara-story__heading" {{ block.shopify_attributes }}>
+              {{ block.settings.text | escape }}
+            </h2>
+          {%- when 'paragraph' -%}
+            <div class="elara-story__paragraph rte" {{ block.shopify_attributes }}>
+              {{ block.settings.text }}
+            </div>
+          {%- when 'pull_quote' -%}
+            <blockquote class="elara-story__pull-quote" {{ block.shopify_attributes }}>
+              {{ block.settings.text | escape }}
+            </blockquote>
+          {%- when 'byline' -%}
+            <p class="elara-story__byline elara-caption" {{ block.shopify_attributes }}>
+              {{ block.settings.text | escape }}
+            </p>
+          {%- when 'link' -%}
+            {%- if block.settings.label != blank and block.settings.url != blank -%}
+              <a href="{{ block.settings.url }}" class="elara-link elara-story__cta" {{ block.shopify_attributes }}>
+                {{ block.settings.label | escape }}
+                <span aria-hidden="true">&rarr;</span>
+              </a>
+            {%- endif -%}
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% style %}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Editorial story",
+  "tag": "section",
+  "class": "section section--editorial-story",
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "select",
+      "id": "layout",
+      "options": [
+        { "value": "image_left",    "label": "Image left, text right" },
+        { "value": "image_right",   "label": "Image right, text left" },
+        { "value": "image_overlay", "label": "Image overlay (text on image)" }
+      ],
+      "default": "image_left",
+      "label": "Layout"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "options": [
+        { "value": "portrait",  "label": "Portrait (4:5)" },
+        { "value": "square",    "label": "Square (1:1)" },
+        { "value": "landscape", "label": "Landscape (16:9)" },
+        { "value": "natural",   "label": "Natural" }
+      ],
+      "default": "portrait",
+      "label": "Image ratio"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "The Edit"
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 96
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "Heading",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Heading",
+          "default": "A studied approach to fabric"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "name": "Paragraph",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Paragraph",
+          "default": "<p>Every piece begins as a swatch on the studio table. We slow down so the result doesn't have to apologise for itself.</p>"
+        }
+      ]
+    },
+    {
+      "type": "pull_quote",
+      "name": "Pull quote",
+      "limit": 2,
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Quote",
+          "default": "The point isn't to be loud. It's to be unmistakable."
+        }
+      ]
+    },
+    {
+      "type": "byline",
+      "name": "Byline",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Byline",
+          "default": "Words by the studio · Photography by name"
+        }
+      ]
+    },
+    {
+      "type": "link",
+      "name": "Link",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Link label",
+          "default": "Read the full story"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Link"
+        }
+      ]
+    },
+    {
+      "type": "image_caption",
+      "name": "Image caption",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Caption"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Editorial story",
+      "blocks": [
+        { "type": "heading" },
+        { "type": "byline" },
+        { "type": "paragraph" },
+        { "type": "link" }
+      ]
+    }
+  ]
+}
+{% endschema %}

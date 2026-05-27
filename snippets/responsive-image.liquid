@@ -1,0 +1,49 @@
+{%- comment -%}
+  Renders a responsive <img> tag with srcset, sizes, intrinsic width/height,
+  loading and fetchpriority. Used by Elara sections to keep CLS low and
+  satisfy Theme Store performance audits.
+
+  Accepts:
+    - image:         {Image} Required. Shopify image object.
+    - sizes:         {String} Required. The browser-side sizes attribute, e.g.
+                      "(min-width: 990px) 50vw, 100vw".
+    - widths:        {String} Optional comma-separated srcset widths. Default
+                      "320, 480, 640, 800, 1100, 1500, 2200".
+    - loading:       {String} Optional. 'lazy' (default) | 'eager'.
+    - fetchpriority: {String} Optional. 'auto' (default) | 'high' | 'low'.
+    - class:         {String} Optional extra class names.
+    - alt:           {String} Optional override; defaults to image.alt.
+
+  Usage:
+    {% render 'responsive-image',
+      image: section.settings.image,
+      sizes: '(min-width: 990px) 50vw, 100vw',
+      loading: 'eager',
+      fetchpriority: 'high',
+      class: 'editorial-story__media'
+    %}
+{%- endcomment -%}
+{%- liquid
+  assign img_widths = widths | default: '320, 480, 640, 800, 1100, 1500, 2200'
+  assign img_loading = loading | default: 'lazy'
+  assign img_fetchpriority = fetchpriority | default: 'auto'
+  assign img_class = class | default: ''
+  assign img_alt = alt | default: image.alt | default: ''
+-%}
+{%- if image != blank -%}
+  {{
+    image
+    | image_url: width: 2200
+    | image_tag:
+      loading: img_loading,
+      fetchpriority: img_fetchpriority,
+      sizes: sizes,
+      widths: img_widths,
+      width: image.width,
+      height: image.height,
+      alt: img_alt,
+      class: img_class
+  }}
+{%- else -%}
+  {{ 'image' | placeholder_svg_tag: 'placeholder-svg ' | append: img_class }}
+{%- endif -%}

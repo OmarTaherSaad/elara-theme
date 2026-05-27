@@ -1,0 +1,272 @@
+/* ============================================================
+   Elara lookbook hotspot section
+   Editorial shop-the-look: large image with positioned product pins.
+   Mobile falls back to a numbered horizontal-scroll list under the image.
+   ============================================================ */
+
+.elara-lookbook__container {
+  display: block;
+  position: relative;
+}
+
+.elara-lookbook__stage {
+  position: relative;
+  width: 100%;
+  background-color: rgba(var(--color-foreground), 0.04);
+  overflow: hidden;
+}
+
+.elara-lookbook__image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ---- Pins ---- */
+.elara-lookbook__pin {
+  position: absolute;
+  left: var(--pin-x);
+  top: var(--pin-y);
+  width: 3.2rem;
+  height: 3.2rem;
+  transform: translate(-50%, -50%);
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  display: none;
+  z-index: 3;
+}
+
+@media screen and (min-width: 750px) {
+  .elara-lookbook__pin {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.elara-lookbook__pin-marker {
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: 999px;
+  background-color: rgba(255, 255, 255, 0.92);
+  color: #14110e;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body-family);
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  box-shadow: 0 2px 8px rgba(20, 17, 14, 0.18);
+  transition: transform var(--elara-dur-fast, 240ms) var(--elara-ease-out-quart, ease),
+              background-color var(--elara-dur-fast, 240ms) ease;
+  position: relative;
+}
+
+.elara-lookbook__pin-marker::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  transform: scale(0.8);
+  animation: elaraPinPulse 2200ms ease-out infinite;
+}
+
+@keyframes elaraPinPulse {
+  0%   { opacity: 0.6; transform: scale(0.8); }
+  80%  { opacity: 0; transform: scale(1.5); }
+  100% { opacity: 0; transform: scale(1.5); }
+}
+
+.elara-lookbook--pins-dot .elara-lookbook__pin-number {
+  display: none;
+}
+
+.elara-lookbook--pins-dot .elara-lookbook__pin-marker {
+  width: 1.6rem;
+  height: 1.6rem;
+}
+
+.elara-lookbook__pin:hover .elara-lookbook__pin-marker,
+.elara-lookbook__pin:focus-visible .elara-lookbook__pin-marker,
+.elara-lookbook__pin--active .elara-lookbook__pin-marker {
+  transform: scale(1.1);
+  background-color: #ffffff;
+}
+
+.elara-lookbook__pin:focus-visible .elara-lookbook__pin-marker {
+  outline: 2px solid var(--elara-accent, #b8956a);
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .elara-lookbook__pin-marker::before {
+    animation: none;
+  }
+}
+
+/* ---- Popover ---- */
+.elara-lookbook__popover {
+  position: absolute;
+  z-index: 4;
+  width: 28rem;
+  background-color: rgb(var(--color-background));
+  color: rgb(var(--color-foreground));
+  box-shadow: var(--elara-shadow-3, 0 12px 24px rgba(20,17,14,0.08));
+  padding: var(--elara-space-4, 1.6rem);
+  border: 1px solid var(--elara-border-hair);
+  display: none;
+}
+
+.elara-lookbook__popover--open {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: var(--elara-space-3, 1.2rem);
+  align-items: start;
+  animation: elaraFadeUp var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, ease) forwards;
+}
+
+.elara-lookbook__popover--right { transform: translate(20px, -50%); }
+.elara-lookbook__popover--left  { transform: translate(calc(-100% - 20px), -50%); }
+.elara-lookbook__popover--up    { transform: translate(20px, calc(-100% - 20px)); }
+.elara-lookbook__popover--left.elara-lookbook__popover--up {
+  transform: translate(calc(-100% - 20px), calc(-100% - 20px));
+}
+
+.elara-lookbook__popover-image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+
+.elara-lookbook__popover-close {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  width: 2.4rem;
+  height: 2.4rem;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: rgba(var(--color-foreground), 0.7);
+}
+
+.elara-lookbook__popover-close svg {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+
+.elara-lookbook__popover-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--elara-space-2, 0.8rem);
+}
+
+.elara-lookbook__popover-eyebrow {
+  margin: 0;
+}
+
+.elara-lookbook__popover-heading {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.elara-lookbook__popover-price {
+  margin: 0;
+  font-family: var(--font-body-family);
+  font-size: 1.4rem;
+  color: rgba(var(--color-foreground), 0.85);
+}
+
+.elara-lookbook__popover-description {
+  margin: 0;
+  font-size: 1.3rem;
+  line-height: 1.5;
+  color: rgba(var(--color-foreground), 0.78);
+}
+
+.elara-lookbook__popover-cta {
+  margin-top: var(--elara-space-2, 0.8rem);
+}
+
+/* ---- Mobile horizontal list ---- */
+.elara-lookbook__mobile-list {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 70%;
+  gap: var(--elara-space-3, 1.2rem);
+  margin: var(--elara-space-4, 1.6rem) 0 0;
+  padding: 0 var(--elara-space-2, 0.8rem) var(--elara-space-4, 1.6rem);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media screen and (min-width: 750px) {
+  .elara-lookbook__mobile-list {
+    display: none;
+  }
+}
+
+.elara-lookbook__mobile-item {
+  scroll-snap-align: start;
+}
+
+.elara-lookbook__mobile-card {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: var(--elara-space-3, 1.2rem);
+  text-decoration: none;
+  color: rgb(var(--color-foreground));
+  border: 1px solid var(--elara-border-hair);
+  padding: var(--elara-space-3, 1.2rem);
+  position: relative;
+}
+
+.elara-lookbook__mobile-number {
+  position: absolute;
+  top: 0.6rem;
+  left: 0.6rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #14110e;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.elara-lookbook__mobile-image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+
+.elara-lookbook__mobile-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  align-self: center;
+}
+
+.elara-lookbook__mobile-price {
+  font-family: var(--font-body-family);
+  font-size: 1.3rem;
+  color: rgba(var(--color-foreground), 0.85);
+}
+
+.elara-lookbook__mobile-label {
+  font-family: var(--font-body-family);
+  margin: 0;
+}

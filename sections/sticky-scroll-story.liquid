@@ -1,0 +1,210 @@
+{{ 'section-sticky-scroll-story.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'sticky-scroller.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign step_blocks = section.blocks | where: 'type', 'step'
+-%}
+
+<section
+  class="elara-sticky-story color-{{ section.settings.color_scheme }} gradient elara-padded-section elara-sticky-story--media-{{ section.settings.media_side }} section-{{ section.id }}-padding{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+  {% if settings.animations_reveal_on_scroll %}data-cascade{% endif %}
+>
+  <div class="page-width">
+    {%- if section.settings.heading != blank or section.settings.eyebrow != blank -%}
+      <div class="elara-sticky-story__intro">
+        {% render 'section-header',
+          eyebrow: section.settings.eyebrow,
+          heading: section.settings.heading,
+          description: section.settings.description,
+          alignment: 'left'
+        %}
+      </div>
+    {%- endif -%}
+
+    <elara-sticky-scroller class="elara-sticky-story__layout">
+      <div class="elara-sticky-story__media-column" data-media-column>
+        <div class="elara-sticky-story__media-frame">
+          {%- for block in step_blocks -%}
+            <figure
+              class="elara-sticky-story__media-item{% if forloop.first %} elara-sticky-story__media-item--active{% endif %}"
+              data-step-media="{{ forloop.index0 }}"
+            >
+              {% render 'responsive-image',
+                image: block.settings.image,
+                sizes: '(min-width: 990px) 50vw, 100vw',
+                loading: 'lazy',
+                class: 'elara-sticky-story__media-image'
+              %}
+            </figure>
+          {%- endfor -%}
+        </div>
+      </div>
+
+      <ol class="elara-sticky-story__steps list-unstyled" data-steps>
+        {%- for block in step_blocks -%}
+          <li
+            class="elara-sticky-story__step"
+            data-step-index="{{ forloop.index0 }}"
+            {{ block.shopify_attributes }}
+          >
+            <div class="elara-sticky-story__step-content">
+              {%- if block.settings.eyebrow != blank -%}
+                {% render 'editorial-eyebrow', text: block.settings.eyebrow %}
+              {%- endif -%}
+              {%- if block.settings.heading != blank -%}
+                <h3 class="elara-h2 elara-sticky-story__step-heading">{{ block.settings.heading | escape }}</h3>
+              {%- endif -%}
+              {%- if block.settings.text != blank -%}
+                <div class="elara-sticky-story__step-text rte">{{ block.settings.text }}</div>
+              {%- endif -%}
+              {%- if block.settings.product != blank -%}
+                <a href="{{ block.settings.product.url }}" class="elara-link elara-sticky-story__step-cta">
+                  {{ 'sections.elara.sticky_story.shop_product' | t: title: block.settings.product.title }}
+                  <span aria-hidden="true">&rarr;</span>
+                </a>
+              {%- endif -%}
+            </div>
+
+            {%- comment -%} Mobile fallback: show the matching image inline within each step on small viewports {%- endcomment -%}
+            <figure class="elara-sticky-story__step-media">
+              {% render 'responsive-image',
+                image: block.settings.image,
+                sizes: '100vw',
+                loading: 'lazy',
+                class: 'elara-sticky-story__step-image'
+              %}
+            </figure>
+          </li>
+        {%- endfor -%}
+      </ol>
+    </elara-sticky-scroller>
+  </div>
+</section>
+
+{% style %}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Sticky scroll story",
+  "tag": "section",
+  "class": "section section--sticky-scroll-story",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Inside the atelier"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description"
+    },
+    {
+      "type": "select",
+      "id": "media_side",
+      "options": [
+        { "value": "left",  "label": "Media on left" },
+        { "value": "right", "label": "Media on right" }
+      ],
+      "default": "left",
+      "label": "Media side (desktop)"
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 96
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Step image"
+        },
+        {
+          "type": "text",
+          "id": "eyebrow",
+          "label": "Eyebrow"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Step heading"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Description"
+        },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Linked product"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sticky scroll story",
+      "blocks": [
+        { "type": "step", "settings": { "heading": "Cut from a single hide" } },
+        { "type": "step", "settings": { "heading": "Hand-stitched at the seam" } },
+        { "type": "step", "settings": { "heading": "Lined for everyday wear" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

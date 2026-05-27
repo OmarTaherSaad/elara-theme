@@ -1,0 +1,76 @@
+/* ============================================================
+   Elara press strip section
+   Row of monochrome logos with an optional centered pull quote.
+   ============================================================ */
+
+.elara-press-strip__logos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--elara-space-6, 3.2rem) var(--elara-space-7, 4.8rem);
+  margin: 0;
+  padding: 0;
+}
+
+.elara-press-strip__item {
+  flex: 0 0 auto;
+}
+
+.elara-press-strip__link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.elara-press-strip__logo {
+  display: block;
+  height: var(--elara-press-logo-height, 32px);
+  width: auto;
+  filter: grayscale(100%) brightness(0.92);
+  opacity: 0.7;
+  transition: filter var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, ease),
+              opacity var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, ease);
+}
+
+.elara-press-strip__item:hover .elara-press-strip__logo,
+.elara-press-strip__link:focus-visible .elara-press-strip__logo {
+  filter: grayscale(0);
+  opacity: 1;
+}
+
+.elara-press-strip__quote {
+  max-width: 72ch;
+  margin: var(--elara-space-7, 4.8rem) auto 0;
+  text-align: center;
+}
+
+.elara-press-strip__quote-text {
+  font-family: var(--font-heading-family);
+  font-weight: var(--font-heading-weight);
+  font-style: italic;
+  font-size: 2.4rem;
+  line-height: 1.35;
+  letter-spacing: -0.005em;
+  color: rgb(var(--color-foreground));
+  margin: 0;
+  quotes: "\201C" "\201D";
+}
+
+.elara-press-strip__quote-text::before { content: open-quote; }
+.elara-press-strip__quote-text::after  { content: close-quote; }
+
+.elara-press-strip__quote-attribution {
+  font-family: var(--font-body-family);
+  font-size: 1.2rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(var(--color-foreground), 0.7);
+  margin-top: var(--elara-space-3, 1.2rem);
+}
+
+@media screen and (min-width: 750px) {
+  .elara-press-strip__quote-text {
+    font-size: 3.2rem;
+  }
+}

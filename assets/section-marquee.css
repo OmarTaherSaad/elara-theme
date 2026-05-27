@@ -1,0 +1,133 @@
+/* ============================================================
+   Elara marquee section
+   Kinetic text or logo strip. CSS-only animation; the
+   <elara-marquee> custom element fills the track to ensure a
+   seamless loop.
+   ============================================================ */
+
+.elara-marquee {
+  overflow: hidden;
+  width: 100%;
+}
+
+.elara-marquee--border-top {
+  border-top: 1px solid rgba(var(--color-foreground), 0.12);
+}
+
+.elara-marquee--border-bottom {
+  border-bottom: 1px solid rgba(var(--color-foreground), 0.12);
+}
+
+.elara-marquee__viewport {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.elara-marquee__track {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  width: max-content;
+  margin: 0;
+  padding: 1.6rem 0;
+  list-style: none;
+  white-space: nowrap;
+  will-change: transform;
+  animation: elaraMarquee var(--elara-marquee-duration, 40s) linear infinite;
+}
+
+.elara-marquee--ltr .elara-marquee__track {
+  animation-direction: reverse;
+}
+
+.elara-marquee--paused .elara-marquee__track {
+  animation-play-state: paused;
+}
+
+.elara-marquee--speed-slow  { --elara-marquee-duration: 80s; }
+.elara-marquee--speed-normal{ --elara-marquee-duration: 40s; }
+.elara-marquee--speed-fast  { --elara-marquee-duration: 20s; }
+
+@media screen and (min-width: 750px) {
+  .elara-marquee__track {
+    padding: 2.4rem 0;
+  }
+}
+
+.elara-marquee__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 2.4rem;
+  padding: 0 2.4rem;
+  color: rgb(var(--color-foreground));
+}
+
+.elara-marquee__text {
+  font-family: var(--font-heading-family);
+  font-weight: var(--font-heading-weight);
+  font-size: 3.2rem;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.elara-marquee--italic .elara-marquee__text {
+  font-style: italic;
+}
+
+@media screen and (min-width: 750px) {
+  .elara-marquee__text {
+    font-size: 4.8rem;
+  }
+}
+
+.elara-marquee__separator {
+  display: inline-block;
+  font-family: var(--font-heading-family);
+  font-size: 2.4rem;
+  opacity: 0.4;
+}
+
+@media screen and (min-width: 750px) {
+  .elara-marquee__separator {
+    font-size: 3.2rem;
+  }
+}
+
+.elara-marquee__item--logo {
+  padding: 0 3.2rem;
+}
+
+.elara-marquee__logo {
+  display: block;
+  height: 4rem;
+  width: auto;
+  max-width: 18rem;
+  object-fit: contain;
+  filter: grayscale(100%) brightness(0.95);
+  opacity: 0.75;
+  transition: filter var(--elara-dur-fast, 240ms) ease, opacity var(--elara-dur-fast, 240ms) ease;
+}
+
+.elara-marquee__logo-link:hover .elara-marquee__logo,
+.elara-marquee__logo:hover {
+  filter: grayscale(0);
+  opacity: 1;
+}
+
+@media screen and (min-width: 750px) {
+  .elara-marquee__logo {
+    height: 5.6rem;
+    max-width: 22rem;
+  }
+}
+
+.elara-marquee__duplicate {
+  display: inline-flex;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .elara-marquee__track {
+    animation: none;
+  }
+}

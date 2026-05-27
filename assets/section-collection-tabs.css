@@ -1,0 +1,100 @@
+/* ============================================================
+   Elara collection tabs section
+   Tabbed product carousels with an animated underline indicator.
+   ============================================================ */
+
+.elara-tabs__header {
+  margin-bottom: var(--elara-space-5, 2.4rem);
+}
+
+.elara-tabs__tablist {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--elara-space-6, 3.2rem);
+  border-bottom: 1px solid var(--elara-border-hair);
+  margin-bottom: var(--elara-space-6, 3.2rem);
+}
+
+.elara-tabs__tab {
+  position: relative;
+  background: transparent;
+  border: 0;
+  padding: 1.2rem 0;
+  margin: 0;
+  font-family: var(--font-body-family);
+  font-weight: 500;
+  font-size: 1.2rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(var(--color-foreground), 0.55);
+  cursor: pointer;
+  transition: color var(--elara-dur-fast, 240ms) var(--elara-ease-out-quart, ease);
+}
+
+.elara-tabs__tab:hover,
+.elara-tabs__tab:focus-visible,
+.elara-tabs__tab--active {
+  color: rgb(var(--color-foreground));
+}
+
+.elara-tabs__tab:focus-visible {
+  outline: 2px solid var(--elara-accent, #b8956a);
+  outline-offset: 4px;
+}
+
+.elara-tabs__indicator {
+  position: absolute;
+  bottom: -1px;
+  left: var(--tab-indicator-left, 0);
+  width: var(--tab-indicator-width, 0);
+  height: 2px;
+  background-color: rgb(var(--color-foreground));
+  transition: left var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, ease),
+              width var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, ease);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .elara-tabs__indicator {
+    transition: none;
+  }
+}
+
+.elara-tabs__panel {
+  outline: none;
+}
+
+.elara-tabs__panel--active {
+  animation: elaraFadeIn var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, ease);
+}
+
+.elara-tabs__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--grid-mobile-horizontal-spacing, 1.6rem) var(--grid-mobile-vertical-spacing, 1.6rem);
+  margin: 0;
+  padding: 0;
+}
+
+@media screen and (min-width: 750px) {
+  .elara-tabs__grid {
+    grid-template-columns: repeat(var(--cols-desktop, 4), minmax(0, 1fr));
+    gap: var(--grid-desktop-horizontal-spacing, 3.2rem) var(--grid-desktop-vertical-spacing, 3.2rem);
+  }
+}
+
+.elara-tabs__grid-item > .card-wrapper {
+  height: 100%;
+}
+
+.elara-tabs__view-all {
+  display: inline-flex;
+  margin-top: var(--elara-space-6, 3.2rem);
+}
+
+.elara-tabs__empty {
+  color: rgba(var(--color-foreground), 0.6);
+  font-style: italic;
+  padding: var(--elara-space-6, 3.2rem) 0;
+}

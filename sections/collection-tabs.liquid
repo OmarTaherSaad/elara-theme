@@ -1,0 +1,218 @@
+{{ 'section-collection-tabs.css' | asset_url | stylesheet_tag }}
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'tabbed-carousel.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign tab_blocks = section.blocks | where: 'type', 'tab'
+  assign products_per_tab = section.settings.products_per_tab
+  assign columns_desktop = section.settings.columns_desktop
+-%}
+
+<section
+  class="elara-tabs color-{{ section.settings.color_scheme }} gradient elara-padded-section section-{{ section.id }}-padding{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+  {% if settings.animations_reveal_on_scroll %}data-cascade{% endif %}
+>
+  <div class="page-width">
+    {%- if section.settings.heading != blank or section.settings.eyebrow != blank -%}
+      <header class="elara-tabs__header">
+        {% render 'section-header',
+          eyebrow: section.settings.eyebrow,
+          heading: section.settings.heading,
+          alignment: 'left'
+        %}
+      </header>
+    {%- endif -%}
+
+    <elara-tabbed-carousel class="elara-tabs__container">
+      <div class="elara-tabs__tablist" role="tablist" aria-label="{{ section.settings.heading | default: 'Collections' | escape }}">
+        {%- for block in tab_blocks -%}
+          {%- assign tab_id = 'CollectionTab-' | append: section.id | append: '-' | append: forloop.index -%}
+          {%- assign panel_id = 'CollectionTabPanel-' | append: section.id | append: '-' | append: forloop.index -%}
+          <button
+            type="button"
+            role="tab"
+            id="{{ tab_id }}"
+            class="elara-tabs__tab{% if forloop.first %} elara-tabs__tab--active{% endif %}"
+            aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+            aria-controls="{{ panel_id }}"
+            tabindex="{% if forloop.first %}0{% else %}-1{% endif %}"
+            data-index="{{ forloop.index0 }}"
+            {{ block.shopify_attributes }}
+          >
+            {{ block.settings.label | default: block.settings.collection.title | default: 'Tab' | escape }}
+          </button>
+        {%- endfor -%}
+        <span class="elara-tabs__indicator" aria-hidden="true"></span>
+      </div>
+
+      <div class="elara-tabs__panels">
+        {%- for block in tab_blocks -%}
+          {%- assign tab_id = 'CollectionTab-' | append: section.id | append: '-' | append: forloop.index -%}
+          {%- assign panel_id = 'CollectionTabPanel-' | append: section.id | append: '-' | append: forloop.index -%}
+          {%- assign collection_object = collections[block.settings.collection] -%}
+          <div
+            id="{{ panel_id }}"
+            role="tabpanel"
+            aria-labelledby="{{ tab_id }}"
+            class="elara-tabs__panel{% if forloop.first %} elara-tabs__panel--active{% endif %}"
+            tabindex="0"
+            {%- unless forloop.first %} hidden{% endunless -%}
+          >
+            {%- if collection_object != blank and collection_object.products.size > 0 -%}
+              <ul
+                class="elara-tabs__grid list-unstyled"
+                style="--cols-desktop: {{ columns_desktop }};"
+              >
+                {%- for product in collection_object.products limit: products_per_tab -%}
+                  <li class="elara-tabs__grid-item">
+                    {% render 'card-product',
+                      card_product: product,
+                      media_aspect_ratio: 'portrait',
+                      show_secondary_image: true,
+                      show_vendor: section.settings.show_vendor,
+                      show_rating: false,
+                      show_quick_add: false
+                    %}
+                  </li>
+                {%- endfor -%}
+              </ul>
+              {%- if collection_object.products_count > products_per_tab -%}
+                <a href="{{ collection_object.url }}" class="elara-link elara-tabs__view-all">
+                  {{ 'sections.elara.tabs.view_all' | t: title: collection_object.title }}
+                  <span aria-hidden="true">&rarr;</span>
+                </a>
+              {%- endif -%}
+            {%- else -%}
+              <p class="elara-tabs__empty">
+                {{ 'sections.elara.tabs.no_collection' | t }}
+              </p>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+    </elara-tabbed-carousel>
+  </div>
+</section>
+
+{% style %}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Collection tabs",
+  "tag": "section",
+  "class": "section section--collection-tabs",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Curated edits"
+    },
+    {
+      "type": "range",
+      "id": "products_per_tab",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "label": "Products per tab",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "label": "Desktop columns",
+      "default": 4
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "default": true,
+      "label": "Show vendor"
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 96
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "Tab",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Tab label",
+          "info": "Defaults to the collection title if empty."
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection tabs",
+      "blocks": [
+        { "type": "tab", "settings": { "label": "New" } },
+        { "type": "tab", "settings": { "label": "Bestsellers" } },
+        { "type": "tab", "settings": { "label": "Limited" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,137 @@
+/* ============================================================
+   Elara sticky scroll story section
+   Desktop: sticky media column + scrolling text steps (custom element
+   crossfades media as user scrolls). Mobile: stacked sequence with
+   inline images per step.
+   ============================================================ */
+
+.elara-sticky-story__intro {
+  max-width: 64ch;
+}
+
+.elara-sticky-story__layout {
+  display: block;
+}
+
+.elara-sticky-story__steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--elara-space-8, 6.4rem);
+  margin: 0;
+  padding: 0;
+}
+
+.elara-sticky-story__step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--elara-space-5, 2.4rem);
+}
+
+.elara-sticky-story__step-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--elara-space-3, 1.2rem);
+}
+
+.elara-sticky-story__step-heading {
+  margin: 0;
+  color: rgb(var(--color-foreground));
+}
+
+.elara-sticky-story__step-text {
+  font-family: var(--font-body-family);
+  font-size: 1.5rem;
+  line-height: 1.7;
+  color: rgba(var(--color-foreground), 0.85);
+  max-width: 52ch;
+}
+
+.elara-sticky-story__step-text p {
+  margin: 0 0 var(--elara-space-3, 1.2rem);
+}
+
+.elara-sticky-story__step-cta {
+  align-self: flex-start;
+}
+
+.elara-sticky-story__step-media {
+  margin: 0;
+}
+
+.elara-sticky-story__step-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+
+.elara-sticky-story__media-column {
+  display: none;
+}
+
+/* ---- Desktop two-column sticky layout ---- */
+@media screen and (min-width: 750px) {
+  .elara-sticky-story__layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--elara-space-8, 6.4rem);
+    align-items: start;
+  }
+
+  .elara-sticky-story--media-right .elara-sticky-story__layout {
+    direction: rtl;
+  }
+
+  .elara-sticky-story--media-right .elara-sticky-story__layout > * {
+    direction: ltr;
+  }
+
+  .elara-sticky-story__media-column {
+    display: block;
+    position: sticky;
+    top: calc(var(--header-height, 8rem) + var(--elara-space-5, 2.4rem));
+    height: calc(100vh - var(--header-height, 8rem) - var(--elara-space-7, 4.8rem));
+  }
+
+  .elara-sticky-story__media-frame {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: rgba(var(--color-foreground), 0.04);
+  }
+
+  .elara-sticky-story__media-item {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    transition: opacity var(--elara-dur-slow, 700ms) var(--elara-ease-out-quart, ease);
+  }
+
+  .elara-sticky-story__media-item--active {
+    opacity: 1;
+  }
+
+  .elara-sticky-story__media-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .elara-sticky-story__step-media {
+    display: none;
+  }
+
+  .elara-sticky-story__step {
+    min-height: 60vh;
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .elara-sticky-story__media-item {
+    transition: none;
+  }
+}

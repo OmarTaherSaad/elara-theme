@@ -1,0 +1,176 @@
+/* ============================================================
+   Elara editorial story section
+   Split-screen image + narrative. Layouts: image-left, image-right,
+   image-overlay (text floats on the image).
+   ============================================================ */
+
+.elara-story {
+  position: relative;
+}
+
+.elara-story__inner {
+  display: grid;
+  gap: var(--elara-space-6, 3.2rem);
+  grid-template-columns: 1fr;
+  align-items: center;
+}
+
+@media screen and (min-width: 990px) {
+  .elara-story__inner {
+    grid-template-columns: 6fr 5fr;
+    gap: var(--elara-space-9, 9.6rem);
+  }
+
+  .elara-story--image-right .elara-story__inner {
+    grid-template-columns: 5fr 6fr;
+  }
+
+  .elara-story--image-right .elara-story__media-wrapper {
+    order: 2;
+  }
+
+  .elara-story--image-right .elara-story__content {
+    order: 1;
+  }
+}
+
+.elara-story__media-wrapper {
+  margin: 0;
+}
+
+.elara-story__media {
+  position: relative;
+  overflow: hidden;
+  background-color: rgba(var(--color-foreground), 0.04);
+}
+
+.elara-story__media--ratio-portrait  { aspect-ratio: 4 / 5; }
+.elara-story__media--ratio-square    { aspect-ratio: 1 / 1; }
+.elara-story__media--ratio-landscape { aspect-ratio: 16 / 9; }
+.elara-story__media--ratio-natural   { aspect-ratio: auto; }
+
+.elara-story__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.elara-story__caption {
+  font-family: var(--font-body-family);
+  font-size: 1.1rem;
+  letter-spacing: 0.04em;
+  color: rgba(var(--color-foreground), 0.6);
+  margin-top: var(--elara-space-3, 1.2rem);
+  text-align: right;
+}
+
+.elara-story__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--elara-space-5, 2.4rem);
+  max-width: 52ch;
+}
+
+.elara-story__heading {
+  margin: 0;
+  color: rgb(var(--color-foreground));
+}
+
+.elara-story__paragraph {
+  font-family: var(--font-body-family);
+  font-size: 1.6rem;
+  line-height: 1.7;
+  color: rgba(var(--color-foreground), 0.85);
+}
+
+.elara-story__paragraph p {
+  margin: 0 0 var(--elara-space-4, 1.6rem);
+}
+
+.elara-story__paragraph p:last-child {
+  margin-bottom: 0;
+}
+
+.elara-story__pull-quote {
+  font-family: var(--font-heading-family);
+  font-weight: var(--font-heading-weight);
+  font-style: italic;
+  font-size: 2.4rem;
+  line-height: 1.3;
+  letter-spacing: -0.005em;
+  color: rgb(var(--color-foreground));
+  margin: 0;
+  padding-left: var(--elara-space-4, 1.6rem);
+  border-left: 2px solid rgb(var(--color-foreground));
+}
+
+@media screen and (min-width: 750px) {
+  .elara-story__pull-quote {
+    font-size: 2.8rem;
+    padding-left: var(--elara-space-5, 2.4rem);
+  }
+}
+
+.elara-story__byline {
+  margin: 0;
+  color: rgba(var(--color-foreground), 0.6);
+}
+
+.elara-story__cta {
+  align-self: flex-start;
+  margin-top: var(--elara-space-2, 0.8rem);
+}
+
+/* ---- Overlay variant ---- */
+.elara-story--image-overlay .elara-story__inner {
+  display: block;
+  position: relative;
+}
+
+.elara-story--image-overlay .elara-story__media {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+}
+
+.elara-story--image-overlay .elara-story__content {
+  position: relative;
+  z-index: 2;
+  max-width: 56ch;
+  padding: var(--elara-space-7, 4.8rem) var(--elara-space-5, 2.4rem);
+  color: #ffffff;
+}
+
+.elara-story--image-overlay .elara-story__heading,
+.elara-story--image-overlay .elara-story__paragraph,
+.elara-story--image-overlay .elara-story__byline {
+  color: inherit;
+}
+
+.elara-story--image-overlay .elara-story__media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.55) 100%);
+}
+
+@media screen and (min-width: 990px) {
+  .elara-story--image-overlay .elara-story__inner {
+    min-height: 70vh;
+  }
+
+  .elara-story--image-overlay .elara-story__media,
+  .elara-story--image-overlay .elara-story__media::after {
+    position: absolute;
+    inset: 0;
+    aspect-ratio: auto;
+    height: 100%;
+  }
+
+  .elara-story--image-overlay .elara-story__content {
+    position: absolute;
+    bottom: var(--elara-space-7, 4.8rem);
+    left: var(--elara-space-7, 4.8rem);
+    padding: 0;
+  }
+}
