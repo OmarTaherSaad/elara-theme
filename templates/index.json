@@ -31,7 +31,7 @@
       },
       "block_order": ["heading", "text", "button"],
       "settings": {
-        "image_overlay_opacity": 30,
+        "image_overlay_opacity": 50,
         "image_height": "large",
         "desktop_content_position": "bottom-left",
         "show_text_box": false,

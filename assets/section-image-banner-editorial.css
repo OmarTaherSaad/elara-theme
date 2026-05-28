@@ -13,14 +13,23 @@
   min-height: var(--banner-min-height-large);
 }
 
-/* Lighter, more graceful overlay gradient instead of a flat color block. */
+/* Deeper, more cinematic overlay gradient — top dark for nav contrast,
+   middle breathes so the photograph still reads, bottom heavily darkened
+   so the white display headline + body copy have real punch. */
 .banner--elara-editorial::after {
-  background: linear-gradient(
-    180deg,
-    rgba(20, 17, 14, 0) 0%,
-    rgba(20, 17, 14, 0.05) 50%,
-    rgba(20, 17, 14, 0.55) 100%
-  ) !important;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(20, 17, 14, 0.55) 0%,
+      rgba(20, 17, 14, 0.30) 30%,
+      rgba(20, 17, 14, 0.40) 55%,
+      rgba(20, 17, 14, 0.85) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(20, 17, 14, 0.18) 0%,
+      rgba(20, 17, 14, 0.18) 100%
+    ) !important;
   opacity: 1 !important;
 }
 
