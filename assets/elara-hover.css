@@ -9,47 +9,55 @@
    - 3D tilt on cards (wired via JS to .elara-tilt-card)
    ============================================================ */
 
-/* ---------- Custom cursor ----------
-   A blob that follows the pointer and morphs over interactive
-   elements. Hidden on touch / no-hover devices, when reduced-motion
-   is on, and below the lg breakpoint (mobile/tablet).
+/* ---------- Cursor follower (decorative; native OS cursor stays) ----------
+   A subtle outlined ring that trails behind the system pointer and
+   morphs over interactive elements. It AUGMENTS the OS cursor — never
+   hides it — so the click affordance and accessibility remain intact.
+
+   Hidden on touch / no-hover devices, reduced-motion users, and
+   below the lg breakpoint (mobile/tablet).
 */
-.elara-cursor {
+.elara-cursor-follower {
   position: fixed;
-  top: 0; left: 0;
-  width: 1.6rem;
-  height: 1.6rem;
+  top: 0;
+  left: 0;
+  width: 2.4rem;
+  height: 2.4rem;
   border-radius: 50%;
-  background-color: rgb(var(--color-foreground));
-  mix-blend-mode: difference;
+  border: 1.5px solid rgba(var(--color-foreground), 0.6);
+  background: transparent;
   pointer-events: none;
-  z-index: 1000;
-  transform: translate3d(-50%, -50%, 0);
+  z-index: 9999;
   transition:
-    width  var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, ease),
+    width var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, ease),
     height var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, ease),
-    opacity var(--elara-dur-fast, 240ms) ease,
-    background-color var(--elara-dur-fast, 240ms) ease;
+    border-color var(--elara-dur-fast, 240ms) ease,
+    background-color var(--elara-dur-fast, 240ms) ease,
+    opacity var(--elara-dur-fast, 240ms) ease;
   opacity: 0;
   will-change: transform;
 }
 
-.elara-cursor.is-visible {
+.elara-cursor-follower.is-visible {
   opacity: 1;
 }
 
-.elara-cursor.is-hovering-link {
-  width: 4.8rem;
-  height: 4.8rem;
+.elara-cursor-follower.is-hovering-link {
+  width: 4.4rem;
+  height: 4.4rem;
+  background-color: rgba(var(--color-foreground), 0.06);
+  border-color: rgba(var(--color-foreground), 0.85);
 }
 
-.elara-cursor.is-hovering-image {
-  width: 7.2rem;
-  height: 7.2rem;
-  background-color: rgba(255, 255, 255, 0.85);
+.elara-cursor-follower.is-hovering-image {
+  width: 8rem;
+  height: 8rem;
+  background-color: rgba(var(--color-foreground), 0.85);
+  border-color: rgb(var(--color-foreground));
+  color: rgb(var(--color-background));
 }
 
-.elara-cursor.is-hovering-image::after {
+.elara-cursor-follower.is-hovering-image::after {
   content: 'View';
   position: absolute;
   inset: 0;
@@ -58,47 +66,27 @@
   justify-content: center;
   font-family: var(--font-body-family);
   font-size: 1rem;
+  font-weight: 500;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgb(var(--color-foreground));
-  mix-blend-mode: normal;
+  color: inherit;
 }
 
-.elara-cursor.is-hovering-text {
-  width: 0.2rem;
-  height: 2.4rem;
-  border-radius: 0;
+.elara-cursor-follower.is-clicking {
+  background-color: rgba(var(--color-foreground), 0.18);
 }
 
-.elara-cursor.is-clicking {
-  transform: translate3d(-50%, -50%, 0) scale(0.6);
-}
-
-/* Hide native cursor over the area where the custom one renders */
-@media (hover: hover) and (pointer: fine) and (min-width: 990px) {
-  body.elara-custom-cursor-active {
-    cursor: none;
-  }
-
-  body.elara-custom-cursor-active a,
-  body.elara-custom-cursor-active button,
-  body.elara-custom-cursor-active [role="button"],
-  body.elara-custom-cursor-active input,
-  body.elara-custom-cursor-active textarea,
-  body.elara-custom-cursor-active select,
-  body.elara-custom-cursor-active [data-elara-cursor] {
-    cursor: none;
-  }
+.elara-cursor-follower.is-clicking.is-hovering-link {
+  width: 3.6rem;
+  height: 3.6rem;
 }
 
 @media (hover: none), (pointer: coarse), (max-width: 989px) {
-  .elara-cursor { display: none !important; }
+  .elara-cursor-follower { display: none !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .elara-cursor {
-    transition: none;
-  }
+  .elara-cursor-follower { display: none !important; }
 }
 
 /* ---------- Aesop-style link slide-up reveal ----------

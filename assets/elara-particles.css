@@ -1,0 +1,50 @@
+/* ============================================================
+   Elara particle network background
+   Companion to assets/elara-particles.js. Activate by adding the
+   `data-elara-particles` attribute to any positioned container.
+   ============================================================ */
+
+[data-elara-particles] {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.elara-particles__canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.6;
+  transition: opacity var(--elara-dur-slow, 700ms) ease;
+}
+
+/* Lift the canvas slightly when the user is hovering inside the host */
+@media (hover: hover) and (pointer: fine) {
+  [data-elara-particles]:hover > .elara-particles__canvas {
+    opacity: 0.85;
+  }
+}
+
+[data-elara-particles] > *:not(.elara-particles__canvas) {
+  position: relative;
+  z-index: 1;
+}
+
+/* Variant: subtle (lower density visual weight) */
+[data-elara-particles-variant="subtle"] .elara-particles__canvas {
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+}
+
+[data-elara-particles-variant="luminous"] .elara-particles__canvas {
+  opacity: 0.9;
+  mix-blend-mode: screen;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .elara-particles__canvas {
+    /* Static render is handled by JS; reduce visual weight further */
+    opacity: 0.25;
+  }
+}

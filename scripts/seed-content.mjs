@@ -562,6 +562,8 @@ const ARTICLES = [
     body:
       '<p>The studio is on the third floor of a former perfumery in Lisbon. Replace this article with your own brand story.</p><h2>How a piece begins</h2><p>It starts on the table as a swatch, then a half-pattern, then a toile. We don’t rush.</p><p>Replace this body with the founder’s voice.</p>',
     tags: ['Studio', 'Behind the scenes'],
+    image: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=1600&q=85',
+    imageAlt: 'Hands working on a tailored garment at an atelier bench',
   },
   {
     handle: 'on-natural-fibres',
@@ -570,6 +572,8 @@ const ARTICLES = [
     body:
       '<p>The shorter the supply chain, the more honest the finished piece. Replace this with your own perspective on materials.</p><h2>Wool</h2><p>Italian merino, fully-fashioned, woven slowly.</p><h2>Linen</h2><p>Belgian flax, washed twice before cut.</p>',
     tags: ['Materials'],
+    image: 'https://images.unsplash.com/photo-1543076447-215ad9ba6923?w=1600&q=85',
+    imageAlt: 'Folded natural fabric swatches in neutral tones',
   },
   {
     handle: 'the-quiet-edit',
@@ -578,6 +582,8 @@ const ARTICLES = [
     body:
       '<p>The pieces you return to are the ones that survive the loud seasons. This is a placeholder article — replace with your own.</p>',
     tags: ['Wardrobe'],
+    image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1600&q=85',
+    imageAlt: 'Minimal wardrobe edit on a wooden hanging rail',
   },
 ];
 
@@ -632,6 +638,20 @@ async function createBlogAndArticles() {
       continue;
     }
 
+    const articlePayload = {
+      blogId,
+      handle: a.handle,
+      title: a.title,
+      body: a.body,
+      summary: a.summary,
+      tags: a.tags,
+      isPublished: true,
+      author: { name: a.author || 'The Studio' },
+    };
+    if (a.image) {
+      articlePayload.image = { url: a.image, altText: a.imageAlt || a.title };
+    }
+
     const result = await gql(
       `
       mutation art($article: ArticleCreateInput!) {
@@ -641,18 +661,7 @@ async function createBlogAndArticles() {
         }
       }
     `,
-      {
-        article: {
-          blogId,
-          handle: a.handle,
-          title: a.title,
-          body: a.body,
-          summary: a.summary,
-          tags: a.tags,
-          isPublished: true,
-          author: { name: a.author || 'The Studio' },
-        },
-      }
+      { article: articlePayload }
     );
 
     const errs = result.data.articleCreate.userErrors;
@@ -661,6 +670,54 @@ async function createBlogAndArticles() {
       continue;
     }
     ok(a.title);
+  }
+
+  // For articles that already existed before we started shipping images,
+  // backfill the featured image via articleUpdate.
+  await backfillArticleImages(blogId);
+}
+
+async function backfillArticleImages(blogId) {
+  for (const a of ARTICLES) {
+    if (!a.image) continue;
+    const r = await gql(
+      `query a($blogId: ID!) {
+        blog(id: $blogId) {
+          articles(first: 50) {
+            edges { node { id handle image { url } } }
+          }
+        }
+      }`,
+      { blogId }
+    );
+    const node = r.data.blog.articles.edges.find((e) => e.node.handle === a.handle)?.node;
+    if (!node) continue;
+    if (node.image && node.image.url) {
+      // Already has an image
+      continue;
+    }
+    const upd = await gql(
+      `
+      mutation au($id: ID!, $article: ArticleUpdateInput!) {
+        articleUpdate(id: $id, article: $article) {
+          article { id image { url } }
+          userErrors { field message }
+        }
+      }
+    `,
+      {
+        id: node.id,
+        article: {
+          image: { url: a.image, altText: a.imageAlt || a.title },
+        },
+      }
+    );
+    const errs = upd.data.articleUpdate.userErrors;
+    if (errs.length) {
+      warn(`backfill image ${a.handle}: ${errs.map((e) => e.message).join(', ')}`);
+    } else {
+      ok(`backfilled image: ${a.title}`);
+    }
   }
 }
 

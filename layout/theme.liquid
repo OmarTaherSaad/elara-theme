@@ -267,6 +267,7 @@
     {{ 'elara-scroll-advanced.css' | asset_url | stylesheet_tag }}
     {{ 'elara-hover.css' | asset_url | stylesheet_tag }}
     {{ 'elara-ambient.css' | asset_url | stylesheet_tag }}
+    {{ 'elara-particles.css' | asset_url | stylesheet_tag }}
     {{ 'elara-magnetic.css' | asset_url | stylesheet_tag }}
     {{ 'elara-container-queries.css' | asset_url | stylesheet_tag }}
     {{ 'elara-mobile.css' | asset_url | stylesheet_tag }}
@@ -280,6 +281,7 @@
     <script src="{{ 'elara-sticky-header.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'elara-scroll-advanced.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'elara-hover.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'elara-particles.js' | asset_url }}" defer="defer"></script>
     {%- if settings.cart_type == 'notification' -%}
       {{ 'elara-cart-notification.css' | asset_url | stylesheet_tag }}
     {%- endif -%}

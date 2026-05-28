@@ -29,6 +29,7 @@
   assign img_fetchpriority = fetchpriority | default: 'auto'
   assign img_class = class | default: ''
   assign img_alt = alt | default: image.alt | default: ''
+  assign placeholder_class = 'placeholder-svg ' | append: img_class
 -%}
 {%- if image != blank -%}
   {{
@@ -45,5 +46,5 @@
       class: img_class
   }}
 {%- else -%}
-  {{ 'image' | placeholder_svg_tag: 'placeholder-svg ' | append: img_class }}
+  {{ 'image' | placeholder_svg_tag: placeholder_class }}
 {%- endif -%}

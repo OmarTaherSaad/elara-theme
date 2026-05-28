@@ -1,0 +1,52 @@
+/* ============================================================
+   Elara particle hero section
+   The actual particle network canvas is inserted by
+   assets/elara-particles.js; these rules style the editorial
+   content stack that sits on top.
+   ============================================================ */
+
+.elara-particle-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.elara-particle-hero__inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--elara-space-4, 1.6rem);
+  max-width: 64rem;
+}
+
+.elara-particle-hero__heading {
+  margin: 0;
+  color: rgb(var(--color-foreground));
+}
+
+.elara-particle-hero__description {
+  margin: 0;
+  font-family: var(--font-body-family);
+  font-size: 1.6rem;
+  line-height: 1.65;
+  color: rgba(var(--color-foreground), 0.8);
+  max-width: 52ch;
+}
+
+.elara-particle-hero__cta {
+  margin-top: var(--elara-space-3, 1.2rem);
+}
+
+/* Glow ring behind the heading on dark scheme — subtle additional life */
+.color-scheme-4 .elara-particle-hero__inner::before {
+  content: '';
+  position: absolute;
+  inset: -20% -20% 20% -20%;
+  z-index: -1;
+  background: radial-gradient(50% 60% at 50% 50%, rgba(184, 149, 106, 0.18) 0%, transparent 70%);
+  pointer-events: none;
+  filter: blur(40px);
+}

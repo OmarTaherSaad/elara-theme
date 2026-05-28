@@ -32,26 +32,34 @@
   const isDesktop = window.matchMedia('(min-width: 990px)').matches;
 
   // ============================================================
-  // 1. Custom cursor
+  // 1. Cursor follower (decorative; native OS cursor stays visible)
   // ============================================================
-  function initCustomCursor() {
+  function initCursorFollower() {
     if (!canHover || reduceMotion || !isDesktop) return;
+    if (document.querySelector('.elara-cursor-follower')) return;
 
     const cursor = document.createElement('div');
-    cursor.className = 'elara-cursor';
+    cursor.className = 'elara-cursor-follower';
     cursor.setAttribute('aria-hidden', 'true');
     document.body.appendChild(cursor);
-    document.body.classList.add('elara-custom-cursor-active');
 
-    let x = 0, y = 0;
-    let tx = 0, ty = 0;
+    let x = -100, y = -100;   // off-screen until first pointermove
+    let tx = -100, ty = -100;
 
     document.addEventListener('pointermove', (e) => {
       x = e.clientX;
       y = e.clientY;
-      cursor.classList.add('is-visible');
+      if (!cursor.classList.contains('is-visible')) {
+        // On the very first move, snap the follower to pointer position
+        // so it doesn't fly in from the corner.
+        tx = x;
+        ty = y;
+        cursor.classList.add('is-visible');
+      }
     });
-    document.addEventListener('pointerleave', () => cursor.classList.remove('is-visible'));
+    document.addEventListener('pointerleave', (e) => {
+      if (!e.relatedTarget) cursor.classList.remove('is-visible');
+    });
     document.addEventListener('pointerdown', () => cursor.classList.add('is-clicking'));
     document.addEventListener('pointerup', () => cursor.classList.remove('is-clicking'));
 
@@ -64,20 +72,16 @@
     }
     requestAnimationFrame(tick);
 
-    // Hover-aware class swaps
+    // Hover-aware class swaps (debounced via single pointerover handler)
     document.addEventListener('pointerover', (e) => {
       const t = e.target;
-      cursor.classList.remove('is-hovering-link', 'is-hovering-image', 'is-hovering-text');
+      cursor.classList.remove('is-hovering-link', 'is-hovering-image');
 
-      if (t.closest('input, textarea, [contenteditable="true"]')) {
-        cursor.classList.add('is-hovering-text');
-        return;
-      }
-      if (t.closest('.elara-card__media-link, .lookbook__pin, [data-elara-cursor="image"]')) {
+      if (t.closest && t.closest('.elara-card__media-link, .elara-lookbook__pin, [data-elara-cursor="image"]')) {
         cursor.classList.add('is-hovering-image');
         return;
       }
-      if (t.closest('a, button, [role="button"], summary, label, [data-elara-magnetic]')) {
+      if (t.closest && t.closest('a, button, [role="button"], summary, label, [data-elara-magnetic]')) {
         cursor.classList.add('is-hovering-link');
       }
     });
@@ -210,7 +214,7 @@
   // Init
   // ============================================================
   function init() {
-    initCustomCursor();
+    initCursorFollower();
     initDirectionalReveal();
     initDragScroll();
     initScramble();

@@ -195,6 +195,23 @@
         "padding_bottom": 96
       }
     },
+    "particle_hero": {
+      "type": "particle-hero",
+      "settings": {
+        "eyebrow": "Connected by craft",
+        "heading": "A studio without distance",
+        "description": "<p>Every piece travels through the same set of hands. Cut from cloth selected weeks before it arrives. Finished in the studio.</p>",
+        "cta_label": "Read our process",
+        "cta_link": "shopify://pages/about",
+        "density": 70,
+        "link_distance": 150,
+        "speed": 20,
+        "variant": "luminous",
+        "color_scheme": "scheme-4",
+        "padding_top": 160,
+        "padding_bottom": 160
+      }
+    },
     "featured_collection_2": {
       "type": "featured-collection",
       "settings": {
@@ -274,6 +291,7 @@
     "featured_collection_1",
     "collage",
     "editorial_story_2",
+    "particle_hero",
     "featured_collection_2",
     "collection_tabs",
     "press_strip",
