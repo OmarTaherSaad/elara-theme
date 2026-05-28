@@ -55,6 +55,14 @@
 <div
   id="Banner-{{ section.id }}"
   class="banner banner--content-align-{{ section.settings.desktop_content_alignment }} banner--content-align-mobile-{{ section.settings.mobile_content_alignment }} banner--{{ section.settings.image_height }}{% if section.settings.stack_images_on_mobile and section.settings.image != blank and section.settings.image_2 != blank %} banner--stacked{% endif %}{% if section.settings.image_height == 'adapt' and section.settings.image != blank %} banner--adapt{% endif %}{% if section.settings.show_text_below %} banner--mobile-bottom{%- endif -%}{% if section.settings.show_text_box == false %} banner--desktop-transparent{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}{% if section.settings.elara_editorial_layout %} banner--elara-editorial{% endif %}{% if section.settings.elara_ken_burns %} banner--elara-ken-burns{% endif %}"
+  {% if section.settings.elara_show_particles %}
+    data-elara-particles
+    data-elara-particles-density="{{ section.settings.elara_particles_density | default: 75 }}"
+    data-elara-particles-link-distance="160"
+    data-elara-particles-speed="0.25"
+    data-elara-particles-variant="luminous"
+    data-elara-particles-color="{{ section.settings.elara_particles_color | default: '#FFFFFF' }}"
+  {% endif %}
 >
   {%- if section.settings.image != blank -%}
     <div class="banner__media media{% if section.settings.image == blank and section.settings.image_2 == blank %} placeholder{% endif %}{% if section.settings.image_2 != blank %} banner__media-half{% endif %}{% if section.settings.image_behavior != 'none' %} animate--{{ section.settings.image_behavior }}{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
@@ -195,6 +203,30 @@
       "default": true,
       "label": "Slow ken-burns image animation",
       "info": "20-second scale + drift on the hero image. Respects reduced motion."
+    },
+    {
+      "type": "checkbox",
+      "id": "elara_show_particles",
+      "default": true,
+      "label": "Particle network overlay",
+      "info": "Animated dot grid with cursor-aware connecting lines layered over the hero. Desktop only; pauses on reduced motion."
+    },
+    {
+      "type": "range",
+      "id": "elara_particles_density",
+      "min": 20,
+      "max": 120,
+      "step": 5,
+      "default": 75,
+      "label": "Particle density",
+      "info": "Higher = more dots."
+    },
+    {
+      "type": "color",
+      "id": "elara_particles_color",
+      "default": "#FFFFFF",
+      "label": "Particle color",
+      "info": "Choose a color that contrasts with the hero image. Default white works for dark imagery."
     },
     {
       "type": "image_picker",

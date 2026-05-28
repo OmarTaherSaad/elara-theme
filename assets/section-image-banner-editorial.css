@@ -178,3 +178,24 @@ body.has-hero-template .banner--elara-editorial .banner__content {
   background-color: rgba(20, 17, 14, 0.92);
   color: rgba(255, 255, 255, 0.18);
 }
+
+/* Particle canvas: sits between the image and the foreground content */
+.banner[data-elara-particles] > .elara-particles__canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 2;        /* above the image (.banner__media z=auto) + ::after overlay (z=1) */
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+.banner[data-elara-particles] .banner__content {
+  z-index: 4;        /* above the canvas */
+}
+
+/* On hover, briefly brighten the canvas — gives a "the network is reacting"
+   feel when the user moves into the hero */
+@media (hover: hover) and (pointer: fine) {
+  .banner[data-elara-particles]:hover > .elara-particles__canvas {
+    opacity: 0.95;
+  }
+}

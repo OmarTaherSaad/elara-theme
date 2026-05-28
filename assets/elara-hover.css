@@ -10,9 +10,10 @@
    ============================================================ */
 
 /* ---------- Cursor follower (decorative; native OS cursor stays) ----------
-   A subtle outlined ring that trails behind the system pointer and
-   morphs over interactive elements. It AUGMENTS the OS cursor — never
-   hides it — so the click affordance and accessibility remain intact.
+   A pronounced ring + inner-dot pair that trails behind the system
+   pointer and morphs into a "View" pill over product imagery. It
+   AUGMENTS the OS cursor — never hides it. Includes a glow ring
+   when over interactive elements.
 
    Hidden on touch / no-hover devices, reduced-motion users, and
    below the lg breakpoint (mobile/tablet).
@@ -21,11 +22,11 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 2.4rem;
-  height: 2.4rem;
+  width: 3.6rem;
+  height: 3.6rem;
   border-radius: 50%;
-  border: 1.5px solid rgba(var(--color-foreground), 0.6);
-  background: transparent;
+  border: 2px solid rgba(var(--color-foreground), 0.85);
+  background: rgba(var(--color-foreground), 0.06);
   pointer-events: none;
   z-index: 9999;
   transition:
@@ -33,28 +34,67 @@
     height var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, ease),
     border-color var(--elara-dur-fast, 240ms) ease,
     background-color var(--elara-dur-fast, 240ms) ease,
+    box-shadow var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, ease),
     opacity var(--elara-dur-fast, 240ms) ease;
   opacity: 0;
   will-change: transform;
+  /* Always-visible inner dot */
+  box-shadow:
+    inset 0 0 0 1px rgba(var(--color-background), 0.45),
+    0 0 0 0 transparent;
+}
+
+/* Inner dot — sits at the centre of the ring */
+.elara-cursor-follower::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background-color: rgb(var(--color-foreground));
+  transform: translate(-50%, -50%);
+  transition: width var(--elara-dur-fast, 240ms) ease,
+              height var(--elara-dur-fast, 240ms) ease,
+              opacity var(--elara-dur-fast, 240ms) ease;
 }
 
 .elara-cursor-follower.is-visible {
   opacity: 1;
 }
 
+/* Over a link / button: bigger ring + glow halo */
 .elara-cursor-follower.is-hovering-link {
-  width: 4.4rem;
-  height: 4.4rem;
-  background-color: rgba(var(--color-foreground), 0.06);
-  border-color: rgba(var(--color-foreground), 0.85);
+  width: 6.4rem;
+  height: 6.4rem;
+  background-color: rgba(var(--color-foreground), 0.08);
+  border-color: rgb(var(--color-foreground));
+  box-shadow:
+    inset 0 0 0 1px rgba(var(--color-background), 0.45),
+    0 0 0 12px rgba(var(--color-foreground), 0.05);
 }
 
+.elara-cursor-follower.is-hovering-link::before {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+/* Over a product card / image: filled "View" pill */
 .elara-cursor-follower.is-hovering-image {
-  width: 8rem;
-  height: 8rem;
-  background-color: rgba(var(--color-foreground), 0.85);
+  width: 10rem;
+  height: 10rem;
+  background-color: rgb(var(--color-foreground));
   border-color: rgb(var(--color-foreground));
   color: rgb(var(--color-background));
+  box-shadow:
+    inset 0 0 0 1px rgba(var(--color-background), 0.18),
+    0 8px 24px rgba(20, 17, 14, 0.18),
+    0 0 0 0 transparent;
+}
+
+.elara-cursor-follower.is-hovering-image::before {
+  opacity: 0;
 }
 
 .elara-cursor-follower.is-hovering-image::after {
@@ -65,20 +105,47 @@
   align-items: center;
   justify-content: center;
   font-family: var(--font-body-family);
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 500;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: inherit;
 }
 
 .elara-cursor-follower.is-clicking {
-  background-color: rgba(var(--color-foreground), 0.18);
+  background-color: rgba(var(--color-foreground), 0.28);
+  border-color: rgb(var(--color-foreground));
+}
+
+.elara-cursor-follower.is-clicking::before {
+  width: 0.9rem;
+  height: 0.9rem;
 }
 
 .elara-cursor-follower.is-clicking.is-hovering-link {
-  width: 3.6rem;
-  height: 3.6rem;
+  width: 5.4rem;
+  height: 5.4rem;
+}
+
+.elara-cursor-follower.is-clicking.is-hovering-image {
+  width: 8.6rem;
+  height: 8.6rem;
+}
+
+/* Over light hero (transparent header / dark image): boost contrast */
+body.has-hero-template:not(.scrolled-past-header) .elara-cursor-follower {
+  border-color: rgba(255, 255, 255, 0.95);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+body.has-hero-template:not(.scrolled-past-header) .elara-cursor-follower::before {
+  background-color: #ffffff;
+}
+
+body.has-hero-template:not(.scrolled-past-header) .elara-cursor-follower.is-hovering-image {
+  background-color: #ffffff;
+  border-color: #ffffff;
+  color: #14110e;
 }
 
 @media (hover: none), (pointer: coarse), (max-width: 989px) {
