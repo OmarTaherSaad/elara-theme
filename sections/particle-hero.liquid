@@ -5,7 +5,7 @@
   data-elara-particles
   data-elara-particles-density="{{ section.settings.density }}"
   data-elara-particles-link-distance="{{ section.settings.link_distance }}"
-  data-elara-particles-speed="{{ section.settings.speed }}"
+  data-elara-particles-speed="{{ section.settings.speed | times: 0.01 }}"
   {% if section.settings.color_override != blank %}data-elara-particles-color="{{ section.settings.color_override }}"{% endif %}
   data-elara-particles-variant="{{ section.settings.variant }}"
 >
@@ -116,7 +116,7 @@
       "min": 0,
       "max": 100,
       "step": 5,
-      "default": 18,
+      "default": 20,
       "label": "Drift speed",
       "info": "Higher = livelier movement (×0.01)."
     },
