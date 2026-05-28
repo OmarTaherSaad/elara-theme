@@ -129,6 +129,9 @@ async function ensureCompleteLookMetafield() {
 // =====================================================================
 // 2. Sample products
 // =====================================================================
+// Image URLs use Unsplash's public photo IDs. They're free for commercial
+// use under the Unsplash License. We pass two per product (primary +
+// secondary) so the editorial card's hover crossfade works.
 const PRODUCTS = [
   {
     handle: 'oversized-wool-coat',
@@ -139,6 +142,10 @@ const PRODUCTS = [
     price: 695,
     description:
       '<p>A relaxed, oversized silhouette in 100% Italian wool. Drop-shouldered, single-breasted, with hand-stitched horn buttons.</p><p>Cut in a small atelier in Lisbon and pre-conditioned to drape from the first wear.</p>',
+    images: [
+      'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=1600&q=85',
+      'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=1600&q=85',
+    ],
   },
   {
     handle: 'wide-leg-trouser',
@@ -149,6 +156,10 @@ const PRODUCTS = [
     price: 290,
     description:
       '<p>A studio staple. High-rise wide-leg in heavy linen, side-pocketed, with a tonal grosgrain inner waistband.</p>',
+    images: [
+      'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=1600&q=85',
+      'https://images.unsplash.com/photo-1604176354204-9268737828e4?w=1600&q=85',
+    ],
   },
   {
     handle: 'merino-roll-neck',
@@ -159,6 +170,10 @@ const PRODUCTS = [
     price: 245,
     description:
       '<p>The studio roll-neck. Extra-fine 19.5-micron merino, fully-fashioned, in a fit that sits close without binding.</p>',
+    images: [
+      'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=1600&q=85',
+      'https://images.unsplash.com/photo-1601762603339-fd61e28b698a?w=1600&q=85',
+    ],
   },
   {
     handle: 'leather-tote-no-04',
@@ -169,6 +184,10 @@ const PRODUCTS = [
     price: 595,
     description:
       '<p>Cut from a single full-grain hide, hand-stitched at the seam, lined in soft suede. The bag we use every day.</p>',
+    images: [
+      'https://images.unsplash.com/photo-1591561954557-26941169b49e?w=1600&q=85',
+      'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=1600&q=85',
+    ],
   },
   {
     handle: 'silk-slip-dress',
@@ -179,6 +198,10 @@ const PRODUCTS = [
     price: 425,
     description:
       '<p>22-momme silk satin, bias-cut, with adjustable straps and a hidden side slit. Designed to be worn as easily over a knit as on its own.</p>',
+    images: [
+      'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1600&q=85',
+      'https://images.unsplash.com/photo-1518049362265-d5b2a6467637?w=1600&q=85',
+    ],
   },
   {
     handle: 'fragrance-vetiver-no-02',
@@ -189,8 +212,49 @@ const PRODUCTS = [
     price: 165,
     description:
       '<p>A unisex eau de parfum built around Haitian vetiver, smoked tea leaves, and a late-base of warm amber.</p>',
+    images: [
+      'https://images.unsplash.com/photo-1541643600914-78b084683601?w=1600&q=85',
+      'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=1600&q=85',
+    ],
   },
 ];
+
+async function attachImages(productId, urls) {
+  if (!urls || !urls.length) return;
+  const media = urls.map((u) => ({
+    originalSource: u,
+    mediaContentType: 'IMAGE',
+  }));
+  const result = await gql(
+    `
+    mutation addMedia($media: [CreateMediaInput!]!, $productId: ID!) {
+      productCreateMedia(media: $media, productId: $productId) {
+        media { mediaContentType status }
+        mediaUserErrors { field message }
+      }
+    }
+  `,
+    { media, productId }
+  );
+  const errs = result.data.productCreateMedia.mediaUserErrors;
+  if (errs.length) {
+    warn(`  media: ${errs.map((e) => e.message).join(', ')}`);
+  } else {
+    ok(`  attached ${urls.length} image(s)`);
+  }
+}
+
+async function productHasImages(productId) {
+  const r = await gql(
+    `query img($id: ID!) {
+      product(id: $id) {
+        media(first: 1) { edges { node { id } } }
+      }
+    }`,
+    { id: productId }
+  );
+  return r.data.product.media.edges.length > 0;
+}
 
 async function createProducts() {
   step(`Products: creating ${PRODUCTS.length} demo items`);
@@ -209,68 +273,80 @@ async function createProducts() {
   const ids = {};
 
   for (const p of PRODUCTS) {
+    let productId;
+
     if (existing.has(p.handle)) {
-      const id = check.data.products.edges.find((e) => e.node.handle === p.handle).node.id;
-      ids[p.handle] = id;
+      productId = check.data.products.edges.find((e) => e.node.handle === p.handle).node.id;
+      ids[p.handle] = productId;
       skip(`${p.title}`);
-      continue;
-    }
-
-    const result = await gql(
-      `
-      mutation prodCreate($product: ProductCreateInput!) {
-        productCreate(product: $product) {
-          product { id handle title }
-          userErrors { field message }
-        }
-      }
-    `,
-      {
-        product: {
-          handle: p.handle,
-          title: p.title,
-          descriptionHtml: p.description,
-          vendor: p.vendor,
-          productType: p.productType,
-          tags: p.tags,
-          status: 'ACTIVE',
-        },
-      }
-    );
-
-    const errs = result.data.productCreate.userErrors;
-    if (errs.length) {
-      warn(`${p.handle}: ${errs.map((e) => e.message).join(', ')}`);
-      continue;
-    }
-    const created = result.data.productCreate.product;
-    ids[p.handle] = created.id;
-    ok(`${created.title}`);
-
-    // Set price on the default variant
-    const variantsRes = await gql(
-      `query v($id: ID!) {
-        product(id: $id) {
-          variants(first: 1) { edges { node { id } } }
-        }
-      }`,
-      { id: created.id }
-    );
-    const variantId = variantsRes.data.product.variants.edges[0]?.node.id;
-    if (variantId) {
-      await gql(
+    } else {
+      const result = await gql(
         `
-        mutation setPrice($productId: ID!, $variants: [ProductVariantsBulkInput!]!) {
-          productVariantsBulkUpdate(productId: $productId, variants: $variants) {
+        mutation prodCreate($product: ProductCreateInput!) {
+          productCreate(product: $product) {
+            product { id handle title }
             userErrors { field message }
           }
         }
       `,
         {
-          productId: created.id,
-          variants: [{ id: variantId, price: String(p.price) }],
+          product: {
+            handle: p.handle,
+            title: p.title,
+            descriptionHtml: p.description,
+            vendor: p.vendor,
+            productType: p.productType,
+            tags: p.tags,
+            status: 'ACTIVE',
+          },
         }
       );
+
+      const errs = result.data.productCreate.userErrors;
+      if (errs.length) {
+        warn(`${p.handle}: ${errs.map((e) => e.message).join(', ')}`);
+        continue;
+      }
+      const created = result.data.productCreate.product;
+      productId = created.id;
+      ids[p.handle] = productId;
+      ok(`${created.title}`);
+
+      // Set price on the default variant
+      const variantsRes = await gql(
+        `query v($id: ID!) {
+          product(id: $id) {
+            variants(first: 1) { edges { node { id } } }
+          }
+        }`,
+        { id: productId }
+      );
+      const variantId = variantsRes.data.product.variants.edges[0]?.node.id;
+      if (variantId) {
+        await gql(
+          `
+          mutation setPrice($productId: ID!, $variants: [ProductVariantsBulkInput!]!) {
+            productVariantsBulkUpdate(productId: $productId, variants: $variants) {
+              userErrors { field message }
+            }
+          }
+        `,
+          {
+            productId,
+            variants: [{ id: variantId, price: String(p.price) }],
+          }
+        );
+      }
+    }
+
+    // Attach images if the product has none yet (idempotent for re-runs)
+    if (p.images && p.images.length) {
+      const hasImages = await productHasImages(productId);
+      if (hasImages) {
+        skip(`  images for ${p.handle}`);
+      } else {
+        await attachImages(productId, p.images);
+      }
     }
   }
 
@@ -365,33 +441,40 @@ async function createCollections(productIds) {
 // =====================================================================
 // 4. Pages
 // =====================================================================
+// templateSuffix maps to the part after "page." in templates/page.<suffix>.json
+// e.g. page.about.json → templateSuffix: "about". Empty string = default page.
 const PAGES = [
   {
     handle: 'about',
     title: 'About',
     body:
       '<p>Elara began as a single tailor’s bench and a refusal to compromise on cloth. Replace this with the story of your founder.</p>',
+    templateSuffix: 'about',
   },
   {
     handle: 'lookbook',
     title: 'Lookbook',
     body: '<p>This page uses the Elara <em>Lookbook</em> template. Edit it in the Theme editor to populate the hotspots.</p>',
+    templateSuffix: 'lookbook',
   },
   {
     handle: 'size-guide',
     title: 'Size guide',
     body: '<p>This page uses the Elara <em>Size guide</em> template.</p>',
+    templateSuffix: 'size-guide',
   },
   {
     handle: 'contact',
     title: 'Contact',
     body: '<p>Email us at hello@example.com or fill in the form below.</p>',
+    templateSuffix: 'contact',
   },
   {
     handle: 'concierge',
     title: 'Concierge',
     body:
       '<p>Personal styling, alterations, and gift wrapping by request. Reach out via the concierge link in the footer.</p>',
+    templateSuffix: '',
   },
 ];
 
@@ -402,14 +485,38 @@ async function createPages() {
     // Page lookup by handle
     const existing = await gql(
       `query existing($handle: String!) {
-        pages(first: 1, query: $handle) { edges { node { id handle title } } }
+        pages(first: 1, query: $handle) { edges { node { id handle title templateSuffix } } }
       }`,
       { handle: `handle:${p.handle}` }
     );
 
     const found = existing.data.pages.edges.find((e) => e.node.handle === p.handle);
+    let pageId;
+
     if (found) {
-      skip(p.title);
+      pageId = found.node.id;
+      // Update the template suffix if it doesn't already match (idempotent)
+      if (found.node.templateSuffix !== p.templateSuffix && p.templateSuffix) {
+        const upd = await gql(
+          `
+          mutation pageUpdate($id: ID!, $page: PageUpdateInput!) {
+            pageUpdate(id: $id, page: $page) {
+              page { id templateSuffix }
+              userErrors { field message }
+            }
+          }
+        `,
+          { id: pageId, page: { templateSuffix: p.templateSuffix } }
+        );
+        const errs = upd.data.pageUpdate.userErrors;
+        if (errs.length) {
+          warn(`${p.handle} template: ${errs.map((e) => e.message).join(', ')}`);
+        } else {
+          ok(`${p.title} (template → page.${p.templateSuffix})`);
+        }
+      } else {
+        skip(p.title);
+      }
       continue;
     }
 
@@ -417,7 +524,7 @@ async function createPages() {
       `
       mutation pageCreate($page: PageCreateInput!) {
         pageCreate(page: $page) {
-          page { id handle title }
+          page { id handle title templateSuffix }
           userErrors { field message }
         }
       }
@@ -428,6 +535,7 @@ async function createPages() {
           title: p.title,
           body: p.body,
           isPublished: true,
+          templateSuffix: p.templateSuffix || null,
         },
       }
     );
@@ -437,7 +545,8 @@ async function createPages() {
       warn(`${p.handle}: ${errs.map((e) => e.message).join(', ')}`);
       continue;
     }
-    ok(p.title);
+    const suffix = result.data.pageCreate.page.templateSuffix;
+    ok(`${p.title}${suffix ? ` (template → page.${suffix})` : ''}`);
   }
 }
 
@@ -541,6 +650,7 @@ async function createBlogAndArticles() {
           summary: a.summary,
           tags: a.tags,
           isPublished: true,
+          author: { name: a.author || 'The Studio' },
         },
       }
     );
@@ -555,6 +665,58 @@ async function createBlogAndArticles() {
 }
 
 // =====================================================================
+// 6. Populate elara.complete_look on sample products
+// =====================================================================
+const COMPLETE_LOOK_PAIRINGS = [
+  { product: 'oversized-wool-coat', pairs_with: ['merino-roll-neck', 'wide-leg-trouser', 'leather-tote-no-04'] },
+  { product: 'leather-tote-no-04', pairs_with: ['oversized-wool-coat', 'wide-leg-trouser', 'silk-slip-dress'] },
+  { product: 'silk-slip-dress', pairs_with: ['merino-roll-neck', 'leather-tote-no-04', 'fragrance-vetiver-no-02'] },
+];
+
+async function populateCompleteLook(productIds) {
+  step('Complete-the-look metafield: pairing products');
+
+  for (const pairing of COMPLETE_LOOK_PAIRINGS) {
+    const targetId = productIds[pairing.product];
+    if (!targetId) {
+      warn(`${pairing.product}: product not found`);
+      continue;
+    }
+    const valueIds = pairing.pairs_with.map((h) => productIds[h]).filter(Boolean);
+    if (!valueIds.length) continue;
+
+    const result = await gql(
+      `
+      mutation setMf($metafields: [MetafieldsSetInput!]!) {
+        metafieldsSet(metafields: $metafields) {
+          metafields { id key namespace }
+          userErrors { field message }
+        }
+      }
+    `,
+      {
+        metafields: [
+          {
+            ownerId: targetId,
+            namespace: 'elara',
+            key: 'complete_look',
+            type: 'list.product_reference',
+            value: JSON.stringify(valueIds),
+          },
+        ],
+      }
+    );
+
+    const errs = result.data.metafieldsSet.userErrors;
+    if (errs.length) {
+      warn(`${pairing.product}: ${errs.map((e) => e.message).join(', ')}`);
+    } else {
+      ok(`${pairing.product} ← ${valueIds.length} paired products`);
+    }
+  }
+}
+
+// =====================================================================
 // Main
 // =====================================================================
 async function main() {
@@ -565,12 +727,10 @@ async function main() {
   await createCollections(productIds);
   await createPages();
   await createBlogAndArticles();
+  await populateCompleteLook(productIds);
 
-  console.log('\n✓ Done. Next steps:');
-  console.log('  1. Upload product images via the admin (or extend this script with productCreateMedia).');
-  console.log('  2. Set page templates in admin: pages/about → page.about, pages/lookbook → page.lookbook,');
-  console.log('     pages/size-guide → page.size-guide. (Set via page → Online Store template picker.)');
-  console.log('  3. Populate the elara.complete_look metafield on a product to test the Complete-the-look block.');
+  console.log('\n✓ Done.');
+  console.log('  Open https://' + STORE + '.myshopify.com/admin to review.');
 }
 
 main().catch((err) => {
