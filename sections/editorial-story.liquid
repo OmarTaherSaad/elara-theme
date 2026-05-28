@@ -25,8 +25,8 @@
   {% if settings.animations_reveal_on_scroll %}data-cascade{% endif %}
 >
   <div class="elara-story__inner page-width">
-    <figure class="elara-story__media-wrapper">
-      <div class="elara-story__media {{ image_ratio_class }}">
+    <figure class="elara-story__media-wrapper {% if section.settings.layout == 'image_right' %}elara-mask-from-right{% else %}elara-mask-from-left{% endif %}">
+      <div class="elara-story__media {{ image_ratio_class }} elara-scrub-y">
         {% render 'responsive-image',
           image: section.settings.image,
           sizes: '(min-width: 990px) 55vw, 100vw',
@@ -51,7 +51,7 @@
       {%- for block in section.blocks -%}
         {%- case block.type -%}
           {%- when 'heading' -%}
-            <h2 class="elara-display-lg elara-story__heading" {{ block.shopify_attributes }}>
+            <h2 class="elara-display-lg elara-story__heading elara-words-reveal" {{ block.shopify_attributes }}>
               {{ block.settings.text | escape }}
             </h2>
           {%- when 'paragraph' -%}

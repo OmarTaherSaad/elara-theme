@@ -1,0 +1,333 @@
+/* ============================================================
+   Elara advanced hover effects
+   - Custom cursor that morphs over interactive elements
+   - Aesop-style text slide-up reveal on links
+   - Directional clip-path image reveal on card hover
+   - Hover marquee duplicate text
+   - Image scale + clip on card hover
+   - Underline-grow animation
+   - 3D tilt on cards (wired via JS to .elara-tilt-card)
+   ============================================================ */
+
+/* ---------- Custom cursor ----------
+   A blob that follows the pointer and morphs over interactive
+   elements. Hidden on touch / no-hover devices, when reduced-motion
+   is on, and below the lg breakpoint (mobile/tablet).
+*/
+.elara-cursor {
+  position: fixed;
+  top: 0; left: 0;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  background-color: rgb(var(--color-foreground));
+  mix-blend-mode: difference;
+  pointer-events: none;
+  z-index: 1000;
+  transform: translate3d(-50%, -50%, 0);
+  transition:
+    width  var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, ease),
+    height var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, ease),
+    opacity var(--elara-dur-fast, 240ms) ease,
+    background-color var(--elara-dur-fast, 240ms) ease;
+  opacity: 0;
+  will-change: transform;
+}
+
+.elara-cursor.is-visible {
+  opacity: 1;
+}
+
+.elara-cursor.is-hovering-link {
+  width: 4.8rem;
+  height: 4.8rem;
+}
+
+.elara-cursor.is-hovering-image {
+  width: 7.2rem;
+  height: 7.2rem;
+  background-color: rgba(255, 255, 255, 0.85);
+}
+
+.elara-cursor.is-hovering-image::after {
+  content: 'View';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body-family);
+  font-size: 1rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgb(var(--color-foreground));
+  mix-blend-mode: normal;
+}
+
+.elara-cursor.is-hovering-text {
+  width: 0.2rem;
+  height: 2.4rem;
+  border-radius: 0;
+}
+
+.elara-cursor.is-clicking {
+  transform: translate3d(-50%, -50%, 0) scale(0.6);
+}
+
+/* Hide native cursor over the area where the custom one renders */
+@media (hover: hover) and (pointer: fine) and (min-width: 990px) {
+  body.elara-custom-cursor-active {
+    cursor: none;
+  }
+
+  body.elara-custom-cursor-active a,
+  body.elara-custom-cursor-active button,
+  body.elara-custom-cursor-active [role="button"],
+  body.elara-custom-cursor-active input,
+  body.elara-custom-cursor-active textarea,
+  body.elara-custom-cursor-active select,
+  body.elara-custom-cursor-active [data-elara-cursor] {
+    cursor: none;
+  }
+}
+
+@media (hover: none), (pointer: coarse), (max-width: 989px) {
+  .elara-cursor { display: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .elara-cursor {
+    transition: none;
+  }
+}
+
+/* ---------- Aesop-style link slide-up reveal ----------
+   <a class="elara-link-slide"><span class="elara-link-slide__inner">…</span></a>
+   On hover, the inner text scrolls up and a duplicate appears from below.
+*/
+.elara-link-slide {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  line-height: 1.1;
+  text-decoration: none;
+}
+
+.elara-link-slide__inner {
+  display: inline-block;
+  position: relative;
+  transition: transform var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, ease);
+}
+
+.elara-link-slide__inner::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 100%;
+  left: 0;
+  white-space: nowrap;
+  font-style: italic;
+}
+
+.elara-link-slide:hover .elara-link-slide__inner,
+.elara-link-slide:focus-visible .elara-link-slide__inner {
+  transform: translateY(-100%);
+}
+
+/* ---------- Underline grow ----------
+   Replaces traditional underline with one that grows from the
+   center on hover.
+*/
+.elara-underline {
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+  display: inline-block;
+}
+
+.elara-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -0.2rem;
+  left: 50%;
+  width: 0;
+  height: 1px;
+  background-color: currentColor;
+  transform: translateX(-50%);
+  transition: width var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, ease);
+}
+
+.elara-underline:hover::after,
+.elara-underline:focus-visible::after {
+  width: 100%;
+}
+
+/* ---------- Directional clip-path image reveal ----------
+   Cards: when pointer enters from a specific side, the secondary
+   image clips in from that side. Sets --enter-side 0..3 via JS or
+   data attribute. Default falls back to fade.
+*/
+.elara-card__media--has-secondary {
+  --enter-side: 2;  /* default = bottom */
+  --reveal-clip-start: inset(100% 0 0 0); /* bottom */
+}
+
+.elara-card__media--has-secondary[data-enter-side="0"] {
+  --reveal-clip-start: inset(0 0 0 100%);
+}
+.elara-card__media--has-secondary[data-enter-side="1"] {
+  --reveal-clip-start: inset(0 100% 0 0);
+}
+.elara-card__media--has-secondary[data-enter-side="2"] {
+  --reveal-clip-start: inset(100% 0 0 0);
+}
+.elara-card__media--has-secondary[data-enter-side="3"] {
+  --reveal-clip-start: inset(0 0 100% 0);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .elara-card__media--has-secondary .elara-card__image--secondary {
+    clip-path: var(--reveal-clip-start);
+    transition:
+      clip-path var(--elara-dur-slow, 700ms) var(--elara-ease-out-quart, ease),
+      opacity 0ms;
+    opacity: 1;
+  }
+
+  .elara-card__media--has-secondary:hover .elara-card__image--secondary {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* ---------- 3D tilt card ----------
+   Companion to elara-magnetic's pointer-aware feature. Add
+   .elara-tilt-card + data-elara-pointer-aware to a card and the
+   pointer position will tilt it in 3D space.
+*/
+.elara-tilt-card {
+  --tilt-strength: 8deg;
+  --mx: 50%;
+  --my: 50%;
+  transform-style: preserve-3d;
+  transition: transform var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, ease);
+}
+
+.elara-tilt-card:hover {
+  transform: perspective(1200px)
+    rotateX(calc((var(--my) - 50%) * -0.04))
+    rotateY(calc((var(--mx) - 50%) *  0.04));
+}
+
+/* ---------- Hover marquee text duplicate ----------
+   Mark a link `.elara-hover-marquee` and on hover, the text scrolls
+   horizontally with a duplicated trail. Good for top utility links.
+*/
+.elara-hover-marquee {
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1.2;
+}
+
+.elara-hover-marquee__text {
+  display: inline-block;
+  position: relative;
+  transition: transform var(--elara-dur-slower, 900ms) var(--elara-ease-luxury, ease);
+}
+
+.elara-hover-marquee:hover .elara-hover-marquee__text {
+  transform: translateX(-100%);
+}
+
+.elara-hover-marquee__text::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 100%;
+  padding-left: 1.2rem;
+}
+
+/* ---------- Image scale + crop on card hover ----------
+   Adds a slight scale+rotate on the primary image when card is
+   hovered. Pairs with the editorial card. Stronger on touch end.
+*/
+@media (hover: hover) and (pointer: fine) {
+  .elara-card__media-link:hover .elara-card__image--primary {
+    transform: scale(1.05);
+  }
+}
+
+/* ---------- Magnetic translation when applied to a link ----------
+   The base translation styles live in elara-magnetic.css. Here we
+   add a refined cursor over magnetic items.
+*/
+[data-elara-magnetic]:hover {
+  /* default in elara-magnetic.css handles the transform */
+}
+
+/* ---------- Header link hover line ---------- */
+.header__menu-item {
+  position: relative;
+}
+
+.header__menu-item::after {
+  content: '';
+  position: absolute;
+  left: 1.6rem;
+  right: 1.6rem;
+  bottom: 0.4rem;
+  height: 1px;
+  background-color: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, ease);
+}
+
+.header__menu-item:hover::after,
+.header__menu-item:focus-visible::after,
+.header__menu-item[aria-expanded="true"]::after {
+  transform: scaleX(1);
+}
+
+/* ---------- Smooth checkbox / radio swap ---------- */
+input[type="checkbox"]:focus-visible,
+input[type="radio"]:focus-visible {
+  outline-offset: 4px;
+}
+
+/* ---------- Card "view product" peek ---------- */
+.elara-card__title-link {
+  position: relative;
+  display: inline-block;
+}
+
+.elara-card__title-link::after {
+  content: '→';
+  position: absolute;
+  left: 100%;
+  margin-left: 0.6rem;
+  opacity: 0;
+  transform: translateX(-0.4rem);
+  transition: opacity var(--elara-dur-fast, 240ms) ease,
+              transform var(--elara-dur-fast, 240ms) var(--elara-ease-out-quart, ease);
+}
+
+.elara-card__media-link:hover ~ .elara-card__content .elara-card__title-link::after,
+.elara-card__content:hover .elara-card__title-link::after {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ---------- Skip cursor in scrollers ---------- */
+.elara-tabs__panel,
+.elara-recently-viewed__track,
+.elara-product__complete-look-track {
+  cursor: grab;
+}
+
+.elara-tabs__panel:active,
+.elara-recently-viewed__track:active,
+.elara-product__complete-look-track:active {
+  cursor: grabbing;
+}

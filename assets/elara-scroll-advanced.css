@@ -1,0 +1,339 @@
+/* ============================================================
+   Elara advanced scrolling effects
+   - Word-by-word text reveal
+   - Image-scrub parallax (image translates inside frame as scroll)
+   - Reveal masks (clip-path from edge)
+   - Per-section scroll progress underline
+   - Horizontal-on-vertical-scroll utility
+   - Letter-spacing tighten on scroll
+   ============================================================ */
+
+/* ---------- Word reveal ----------
+   Applied via class `.elara-words-reveal` on any element. The JS
+   splits text into <span class="elara-word"> children. Each word
+   fades up with view-timeline scroll progress.
+*/
+.elara-words-reveal {
+  /* Containing element keeps its own normal layout; spans flow inline. */
+}
+
+.elara-word {
+  display: inline-block;
+  opacity: 1;
+  transform: none;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .elara-words-reveal .elara-word {
+      opacity: 0;
+      transform: translate3d(0, 1.2rem, 0);
+      animation: elaraWordReveal linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 35%;
+      animation-delay: calc(var(--w-index, 0) * 30ms);
+    }
+  }
+}
+
+@keyframes elaraWordReveal {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1.2rem, 0);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    filter: blur(0);
+  }
+}
+
+/* ---------- Image-scrub parallax ----------
+   .elara-scrub-y > img drifts inside its overflow:hidden frame as
+   the user scrolls. Use on editorial-story images, hero media.
+*/
+.elara-scrub-y {
+  overflow: hidden;
+  position: relative;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .elara-scrub-y > img,
+    .elara-scrub-y > [data-scrub] {
+      animation: elaraScrubY linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+      transform-origin: center center;
+      will-change: transform;
+      height: 110%;
+      width: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+  }
+}
+
+@keyframes elaraScrubY {
+  from { transform: translate3d(0, -8%, 0); }
+  to   { transform: translate3d(0,  8%, 0); }
+}
+
+/* ---------- Reveal mask (clip-path from left or right) ---------- */
+.elara-mask-from-left,
+.elara-mask-from-right,
+.elara-mask-from-bottom {
+  opacity: 1;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .elara-mask-from-left {
+      clip-path: inset(0 100% 0 0);
+      animation: elaraMaskLeft linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 40%;
+    }
+    .elara-mask-from-right {
+      clip-path: inset(0 0 0 100%);
+      animation: elaraMaskRight linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 40%;
+    }
+    .elara-mask-from-bottom {
+      clip-path: inset(100% 0 0 0);
+      animation: elaraMaskBottom linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 50%;
+    }
+  }
+}
+
+@keyframes elaraMaskLeft {
+  to { clip-path: inset(0 0 0 0); }
+}
+@keyframes elaraMaskRight {
+  to { clip-path: inset(0 0 0 0); }
+}
+@keyframes elaraMaskBottom {
+  to { clip-path: inset(0 0 0 0); }
+}
+
+/* ---------- Letter-spacing tightening on scroll ----------
+   Heading expands its letter-spacing as it scrolls into view, then
+   tightens to its final value. Used on display-scale headlines.
+*/
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .elara-letter-tighten {
+      animation: elaraTighten linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 50%;
+    }
+  }
+}
+
+@keyframes elaraTighten {
+  from { letter-spacing: 0.08em; opacity: 0.4; }
+  to   { letter-spacing: -0.02em; opacity: 1; }
+}
+
+/* ---------- Section scroll progress underline ----------
+   A 2px hairline under .elara-section-progress grows from 0 to 100%
+   width as the section scrolls through the viewport.
+*/
+.elara-section-progress {
+  position: relative;
+}
+
+.elara-section-progress::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  height: 1px;
+  width: 100%;
+  background-color: rgba(var(--color-foreground), 0.18);
+  transform-origin: left center;
+  transform: scaleX(0);
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .elara-section-progress::after {
+      animation: elaraSectionProgress linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+  }
+}
+
+@keyframes elaraSectionProgress {
+  to { transform: scaleX(1); }
+}
+
+/* ---------- Horizontal-on-vertical-scroll ----------
+   A pinned section that translates horizontally as the user scrolls
+   vertically past it. Use on lookbook walks and brand-story sections.
+
+   Markup:
+     <section class="elara-h-scroll" data-elara-h-scroll>
+       <div class="elara-h-scroll__track">
+         <article class="elara-h-scroll__slide">…</article>
+         ...
+       </div>
+     </section>
+*/
+.elara-h-scroll {
+  position: relative;
+  height: 300vh;             /* drives how long the pin lasts */
+}
+
+.elara-h-scroll__viewport {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.elara-h-scroll__track {
+  display: flex;
+  gap: var(--elara-space-7, 4.8rem);
+  padding: 0 var(--elara-fluid-section, 6rem);
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+}
+
+.elara-h-scroll__slide {
+  flex: 0 0 auto;
+  width: clamp(28rem, 40vw, 56rem);
+  height: 70vh;
+  position: relative;
+}
+
+@media screen and (max-width: 749px) {
+  /* Mobile: drop the sticky pin and just stack the slides */
+  .elara-h-scroll {
+    height: auto;
+  }
+  .elara-h-scroll__viewport {
+    position: static;
+    height: auto;
+  }
+  .elara-h-scroll__track {
+    flex-direction: column;
+    padding: 0;
+  }
+  .elara-h-scroll__slide {
+    width: 100%;
+    height: 60vh;
+  }
+}
+
+/* ---------- Sticky-glass header backdrop on scroll ----------
+   Once the user scrolls past the threshold, give the header a
+   frosted-glass background.
+*/
+@supports (backdrop-filter: blur(20px)) {
+  body.scrolled-past-header .header-wrapper,
+  body.scrolled-past-header sticky-header {
+    background-color: rgba(var(--color-background), 0.78);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+  }
+}
+
+/* ---------- Per-element scroll progress as custom property ----------
+   Any element with `.elara-progress-track` exposes --progress: 0-1
+   while it's in the viewport, computed by elara-scroll-advanced.js
+   for legacy browsers. Modern browsers use view-timeline directly.
+*/
+
+/* ---------- Counter-spin: numbers count up as they enter ----------
+   JS scans for [data-elara-counter] and animates the text content
+   from 0 to its data-elara-counter-target on entry. CSS just sets
+   typography.
+*/
+[data-elara-counter] {
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-heading-family);
+  font-weight: var(--font-heading-weight);
+  letter-spacing: -0.02em;
+}
+
+/* ---------- Slow image breathe ----------
+   A 24-second 1-1.03 scale loop on hero / story images. Combine
+   with ken-burns for layered subtle life.
+*/
+@media (prefers-reduced-motion: no-preference) {
+  .elara-breathe {
+    animation: elaraBreathe 24s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes elaraBreathe {
+  from { transform: scale(1); }
+  to   { transform: scale(1.03); }
+}
+
+/* ---------- JS fallback for browsers without animation-timeline ----------
+   elara-scroll-advanced.js adds .is-in-view on intersection. These
+   rules drive the same end-state via transitions.
+*/
+@supports not (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .elara-words-reveal .elara-word {
+      opacity: 0;
+      transform: translate3d(0, 1.2rem, 0);
+      filter: blur(4px);
+      transition: opacity 600ms var(--elara-ease-out-quart, ease),
+                  transform 600ms var(--elara-ease-out-quart, ease),
+                  filter 400ms ease;
+      transition-delay: calc(var(--w-index, 0) * 40ms);
+    }
+    .elara-words-reveal.is-in-view .elara-word {
+      opacity: 1;
+      transform: none;
+      filter: blur(0);
+    }
+
+    .elara-mask-from-left,
+    .elara-mask-from-right,
+    .elara-mask-from-bottom {
+      transition: clip-path 1200ms var(--elara-ease-out-quart, ease);
+    }
+    .elara-mask-from-left  { clip-path: inset(0 100% 0 0); }
+    .elara-mask-from-right { clip-path: inset(0 0 0 100%); }
+    .elara-mask-from-bottom { clip-path: inset(100% 0 0 0); }
+    .elara-mask-from-left.is-in-view,
+    .elara-mask-from-right.is-in-view,
+    .elara-mask-from-bottom.is-in-view {
+      clip-path: inset(0 0 0 0);
+    }
+
+    .elara-reveal,
+    .elara-reveal-up,
+    .elara-reveal-image,
+    .elara-reveal-scale {
+      transition: opacity 700ms var(--elara-ease-out-quart, ease),
+                  transform 700ms var(--elara-ease-out-quart, ease),
+                  clip-path 700ms var(--elara-ease-out-quart, ease);
+    }
+    .elara-reveal:not(.is-in-view) { opacity: 0; }
+    .elara-reveal-up:not(.is-in-view) {
+      opacity: 0;
+      transform: translate3d(0, 3.2rem, 0);
+    }
+    .elara-reveal-image:not(.is-in-view) {
+      opacity: 0.85;
+      clip-path: inset(8% 4%);
+      transform: scale(1.02);
+    }
+    .elara-reveal-scale:not(.is-in-view) {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+  }
+}

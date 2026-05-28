@@ -39,10 +39,10 @@
       {% render 'editorial-eyebrow', text: eyebrow, class: 'elara-section-header__eyebrow' %}
     {%- endif -%}
     {%- if heading != blank -%}
-      <{{ heading_element }} class="{{ heading_class }} elara-section-header__heading">{{ heading | escape }}</{{ heading_element }}>
+      <{{ heading_element }} class="{{ heading_class }} elara-section-header__heading elara-words-reveal">{{ heading | escape }}</{{ heading_element }}>
     {%- endif -%}
     {%- if description != blank -%}
-      <div class="elara-section-header__description rte">{{ description }}</div>
+      <div class="elara-section-header__description rte elara-reveal-up">{{ description }}</div>
     {%- endif -%}
     {%- if link_label != blank and link_url != blank -%}
       <a href="{{ link_url }}" class="elara-link elara-section-header__link">

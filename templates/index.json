@@ -21,10 +21,10 @@
           "type": "buttons",
           "settings": {
             "button_label_1": "Shop the season",
-            "button_link_1": "shopify://collections/all",
+            "button_link_1": "shopify://collections/the-edit",
             "button_style_secondary_1": false,
             "button_label_2": "Read the journal",
-            "button_link_2": "shopify://blogs/news",
+            "button_link_2": "shopify://blogs/journal",
             "button_style_secondary_2": true
           }
         }
@@ -39,14 +39,15 @@
         "color_scheme": "scheme-4",
         "mobile_content_alignment": "center",
         "stack_images_on_mobile": false,
-        "show_text_below": false
+        "show_text_below": false,
+        "image_behavior": "zoom-in"
       }
     },
     "marquee": {
       "type": "marquee",
       "blocks": {
-        "text_1": { "type": "text", "settings": { "text": "New season", "separator": "·" } },
-        "text_2": { "type": "text", "settings": { "text": "Atelier 02", "separator": "·" } },
+        "text_1": { "type": "text", "settings": { "text": "Atelier 02", "separator": "·" } },
+        "text_2": { "type": "text", "settings": { "text": "Made in small numbers", "separator": "·" } },
         "text_3": { "type": "text", "settings": { "text": "Shipping worldwide", "separator": "·" } },
         "text_4": { "type": "text", "settings": { "text": "Personal styling on request", "separator": "·" } }
       },
@@ -88,9 +89,30 @@
     "lookbook_hotspot": {
       "type": "lookbook-hotspot",
       "blocks": {
-        "hotspot_1": { "type": "hotspot", "settings": { "position_x": 28, "position_y": 38 } },
-        "hotspot_2": { "type": "hotspot", "settings": { "position_x": 52, "position_y": 62 } },
-        "hotspot_3": { "type": "hotspot", "settings": { "position_x": 74, "position_y": 32 } }
+        "hotspot_1": {
+          "type": "hotspot",
+          "settings": {
+            "product": "oversized-wool-coat",
+            "position_x": 32,
+            "position_y": 42
+          }
+        },
+        "hotspot_2": {
+          "type": "hotspot",
+          "settings": {
+            "product": "leather-tote-no-04",
+            "position_x": 58,
+            "position_y": 64
+          }
+        },
+        "hotspot_3": {
+          "type": "hotspot",
+          "settings": {
+            "product": "wide-leg-trouser",
+            "position_x": 74,
+            "position_y": 36
+          }
+        }
       },
       "block_order": ["hotspot_1", "hotspot_2", "hotspot_3"],
       "settings": {
@@ -108,7 +130,7 @@
       "settings": {
         "title": "Latest arrivals",
         "heading_size": "h2",
-        "collection": "all",
+        "collection": "latest-arrivals",
         "products_to_show": 4,
         "columns_desktop": 4,
         "color_scheme": "scheme-1",
@@ -126,9 +148,18 @@
     "collage": {
       "type": "collage",
       "blocks": {
-        "collection-0": { "type": "collection", "settings": { "collection": "" } },
-        "product": { "type": "product", "settings": { "product": "", "second_image": true } },
-        "collection-1": { "type": "collection", "settings": { "collection": "" } }
+        "collection-0": {
+          "type": "collection",
+          "settings": { "collection": "wardrobe-essentials" }
+        },
+        "product": {
+          "type": "product",
+          "settings": { "product": "silk-slip-dress", "second_image": true }
+        },
+        "collection-1": {
+          "type": "collection",
+          "settings": { "collection": "the-edit" }
+        }
       },
       "block_order": ["collection-0", "product", "collection-1"],
       "settings": {
@@ -169,7 +200,7 @@
       "settings": {
         "title": "Wardrobe essentials",
         "heading_size": "h2",
-        "collection": "all",
+        "collection": "wardrobe-essentials",
         "products_to_show": 6,
         "columns_desktop": 3,
         "color_scheme": "scheme-1",
@@ -184,17 +215,33 @@
         "padding_bottom": 64
       }
     },
+    "collection_tabs": {
+      "type": "collection-tabs",
+      "blocks": {
+        "tab_1": { "type": "tab", "settings": { "label": "Latest", "collection": "latest-arrivals" } },
+        "tab_2": { "type": "tab", "settings": { "label": "Essentials", "collection": "wardrobe-essentials" } },
+        "tab_3": { "type": "tab", "settings": { "label": "The edit", "collection": "the-edit" } }
+      },
+      "block_order": ["tab_1", "tab_2", "tab_3"],
+      "settings": {
+        "eyebrow": "Curated edits",
+        "heading": "Where to begin",
+        "products_per_tab": 6,
+        "columns_desktop": 3,
+        "show_vendor": true,
+        "color_scheme": "scheme-1",
+        "padding_top": 64,
+        "padding_bottom": 96
+      }
+    },
     "press_strip": {
       "type": "press-strip",
-      "blocks": {
-        "logo_1": { "type": "logo" },
-        "logo_2": { "type": "logo" },
-        "logo_3": { "type": "logo" },
-        "logo_4": { "type": "logo" }
-      },
-      "block_order": ["logo_1", "logo_2", "logo_3", "logo_4"],
+      "blocks": {},
+      "block_order": [],
       "settings": {
         "eyebrow": "As featured in",
+        "quote": "A new kind of patience for fashion.",
+        "attribution": "Studio Editorial",
         "logo_height": 32,
         "logo_grayscale": true,
         "color_scheme": "scheme-1",
@@ -207,7 +254,7 @@
       "settings": {
         "heading": "Journal",
         "heading_size": "h2",
-        "blog": "news",
+        "blog": "journal",
         "post_limit": 3,
         "show_image": true,
         "show_date": true,
@@ -228,6 +275,7 @@
     "collage",
     "editorial_story_2",
     "featured_collection_2",
+    "collection_tabs",
     "press_strip",
     "featured_blog"
   ]
