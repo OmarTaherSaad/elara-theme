@@ -159,20 +159,9 @@ body.has-hero-template:not(.scrolled-past-header) .cart-count-bubble {
   margin-left: 0.4rem;
 }
 
-.header__active-menu-item {
-  position: relative;
-}
-
-.header__active-menu-item::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -0.4rem;
-  height: 1px;
-  background-color: currentColor;
-  opacity: 0.6;
-}
+/* Active-menu-item underline lives in elara-header-modern.css alongside
+   the hover-state grow. Removed the old left:0/right:0 rule here to
+   avoid two conflicting ::after pseudos producing a shifted line. */
 
 /* ---- When header is transparent over hero, brighten the icons ---- */
 body.has-hero-template:not(.scrolled-past-header) .header__icon {

@@ -118,6 +118,7 @@ body.has-hero-template:not(.scrolled-past-header) .header__heading-logo {
 }
 
 .header__menu-item {
+  position: relative;  /* anchor for the ::after underline */
   display: inline-flex;
   align-items: center;
   padding: 1rem 0;
