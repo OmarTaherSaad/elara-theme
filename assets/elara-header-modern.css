@@ -283,28 +283,32 @@ header-drawer .header__icon--menu .icon-close {
 
 /* ============================================================
    Sticky + floating pill on scroll
-   At the top of the page the header sits flush — full-width,
-   transparent over hero, normal padding. Once the user scrolls
-   past the header height (Dawn's StickyHeader adds .scrolled-
-   past-header on body), the sticky-header transforms into an
-   inset, rounded, frosted-glass pill that floats with a soft
-   shadow. Transition is smooth.
+   Dawn's StickyHeader element adds .shopify-section-header-sticky
+   and .scrolled-past-header to the *section wrapper* `.section-header`
+   (NOT to <body> or to <sticky-header>). elara-sticky-header.js
+   mirrors those classes onto <body> so the rules below can fire from
+   a single `body.scrolled-past-header` root signal.
+
+   Dawn already gives `.section-header.shopify-section-header-sticky`
+   `position: sticky; top: 0` (see base.css). We layer the floating-
+   pill visual on top: the section wrapper gets inset padding (creating
+   the gap from viewport edges), and the inner .header-wrapper shrinks
+   to a max-width and gets rounded corners + shadow + frosted glass.
    ============================================================ */
 
-sticky-header.shopify-section-header-sticky {
-  position: fixed;
-  z-index: 5;
-  left: 0;
-  right: 0;
-  top: 0;
-  /* The outer sticky element provides the inset gap when floating;
-     transitions handle the smooth shrink-in. */
-  padding: 0;
+/* Inset padding on the section wrapper when scrolled past — creates the
+   visual gap between viewport edges and the floating pill. Clicks in
+   the inset gap pass through to content underneath. */
+.section-header.scrolled-past-header {
+  padding: clamp(1rem, 1.4vw, 1.6rem) clamp(1.2rem, 2vw, 2.4rem);
+  background: transparent;
+  pointer-events: none;
   transition: padding var(--elara-dur-base, 480ms) var(--elara-ease-luxury, cubic-bezier(0.22, 1, 0.36, 1));
-  pointer-events: none; /* let clicks pass over the inset gap */
 }
 
-sticky-header.shopify-section-header-sticky > * {
+.section-header.scrolled-past-header > *,
+.section-header.scrolled-past-header sticky-header,
+.section-header.scrolled-past-header .header-wrapper {
   pointer-events: auto;
 }
 
@@ -322,12 +326,8 @@ sticky-header.shopify-section-header-sticky > * {
     backdrop-filter var(--elara-dur-base, 480ms) ease;
 }
 
-/* ---------- Floating state ---------- */
+/* ---------- Floating-pill visual ---------- */
 @supports (backdrop-filter: blur(20px)) {
-  body.scrolled-past-header sticky-header.shopify-section-header-sticky {
-    padding: clamp(1rem, 1.4vw, 1.6rem) clamp(1.2rem, 2vw, 2.4rem);
-  }
-
   body.scrolled-past-header .header-wrapper {
     max-width: min(124rem, calc(100vw - clamp(2.4rem, 4vw, 4.8rem)));
     border-radius: clamp(1.4rem, 1.6vw, 2.2rem);
@@ -338,22 +338,12 @@ sticky-header.shopify-section-header-sticky > * {
     box-shadow:
       0 1px 0 0 rgba(var(--color-background), 0.45) inset,
       0 10px 32px rgba(20, 17, 14, 0.10),
-      0 2px 6px rgba(20, 17, 14, 0.05),
-      0 0 0 0 transparent;
-  }
-
-  body.scrolled-past-header .header {
-    padding: clamp(0.8rem, 1.2vw, 1.4rem) clamp(2rem, 3vw, 3.2rem) !important;
-    min-height: clamp(5.6rem, 6vw, 6.8rem) !important;
+      0 2px 6px rgba(20, 17, 14, 0.05);
   }
 }
 
 /* Fallback (Firefox/older Safari without backdrop-filter): solid pill */
 @supports not (backdrop-filter: blur(20px)) {
-  body.scrolled-past-header sticky-header.shopify-section-header-sticky {
-    padding: clamp(1rem, 1.4vw, 1.6rem) clamp(1.2rem, 2vw, 2.4rem);
-  }
-
   body.scrolled-past-header .header-wrapper {
     max-width: min(124rem, calc(100vw - clamp(2.4rem, 4vw, 4.8rem)));
     border-radius: clamp(1.4rem, 1.6vw, 2.2rem);
@@ -363,11 +353,11 @@ sticky-header.shopify-section-header-sticky > * {
       0 10px 32px rgba(20, 17, 14, 0.10),
       0 2px 6px rgba(20, 17, 14, 0.05);
   }
+}
 
-  body.scrolled-past-header .header {
-    padding: clamp(0.8rem, 1.2vw, 1.4rem) clamp(2rem, 3vw, 3.2rem) !important;
-    min-height: clamp(5.6rem, 6vw, 6.8rem) !important;
-  }
+body.scrolled-past-header .header {
+  padding: clamp(0.8rem, 1.2vw, 1.4rem) clamp(2rem, 3vw, 3.2rem) !important;
+  min-height: clamp(5.6rem, 6vw, 6.8rem) !important;
 }
 
 /* Mega-menu drops below the floating pill with a matching radius */
@@ -390,19 +380,17 @@ body.scrolled-past-header .predictive-search {
 
 /* ---------- Mobile: shorter inset, smaller radius ---------- */
 @media screen and (max-width: 749px) {
-  @supports (backdrop-filter: blur(20px)) {
-    body.scrolled-past-header sticky-header.shopify-section-header-sticky {
-      padding: 0.8rem;
-    }
-    body.scrolled-past-header .header-wrapper {
-      border-radius: 1.2rem;
-      box-shadow: 0 6px 20px rgba(20, 17, 14, 0.10),
-                  0 1px 3px rgba(20, 17, 14, 0.04);
-    }
-    body.scrolled-past-header .header {
-      padding: 0.6rem 1.6rem !important;
-      min-height: 5.2rem !important;
-    }
+  .section-header.scrolled-past-header {
+    padding: 0.8rem;
+  }
+  body.scrolled-past-header .header-wrapper {
+    border-radius: 1.2rem;
+    box-shadow: 0 6px 20px rgba(20, 17, 14, 0.10),
+                0 1px 3px rgba(20, 17, 14, 0.04);
+  }
+  body.scrolled-past-header .header {
+    padding: 0.6rem 1.6rem !important;
+    min-height: 5.2rem !important;
   }
 }
 
