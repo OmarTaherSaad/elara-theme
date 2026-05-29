@@ -466,7 +466,12 @@ body.has-hero-template:not(.scrolled-past-header) .cart-count-bubble {
   align-items: center;
 }
 
-/* ---------- Announcement bar above ---------- */
+/* ---------- Announcement bar above ----------
+   Editorial styling: slim, uppercase, hairline rule beneath. Hidden
+   entirely on pages with a hero so the hero image starts at the very
+   top of the viewport and the navbar overlays it cleanly. Reappears
+   only when the user has scrolled past the hero — at which point the
+   floating-pill navbar is what dominates anyway. */
 .announcement-bar {
   border-bottom: 1px solid var(--elara-border-hair);
   background-color: rgba(var(--color-foreground), 0.03);
@@ -487,15 +492,15 @@ body.has-hero-template:not(.scrolled-past-header) .cart-count-bubble {
   text-align: center;
 }
 
-body.has-hero-template:not(.scrolled-past-header) .announcement-bar {
-  background-color: rgba(255, 255, 255, 0.06);
-  border-bottom-color: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
-}
-
-body.has-hero-template:not(.scrolled-past-header) .announcement-bar__message,
-body.has-hero-template:not(.scrolled-past-header) .announcement-bar a {
-  color: #ffffff;
+/* Hide announcement bar entirely on hero templates so the hero edge
+   is flush with the viewport top. The announcement-bar section is
+   wrapped by Dawn in `<div class="utility-bar …">` (the section's
+   own outer wrapper), so we have to hide that too — not just the
+   inner .announcement-bar element. */
+body.has-hero-template .utility-bar,
+body.has-hero-template .shopify-section-group-header-group .utility-bar,
+body.has-hero-template .announcement-bar {
+  display: none !important;
 }
 
 /* ---------- Mega menu (already partially polished, refined paddings) ---------- */
