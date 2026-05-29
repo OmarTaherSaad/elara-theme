@@ -7,11 +7,16 @@
    behaviour, smooth mobile hamburger.
    ============================================================ */
 
-/* ---------- Header wrapper ---------- */
+/* ---------- Header wrapper ----------
+   Content-driven height: pad symmetrically around the children so
+   logo + menu + icons all sit on the same baseline. Dawn's grid
+   layout (.header { display: grid; grid-template-areas: '…heading
+   navigation icons' }) is left in place; we only tune padding,
+   alignment, and gap. */
 .shopify-section-header,
 .shopify-section-group-header-group {
-  --elara-header-pad-y: clamp(1.6rem, 2vw, 2.4rem);
-  --elara-header-pad-x: clamp(2rem, 4vw, 6rem);
+  --elara-header-pad-y: clamp(1.2rem, 1.4vw, 1.8rem);
+  --elara-header-pad-x: clamp(1.6rem, 3vw, 4.8rem);
 }
 
 .header-wrapper {
@@ -23,20 +28,11 @@
 
 .header {
   padding: var(--elara-header-pad-y) var(--elara-header-pad-x) !important;
-  min-height: 7.2rem;
   align-items: center;
-  gap: clamp(2rem, 3vw, 4rem);
+  column-gap: clamp(2rem, 3vw, 4rem) !important;
 }
 
-@media screen and (min-width: 750px) {
-  .header { min-height: 8rem; }
-}
-
-@media screen and (min-width: 990px) {
-  .header { min-height: 9.2rem; }
-}
-
-/* Hide Dawn's hairline border by default — we use a backdrop-blur shadow instead */
+/* Hide Dawn's hairline border — we use a backdrop-blur shadow instead */
 .header-wrapper--border-bottom .header-wrapper {
   border-bottom: 0;
 }
@@ -48,19 +44,27 @@
   padding: 0;
   display: inline-flex;
   align-items: center;
+  line-height: 1;
+}
+
+/* Override Dawn's default 0.75rem padding so the logo doesn't sit
+   higher than the menu items. */
+.header > .header__heading-link,
+.header__heading > .header__heading-link {
+  padding: 0;
 }
 
 /* Text-only logo: render in display serif at an editorial scale */
 .header__heading-link.link--text {
   font-family: var(--font-heading-family);
   font-weight: var(--font-heading-weight);
-  font-size: clamp(2rem, 1.8vw + 1.4rem, 2.8rem);
+  font-size: clamp(1.8rem, 1.4vw + 1.2rem, 2.4rem);
   letter-spacing: -0.01em;
   line-height: 1;
   color: rgb(var(--color-foreground));
   text-decoration: none;
   position: relative;
-  padding: 0.2rem 0;
+  padding: 0;
   transition: opacity var(--elara-dur-fast, 240ms) ease;
 }
 
@@ -121,7 +125,7 @@ body.has-hero-template:not(.scrolled-past-header) .header__heading-logo {
   position: relative;  /* anchor for the ::after underline */
   display: inline-flex;
   align-items: center;
-  padding: 1rem 0;
+  padding: 0.6rem 0 !important;
   font-family: var(--font-body-family);
   font-weight: 500;
   font-size: 1.15rem;
@@ -153,24 +157,26 @@ body.has-hero-template:not(.scrolled-past-header) .header__heading-logo {
   transform: rotate(180deg);
 }
 
-/* Underline indicator — hairline that grows from the centre */
+/* Underline indicator — hairline that grows from the centre.
+   Sits just below the text, slightly inset from the link edges. */
 .header__menu-item::after {
   content: '';
   position: absolute;
   left: 50%;
-  bottom: 0.4rem;
+  bottom: 0.2rem;
   width: 0;
   height: 1px;
   background-color: currentColor;
   transform: translateX(-50%);
   transition: width var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, ease);
+  pointer-events: none;
 }
 
 .header__menu-item:hover::after,
 .header__menu-item:focus-visible::after,
 .header__menu-item[aria-expanded="true"]::after,
 .header__active-menu-item::after {
-  width: calc(100% - 1.2rem);
+  width: 100%;
 }
 
 .header__menu-item .header__active-menu-item {
@@ -450,23 +456,33 @@ body.has-hero-template:not(.scrolled-past-header) .cart-count-bubble {
 
 /* ---------- Announcement bar above ---------- */
 .announcement-bar {
-  font-family: var(--font-body-family);
-  font-size: 1.1rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  padding: 0.9rem 2rem;
   border-bottom: 1px solid var(--elara-border-hair);
-  background-color: rgba(var(--color-foreground), 0.02);
+  background-color: rgba(var(--color-foreground), 0.03);
+}
+
+.announcement-bar__announcement {
+  padding: 0.8rem 2rem;
 }
 
 .announcement-bar__message {
+  font-family: var(--font-body-family);
   font-weight: 500;
-  letter-spacing: inherit;
+  font-size: 1.1rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  line-height: 1.2;
+  margin: 0;
+  text-align: center;
 }
 
 body.has-hero-template:not(.scrolled-past-header) .announcement-bar {
-  background-color: rgba(255, 255, 255, 0.08);
-  border-bottom-color: rgba(255, 255, 255, 0.15);
+  background-color: rgba(255, 255, 255, 0.06);
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+body.has-hero-template:not(.scrolled-past-header) .announcement-bar__message,
+body.has-hero-template:not(.scrolled-past-header) .announcement-bar a {
   color: #ffffff;
 }
 
