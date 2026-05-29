@@ -54,11 +54,13 @@
   padding: 0;
 }
 
-/* Text-only logo: render in display serif at an editorial scale */
+/* Text-only logo: render in display serif at an editorial scale.
+   The actual rendered text lives in an inner <span class="h2">, so
+   the typography rules need to win against Dawn's base .h2 styles
+   for both font-size and line-height. */
 .header__heading-link.link--text {
   font-family: var(--font-heading-family);
   font-weight: var(--font-heading-weight);
-  font-size: clamp(1.8rem, 1.4vw + 1.2rem, 2.4rem);
   letter-spacing: -0.01em;
   line-height: 1;
   color: rgb(var(--color-foreground));
@@ -66,18 +68,28 @@
   position: relative;
   padding: 0;
   transition: opacity var(--elara-dur-fast, 240ms) ease;
+  display: inline-flex;
+  align-items: center;
 }
 
 .header__heading-link.link--text:hover {
   opacity: 0.65;
 }
 
-.header__heading-link.link--text .h2 {
-  font-family: inherit;
-  font-weight: inherit;
-  font-size: inherit;
-  letter-spacing: inherit;
-  margin: 0;
+/* Critical: reset the inner .h2 span's font-size + line-height so the
+   logo box height matches the menu items'. Dawn's base .h2 has
+   line-height ~1.27 which was pushing the logo visually downward
+   relative to the menu line. */
+.header__heading-link.link--text .h2,
+.header__heading .h2 {
+  font-family: var(--font-heading-family) !important;
+  font-weight: var(--font-heading-weight) !important;
+  font-size: clamp(1.8rem, 1.4vw + 1.2rem, 2.4rem) !important;
+  letter-spacing: -0.01em !important;
+  line-height: 1 !important;
+  margin: 0 !important;
+  display: inline-block;
+  word-break: normal;
 }
 
 /* Image logo: cap height, refined transition */
