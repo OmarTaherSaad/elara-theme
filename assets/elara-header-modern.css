@@ -406,13 +406,6 @@ body.scrolled-past-header .predictive-search {
   }
 }
 
-/* When the header is *also* in hide-on-scroll-down mode, slide both
-   the floating pill and the static one out using transform. */
-body.elara-header-hidden sticky-header,
-body.elara-header-hidden .section-header {
-  transform: translate3d(0, -100%, 0);
-}
-
 /* Soft reveal animation when the pill first appears */
 @media (prefers-reduced-motion: no-preference) {
   body.scrolled-past-header .header-wrapper {

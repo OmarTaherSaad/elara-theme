@@ -1,72 +1,26 @@
 /**
- * Elara sticky-header auto-hide behavior.
+ * Elara sticky-header companion.
  *
- * Adds `.elara-header-hidden` to <body> when the user scrolls down past
- * a threshold, removes it when they scroll up. Dawn's existing
- * <sticky-header> element already adds `.scrolled-past-header` once
- * the user has scrolled past the header height; we layer the hide-on-
- * scroll-down behavior on top.
+ * Previously this script auto-hid the header on scroll-down and revealed
+ * it on scroll-up. That conflicted with the floating-pill navbar (which
+ * should stay visible while the user is reading down a long page).
  *
- * Behavior tuning:
- *   - Threshold: ignore the first 200px of scroll so the header doesn't
- *     hide during minor reflows on page load.
- *   - Direction tolerance: 8px deadzone so micro-scrolls don't toggle.
- *   - Hidden when the user is interacting with the cart drawer / info
- *     drawer (those expect the header to stay put).
+ * The auto-hide behavior is now disabled. The script remains as a place
+ * to attach any future scroll-aware header logic, and to defensively
+ * remove the legacy `elara-header-hidden` body class if it was set by
+ * an older cached version of the file.
  */
 (function () {
   if (window.__elaraStickyHeaderReady) return;
   window.__elaraStickyHeaderReady = true;
 
-  const THRESHOLD = 200;
-  const DEADZONE = 8;
-  let lastY = window.scrollY;
-  let rafScheduled = false;
-
-  function onScroll() {
-    if (rafScheduled) return;
-    rafScheduled = true;
-    requestAnimationFrame(check);
+  // Belt-and-braces: ensure the legacy hide-class isn't lingering from
+  // a previously-cached version of this script.
+  if (document.body) {
+    document.body.classList.remove('elara-header-hidden');
+  } else {
+    document.addEventListener('DOMContentLoaded', () => {
+      document.body.classList.remove('elara-header-hidden');
+    });
   }
-
-  function check() {
-    rafScheduled = false;
-    const y = window.scrollY;
-    const delta = y - lastY;
-
-    // Don't hide near the top
-    if (y < THRESHOLD) {
-      document.body.classList.remove('elara-header-hidden');
-      lastY = y;
-      return;
-    }
-
-    // Don't toggle if cart drawer / info drawer is open
-    if (
-      document.documentElement.classList.contains('elara-info-drawer-open') ||
-      document.body.classList.contains('overflow-hidden')
-    ) {
-      lastY = y;
-      return;
-    }
-
-    if (Math.abs(delta) < DEADZONE) return;
-
-    if (delta > 0) {
-      // Scrolling down — hide
-      document.body.classList.add('elara-header-hidden');
-    } else {
-      // Scrolling up — reveal
-      document.body.classList.remove('elara-header-hidden');
-    }
-    lastY = y;
-  }
-
-  window.addEventListener('scroll', onScroll, { passive: true });
-  // Reveal on focus change (e.g. tabbing to skip-link)
-  document.addEventListener('focusin', (e) => {
-    if (e.target.closest('sticky-header, .section-header, .header-wrapper')) {
-      document.body.classList.remove('elara-header-hidden');
-    }
-  });
 })();

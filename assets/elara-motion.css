@@ -165,18 +165,14 @@ html {
 }
 
 /* ---------- Sticky header refinements ----------
-   Reveal/hide the header as the user changes scroll direction.
-   The body class `.elara-header-hidden` is added by elara-sticky-header.js.
+   Floating-pill navbar (see elara-header-modern.css) handles its own
+   transitions. The auto-hide-on-scroll-down behaviour was removed in
+   v1.3.5 — the navbar should stay visible whenever it's sticky.
 */
 sticky-header,
 .section-header {
   transition: transform var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, ease),
               opacity var(--elara-dur-base, 400ms) var(--elara-ease-out-quart, ease);
-}
-
-body.elara-header-hidden sticky-header,
-body.elara-header-hidden .section-header {
-  transform: translate3d(0, -100%, 0);
 }
 
 @media (prefers-reduced-motion: reduce) {
