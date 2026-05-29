@@ -282,6 +282,9 @@
     <script src="{{ 'elara-scroll-advanced.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'elara-hover.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'elara-particles.js' | asset_url }}" defer="defer"></script>
+    {%- if settings.elara_smooth_scroll -%}
+      <script src="{{ 'elara-smooth-scroll.js' | asset_url }}" defer="defer"></script>
+    {%- endif -%}
     {%- if settings.cart_type == 'notification' -%}
       {{ 'elara-cart-notification.css' | asset_url | stylesheet_tag }}
     {%- endif -%}

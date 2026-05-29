@@ -265,6 +265,13 @@
         "info": "t:settings_schema.elara.settings.view_transitions.info"
       },
       {
+        "type": "checkbox",
+        "id": "elara_smooth_scroll",
+        "default": true,
+        "label": "Smooth scroll (desktop wheel)",
+        "info": "Interpolated, eased wheel scrolling for a luxury feel. Touch devices keep their native momentum scroll; respects reduced motion."
+      },
+      {
         "type": "header",
         "content": "t:settings_schema.elara.settings.header__type_pairing.content"
       },
