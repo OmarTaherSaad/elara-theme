@@ -1,38 +1,39 @@
 /**
- * Elara smooth scroll engine.
+ * Elara section-snap scroll engine.
  *
- * Lenis-inspired wheel-driven smooth scrolling. Intercepts wheel events,
- * accumulates a virtual scroll target, and on each requestAnimationFrame
- * lerps `window.scrollTo` toward that target with a luxury easing curve.
- *
- * Why custom and not a library:
- *   - Theme Store policy disallows external script CDNs.
- *   - Lenis is ~3KB but adds an esm-only dep we'd have to bundle.
- *   - We only need a small, well-behaved subset.
+ * One wheel notch / swipe = one full-height section. Like Apple's
+ * product pages or modern editorial fashion sites. Intercepts wheel
+ * events, identifies the current major section, and smoothly scrolls
+ * to the next or previous one via scrollIntoView.
  *
  * Behaviour:
- *   - DESKTOP wheel / trackpad: smoothly scrolled.
- *   - TOUCH: untouched. Native momentum scroll is already smooth and
- *     intercepting it breaks every Shopify gesture.
- *   - Keyboard scroll (arrows, PgUp/Dn, Space, Home/End): untouched —
- *     the browser handles those, and they call window.scrollTo via the
- *     CSS `scroll-behavior: smooth` rule already on <html>.
- *   - Hash-link clicks / anchor navigation: untouched — those use
- *     scrollIntoView() which we don't intercept.
- *   - Scrollable descendants (cart drawer, info drawer, modals,
- *     horizontal carousels): wheel events that originate inside one
- *     of those are NOT intercepted, so their native scroll works.
- *   - prefers-reduced-motion: engine disabled entirely.
+ *   - DESKTOP wheel / trackpad: snap to next/prev major section.
+ *   - TOUCH: untouched (mobile UX expects natural swipe).
+ *   - KEYBOARD: untouched (arrows / PgUp/Dn / Space scroll natively).
+ *   - prefers-reduced-motion: disabled — native scroll only.
+ *   - Inside scrollable descendants (cart drawer, info drawer, modals,
+ *     horizontal carousels): wheel passes through, native scroll works.
+ *   - Tall sections (> viewport height): when scrolled to a position
+ *     where there's more of the current section below the viewport,
+ *     allow native scroll within the section before snapping past.
+ *   - At the start / end of the page: wheel passes through so the
+ *     user can scroll past whatever appears above the first section
+ *     or below the last (e.g. announcement bar, footer).
  *
- * Damping:
- *   - 0.1 ease factor per frame (~6 frames to ease 80% of distance).
- *   - Multiplier 1.0 — preserves the user's natural scroll speed feel,
- *     just smooths the steps between them.
+ * Major-section detection:
+ *   Top-level `.shopify-section` wrappers whose height is at least
+ *   60% of the viewport height are treated as snap points. Recomputed
+ *   on resize and after layout-affecting events (image load, section
+ *   editor reload).
  *
- * Configuration: pass data-elara-smooth-scroll="false" on <html> to
- * opt out, or window.__elaraSmoothScroll = false before this script
- * loads. The theme reads the merchant's `elara_smooth_scroll` setting
- * in layout/theme.liquid and sets the global accordingly.
+ * Cooldown: 700ms between snaps. While snapping, further wheel events
+ * are absorbed (no chaining). Trackpad burst gestures still produce
+ * one snap per intent, not one per wheel-event.
+ *
+ * Configuration:
+ *   - window.__elaraSmoothScroll = false           // global opt-out
+ *   - data-elara-smooth-scroll="false" on <html>   // attribute opt-out
+ *   - merchant setting `elara_smooth_scroll`       // theme settings
  */
 (function () {
   if (window.__elaraSmoothScrollReady) return;
@@ -43,122 +44,143 @@
   if (document.documentElement.dataset.elaraSmoothScroll === 'false') return;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reduceMotion) return;
-  // Touch-primary devices: rely on native momentum scroll.
+  // Touch-primary devices: keep native swipe.
   const isTouchPrimary = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
   if (isTouchPrimary) return;
 
-  const LERP = 0.2;        // ease factor per frame — higher = snappier, lower = more glide
-  const SNAP_THRESHOLD = 0.4;  // px — when distance is below this, snap and stop
-  const MAX_DELTA_LINE = 100;  // px — clamp how much a single line-mode scroll contributes
-  const MAX_DELTA_PIXEL = 1200; // px — clamp how much a single pixel-mode scroll contributes
-  const SCROLL_MATCH_TOLERANCE = 2;  // px — tolerance for "is this our own programmatic scroll"
+  const COOLDOWN = 700;             // ms between section snaps
+  const MIN_HEIGHT_RATIO = 0.6;     // section counts as "major" if >= 60vh
+  const HEAD_GUARD = 0.3;           // when current scrollY is within 30vh of a snap point's top, that's the current section
+  const MIN_DELTA = 4;              // ignore micro wheel events (touchpad jitter)
+  const NEAR_BOTTOM_PX = 24;        // how close to a section's bottom we need to be before snapping forward
 
-  let current = window.scrollY;
-  let target = current;
-  let rafId = 0;
+  let snapSections = [];
+  let lastAction = 0;
+  let isAnimating = false;
+  let animationTimer = 0;
 
-  // Disable native CSS smooth scroll while our engine is active — otherwise
-  // the two compete and the result is jittery. We still keep scroll-padding
-  // for sticky-header offsets on hash links.
-  document.documentElement.style.scrollBehavior = 'auto';
-
-  function maxScroll() {
-    return Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-  }
-
-  /** Walk up the DOM looking for an ancestor whose own overflow scrolls. */
+  /** Find scrollable ancestors so wheel events inside drawers / modals pass through. */
   function findScrollableAncestor(el) {
     while (el && el.nodeType === 1 && el !== document.body && el !== document.documentElement) {
       const style = window.getComputedStyle(el);
       const oy = style.overflowY;
-      const ox = style.overflowX;
-      const scrollsY = (oy === 'auto' || oy === 'scroll') && el.scrollHeight > el.clientHeight + 1;
-      const scrollsX = (ox === 'auto' || ox === 'scroll') && el.scrollWidth > el.clientWidth + 1;
-      if (scrollsY || scrollsX) return { el, scrollsY, scrollsX };
+      if ((oy === 'auto' || oy === 'scroll') && el.scrollHeight > el.clientHeight + 1) {
+        return el;
+      }
       el = el.parentElement;
     }
     return null;
   }
 
-  function onWheel(event) {
-    if (event.ctrlKey) return;  // pinch-zoom — let browser handle
-    if (event.defaultPrevented) return;
-
-    const ancestor = findScrollableAncestor(event.target);
-    if (ancestor) {
-      // The wheel is inside a scrollable container; let it scroll natively
-      // UNLESS the container is at its edge and the wheel direction would
-      // overflow into the page. (We don't pretend to handle this edge case
-      // — most users don't notice it and it keeps the implementation tiny.)
-      if (ancestor.scrollsY && event.deltaY !== 0) return;
-      if (ancestor.scrollsX && event.deltaX !== 0) return;
-    }
-
-    event.preventDefault();
-
-    let dy = event.deltaY;
-    // Normalise delta modes
-    if (event.deltaMode === 1) {            // DOM_DELTA_LINE
-      dy *= 16;
-      if (Math.abs(dy) > MAX_DELTA_LINE) dy = Math.sign(dy) * MAX_DELTA_LINE;
-    } else if (event.deltaMode === 2) {     // DOM_DELTA_PAGE
-      dy *= window.innerHeight;
-    } else {
-      if (Math.abs(dy) > MAX_DELTA_PIXEL) dy = Math.sign(dy) * MAX_DELTA_PIXEL;
-    }
-
-    target = Math.max(0, Math.min(maxScroll(), target + dy));
-    schedule();
+  function collectSections() {
+    const vh = window.innerHeight;
+    const minH = vh * MIN_HEIGHT_RATIO;
+    snapSections = Array.from(document.querySelectorAll('main .shopify-section, #MainContent .shopify-section, .shopify-section'))
+      .filter((el) => el.offsetParent !== null)            // visible
+      .filter((el) => !el.classList.contains('shopify-section-group-header-group'))
+      .filter((el) => !el.classList.contains('shopify-section-group-footer-group'))
+      .map((el) => {
+        const rect = el.getBoundingClientRect();
+        const top = window.scrollY + rect.top;
+        return { el, top, height: el.offsetHeight };
+      })
+      .filter((s) => s.height >= minH);
   }
 
-  function tick() {
-    rafId = 0;
-    const diff = target - current;
-    if (Math.abs(diff) < SNAP_THRESHOLD) {
-      current = target;
-      window.scrollTo(0, current);
-      return;
+  function currentSectionIndex() {
+    const sy = window.scrollY + window.innerHeight * HEAD_GUARD;
+    let idx = 0;
+    for (let i = 0; i < snapSections.length; i++) {
+      if (snapSections[i].top <= sy) idx = i;
     }
-    current += diff * LERP;
-    window.scrollTo(0, current);
-    schedule();
+    return idx;
   }
 
-  function schedule() {
-    if (rafId) return;
-    rafId = requestAnimationFrame(tick);
+  function snapTo(idx) {
+    if (idx < 0 || idx >= snapSections.length) return false;
+    isAnimating = true;
+    const target = snapSections[idx].el;
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    clearTimeout(animationTimer);
+    animationTimer = window.setTimeout(() => {
+      isAnimating = false;
+    }, 900);
+    return true;
   }
 
-  /**
-   * Sync target if the user (or another script) caused an external scroll
-   * — hash-link click, history restoration, scrollbar drag, scrollIntoView.
-   *
-   * We can't use a boolean flag around our own scrollTo because the scroll
-   * event fires asynchronously (in Chrome especially), by which point the
-   * flag is already reset and the handler treats our programmatic scroll
-   * as user input — killing the lerp. Compare scrollY to our internal
-   * `current` instead: if they match within a small tolerance, it's our
-   * own scroll. Otherwise it's external.
-   */
-  function onNativeScroll() {
+  function onWheel(e) {
+    if (e.ctrlKey) return;                  // pinch-zoom
+    if (e.defaultPrevented) return;
+    if (Math.abs(e.deltaY) < MIN_DELTA) return;
+
+    // Wheel inside a scrollable descendant: pass through
+    if (findScrollableAncestor(e.target)) return;
+
+    if (!snapSections.length) return;
+
+    // Within snap cooldown — absorb the event so multi-wheel bursts don't queue snaps
+    if (isAnimating) { e.preventDefault(); return; }
+    const now = performance.now();
+    if (now - lastAction < COOLDOWN) { e.preventDefault(); return; }
+
+    const goingDown = e.deltaY > 0;
+    const idx = currentSectionIndex();
+    const current = snapSections[idx];
     const sy = window.scrollY;
-    if (Math.abs(sy - current) < SCROLL_MATCH_TOLERANCE) return;
-    current = sy;
-    target = sy;
-  }
+    const vh = window.innerHeight;
 
-  // Resync target when the document height changes (lazy-loaded images,
-  // section editor reflows, fonts loading).
-  function onResize() {
-    target = Math.min(target, maxScroll());
-    current = window.scrollY;
+    if (goingDown) {
+      // If current section is taller than viewport and we haven't reached its bottom yet,
+      // let the user scroll through it naturally before snapping past.
+      const sectionBottom = current.top + current.height;
+      const viewportBottom = sy + vh;
+      if (sectionBottom - viewportBottom > NEAR_BOTTOM_PX) {
+        return;  // native scroll within tall section
+      }
+      // Otherwise snap forward to the next section
+      const nextIdx = idx + 1;
+      if (nextIdx >= snapSections.length) return;  // at end, native scroll past footer etc.
+      if (snapTo(nextIdx)) {
+        e.preventDefault();
+        lastAction = now;
+      }
+    } else {
+      // Going up
+      // If the user is below the current section's top by more than viewport height,
+      // they're inside a tall section — let them scroll up within it.
+      const distanceFromTop = sy - current.top;
+      if (distanceFromTop > vh - NEAR_BOTTOM_PX) {
+        return;
+      }
+      const prevIdx = idx - 1;
+      if (prevIdx < 0) {
+        // At first section. If still scrolled below top, snap to this section's start.
+        if (sy > current.top + 4) {
+          if (snapTo(0)) {
+            e.preventDefault();
+            lastAction = now;
+          }
+        }
+        return;
+      }
+      if (snapTo(prevIdx)) {
+        e.preventDefault();
+        lastAction = now;
+      }
+    }
   }
 
   window.addEventListener('wheel', onWheel, { passive: false });
-  window.addEventListener('scroll', onNativeScroll, { passive: true });
-  window.addEventListener('resize', onResize);
-  document.addEventListener('DOMContentLoaded', () => {
-    current = window.scrollY;
-    target = current;
-  });
+  window.addEventListener('resize', collectSections);
+
+  // Re-measure on layout-affecting events
+  window.addEventListener('load', collectSections);
+  document.addEventListener('shopify:section:load', collectSections);
+  document.addEventListener('shopify:section:reorder', collectSections);
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', collectSections);
+  } else {
+    collectSections();
+  }
 })();
