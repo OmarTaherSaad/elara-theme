@@ -331,6 +331,25 @@ header-drawer .header__icon--menu .icon-close {
   pointer-events: auto;
 }
 
+/* CRITICAL: on hero templates, the section-header must NEVER take normal
+   flow space. Otherwise transitioning from `position: absolute` (over hero)
+   to Dawn's default `position: sticky` (scrolled) pushes the hero content
+   down by the header's height — making the first section's offsetTop
+   ~90px instead of 0, which prevents the hero from ever reaching
+   scrollY=0 again on scroll-back.
+
+   Pin it as `position: fixed` once scrolled past so the document flow
+   stays consistent. The hero remains at offsetTop=0 in both states; only
+   the visual treatment of the header changes.  */
+body.has-hero-template .section-header.shopify-section-header-sticky,
+body.has-hero-template .section-header.scrolled-past-header {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 5;
+}
+
 .header-wrapper {
   max-width: 100%;
   margin: 0 auto;

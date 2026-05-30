@@ -99,8 +99,15 @@
   function snapTo(idx) {
     if (idx < 0 || idx >= snapSections.length) return false;
     isAnimating = true;
-    const target = snapSections[idx].el;
-    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (idx === 0) {
+      // Always scroll to absolute top for the first section. Avoids
+      // scroll-padding-top offsets and ensures Dawn's StickyHeader
+      // re-evaluates scrollTop <= headerBounds.top (which clears the
+      // `scrolled-past-header` state and restores the hero overlay).
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      snapSections[idx].el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
     clearTimeout(animationTimer);
     animationTimer = window.setTimeout(() => {
       isAnimating = false;
