@@ -47,15 +47,15 @@
   const isTouchPrimary = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
   if (isTouchPrimary) return;
 
-  const LERP = 0.12;       // ease factor per frame — higher = snappier, lower = more glide
+  const LERP = 0.2;        // ease factor per frame — higher = snappier, lower = more glide
   const SNAP_THRESHOLD = 0.4;  // px — when distance is below this, snap and stop
   const MAX_DELTA_LINE = 100;  // px — clamp how much a single line-mode scroll contributes
-  const MAX_DELTA_PIXEL = 1000; // px — clamp how much a single pixel-mode scroll contributes
+  const MAX_DELTA_PIXEL = 1200; // px — clamp how much a single pixel-mode scroll contributes
+  const SCROLL_MATCH_TOLERANCE = 2;  // px — tolerance for "is this our own programmatic scroll"
 
   let current = window.scrollY;
   let target = current;
   let rafId = 0;
-  let isProgrammatic = false;
 
   // Disable native CSS smooth scroll while our engine is active — otherwise
   // the two compete and the result is jittery. We still keep scroll-padding
@@ -116,15 +116,11 @@
     const diff = target - current;
     if (Math.abs(diff) < SNAP_THRESHOLD) {
       current = target;
-      isProgrammatic = true;
       window.scrollTo(0, current);
-      isProgrammatic = false;
       return;
     }
     current += diff * LERP;
-    isProgrammatic = true;
     window.scrollTo(0, current);
-    isProgrammatic = false;
     schedule();
   }
 
@@ -134,15 +130,21 @@
   }
 
   /**
-   * If the user (or another script) calls native scroll APIs, treat that
-   * scroll as ground-truth and sync our virtual target to match. Avoids the
-   * engine fighting against hash-link clicks, history-restoration jumps,
-   * anchor scrollIntoView calls, etc.
+   * Sync target if the user (or another script) caused an external scroll
+   * — hash-link click, history restoration, scrollbar drag, scrollIntoView.
+   *
+   * We can't use a boolean flag around our own scrollTo because the scroll
+   * event fires asynchronously (in Chrome especially), by which point the
+   * flag is already reset and the handler treats our programmatic scroll
+   * as user input — killing the lerp. Compare scrollY to our internal
+   * `current` instead: if they match within a small tolerance, it's our
+   * own scroll. Otherwise it's external.
    */
   function onNativeScroll() {
-    if (isProgrammatic) return;
-    current = window.scrollY;
-    target = current;
+    const sy = window.scrollY;
+    if (Math.abs(sy - current) < SCROLL_MATCH_TOLERANCE) return;
+    current = sy;
+    target = sy;
   }
 
   // Resync target when the document height changes (lazy-loaded images,
